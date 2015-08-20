@@ -1,0 +1,54 @@
+{
+  "private": true,
+  "publishConfig": {
+    "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
+  },
+  "version": "1",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build:src": "mkdir -p dist/src && tsc --module CommonJS -sourcemap --target ES5 --outDir dist/src src/*.ts",
+    "build:testkit": "mkdir -p dist/testkit && tsc --module CommonJS -sourcemap --target ES5 --outDir dist/testkit testkit/*.ts",
+    "build:test": "mkdir -p dist/test && tsc --module CommonJS -sourcemap --target ES5 --outDir dist/test test/*.ts",
+    "build": "rm -rf dist && mkdir dist && npm run build:test && npm run build:testkit && npm run build:src",
+    "publish:tc": "./node_modules/.bin/ci",
+    "pretest": "npm run build",
+    "test": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
+    "start": "npm run webtest",
+    "webtest": "webpack-dev-server --progress --hot --inline --no-colors",
+    "webbuild": "webpack --progress -p --colors"
+  },
+  "description": "see README.md ",
+  "devDependencies": {
+    "chai": "^2.1.2",
+    "mocha": "^2.2.1",
+    "mocha-loader": "^0.7.1",
+    "mocha-teamcity-reporter": "^0.0.1",
+    "requirejs": "^2.1.17",
+    "source-map": "^0.4.2",
+    "vinyl": "^0.4.6",
+    "webpack": "^1.7.3",
+    "webpack-dev-server": "^1.7.0"
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "dependencies": {
+    "event-stream": "3.3.0",
+    "lodash": "3.7.0",
+    "through2": "0.6.5",
+    "typescript": "Microsoft/TypeScript#53239d4a8bff80b7ae802a9a0392edd91d1a1295"
+  },
+  "config": {
+    "projectLint": "overreact-private"
+  },
+  "name": "tspoon",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wix/tspoon.git"
+  },
+  "author": "Mrs. Pepperpot",
+  "license": "ISC"
+}
