@@ -3,7 +3,8 @@
 /// <reference path="../node_modules/typescript/lib/typescript.d.ts" />
 /// <reference path="../node_modules/typescript/lib/typescriptServices.d.ts" />
 
-import { expect } from "chai";
+import { expect, use } from 'chai';
+import ts from 'typescript';
 
 describe("AST", function() {
     it("has kind attribute", function() {

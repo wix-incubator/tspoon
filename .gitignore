@@ -1,6 +1,8 @@
 *.js.map
+*.js
 src/*.d.ts
-src/*.js
+test/*.d.ts
+test-kit/*.d.ts
 *.vpw
 *.vpj
 *.vpwhistu
