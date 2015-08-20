@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { describe } from "mocha";
 import { evaluateModuleExports } from '../test-kit/index';
 import chai from 'chai';
 import Typorama from '../test-kit/mocks/typorama';

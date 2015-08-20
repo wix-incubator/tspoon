@@ -2,4 +2,4 @@
 
 import * as ts from 'typescript';
 
-Console.log("Hello world.");
+console.log("Hello world.");
