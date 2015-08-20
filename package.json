@@ -3,7 +3,7 @@
   "publishConfig": {
     "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
-  "version": "1",
+  "version": "0.1.0",
   "main": "dist/src/index.js",
   "scripts": {
     "build:src": "mkdir -p dist/src && tsc --module CommonJS -sourcemap --target ES5 --outDir dist/src src/*.ts",
