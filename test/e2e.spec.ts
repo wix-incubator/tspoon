@@ -1,12 +1,9 @@
 /// <reference path="../typings/chai.d.ts" />
 /// <reference path="../typings/mocha.d.ts" />
+/// <reference path="../node_modules/typescript/lib/typescript.d.ts" />
+/// <reference path="../node_modules/typescript/lib/typescriptServices.d.ts" />
 
-import { expect } from 'chai';
-import chai from 'chai';
-import matchers from '../test-kit/matchers';
-import { describe } from "mocha";
+import { expect } from "chai";
 
-chai.use(matchers);
-
-describe('e2e test', ()=> {
+describe("e2e test", ()=> {
 });
