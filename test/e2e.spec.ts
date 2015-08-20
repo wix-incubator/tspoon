@@ -1,9 +1,6 @@
-import { expect } from 'chai';
-import chai from 'chai';
-import matchers from '../test-kit/matchers';
-
-
-chai.use(matchers);
+/// <reference path="../typings/mocha.d.ts" />
+/// <reference path="../typings/chai.d.ts" />
+import { expect, use } from 'chai';
 
 describe('e2e test', ()=> {
 });
