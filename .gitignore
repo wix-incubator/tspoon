@@ -33,3 +33,5 @@ dist
 *.stTheme.cache
 *.sublime-workspace
 sftp-config.json
+.DS_Store
+
