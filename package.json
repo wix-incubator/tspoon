@@ -6,9 +6,9 @@
   "version": "0.1.0",
   "main": "dist/src/index.js",
   "scripts": {
-    "build:src": "mkdir -p dist/src && tsc --module CommonJS -sourcemap --target ES5 --outDir dist/src src/*.ts",
-    "build:testkit": "mkdir -p dist/testkit && tsc --module CommonJS -sourcemap --target ES5 --outDir dist/testkit testkit/*.ts",
-    "build:test": "mkdir -p dist/test && tsc --module CommonJS -sourcemap --target ES5 --outDir dist/test test/*.ts",
+    "build:src": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/src src/*.ts",
+    "build:testkit": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/test-kit test-kit/*.ts",
+    "build:test": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/test test/*.ts",
     "build": "rm -rf dist && mkdir dist && npm run build:test && npm run build:testkit && npm run build:src",
     "publish:tc": "./node_modules/.bin/ci",
     "pretest": "npm run build",
