@@ -27,7 +27,9 @@
     "source-map": "^0.4.2",
     "vinyl": "^0.4.6",
     "webpack": "^1.7.3",
-    "webpack-dev-server": "^1.7.0"
+    "webpack-dev-server": "^1.7.0",
+    "sinon": "git://github.com/cjohansen/Sinon.JS#b672042043517b9f84e14ed0fb8265126168778a",
+    "sinon-chai": "^2.7.0"
   },
   "engines": {
     "node": ">=0.12"
