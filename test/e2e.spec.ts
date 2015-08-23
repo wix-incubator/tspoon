@@ -5,7 +5,8 @@
 
 import * as ts from 'typescript';
 import { expect, use } from 'chai';
-import {Visitor, TSpoon} from '../src/Visitor';
+import {Visitor} from '../src/Visitor';
+import {TSpoon} from '../src/TSpoon';
 
 
 /*
@@ -45,6 +46,6 @@ describe("e2e test", ()=> {
 	before('works', () => {
 		// todo: make program instance
 		// todo : make visitors array
-		var tspoon = new TSpoon(program, visitors);
+		var tSpoon = new TSpoon(program, visitors);
 	});
 });
