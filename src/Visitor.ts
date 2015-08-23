@@ -48,23 +48,23 @@ export class TSpoon implements ts.Program{
 	 * used for writing the JavaScript and declaration files.  Otherwise, the writeFile parameter
 	 * will be invoked when writing the JavaScript and declaration files.
 	 */
-	emit(targetSourceFile?: SourceFile, writeFile?: WriteFileCallback, cancellationToken?: CancellationToken): EmitResult{
-
+	emit(targetSourceFile?: ts.SourceFile, writeFile?: ts.WriteFileCallback, cancellationToken?: ts.CancellationToken): ts.EmitResult{
+		throw new Error('not implemented yet');
 	}
-	getOptionsDiagnostics(cancellationToken?: CancellationToken): Diagnostic[]{
-
+	getOptionsDiagnostics(cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
+		throw new Error('not implemented yet');
 	}
-	getGlobalDiagnostics(cancellationToken?: CancellationToken): Diagnostic[]{
-
+	getGlobalDiagnostics(cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
+		throw new Error('not implemented yet');
 	}
-	getSyntacticDiagnostics(sourceFile?: SourceFile, cancellationToken?: CancellationToken): Diagnostic[]{
-
+	getSyntacticDiagnostics(sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
+		throw new Error('not implemented yet');
 	}
-	getSemanticDiagnostics(sourceFile?: SourceFile, cancellationToken?: CancellationToken): Diagnostic[]{
-
+	getSemanticDiagnostics(sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
+		throw new Error('not implemented yet');
 	}
-	getDeclarationDiagnostics(sourceFile?: SourceFile, cancellationToken?: CancellationToken): Diagnostic[]{
-
+	getDeclarationDiagnostics(sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
+		throw new Error('not implemented yet');
 	}
 	/**
 	 * Gets a type checker that can be used to semantically analyze source fils in the program.
