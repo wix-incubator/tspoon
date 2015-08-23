@@ -3,7 +3,7 @@
 /// <reference path="../node_modules/typescript/lib/typescript.d.ts" />
 /// <reference path="../node_modules/typescript/lib/typescriptServices.d.ts" />
 
-import ts from 'typescript';
+import * as ts from 'typescript';
 import { expect, use } from 'chai';
 import {Visitor, TSpoon} from '../src/Visitor';
 
