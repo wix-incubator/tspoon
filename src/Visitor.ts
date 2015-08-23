@@ -1,5 +1,6 @@
+/// <reference path="../node_modules/typescript/lib/typescript.d.ts" />
 ///<reference path="../node_modules/typescript/lib/typescriptServices.d.ts"/>
-import ts from 'typescript';
+import * as ts from 'typescript';
 
 export class VisitContext {
 
@@ -31,6 +32,15 @@ export class TSpoon implements ts.Program{
 	constructor(program : ts.Program, visitors : Array<Visitor>){
 		this._program = program;
 		this._visitors = visitors;
+	}
+	getCompilerOptions(): ts.CompilerOptions{
+		return this._program.getCompilerOptions();
+	}
+	getSourceFile(fileName: string): ts.SourceFile{
+		return this._program.getSourceFile(fileName);
+	}
+	getCurrentDirectory(): string{
+		return this._program.getCurrentDirectory();
 	}
 	getSourceFiles(){
 		return this._program.getSourceFiles();
