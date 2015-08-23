@@ -32,22 +32,9 @@ export class TSpoon implements ts.Program{
 		this._program = program;
 		this._visitors = visitors;
 	}
-	/**
-	 * Get a list of files in the program
-	 */
 	getSourceFiles(){
 		return this._program.getSourceFiles();
 	}
-	/**
-	 * Emits the JavaScript and declaration files.  If targetSourceFile is not specified, then
-	 * the JavaScript and declaration files will be produced for all the files in this program.
-	 * If targetSourceFile is specified, then only the JavaScript and declaration for that
-	 * specific file will be generated.
-	 *
-	 * If writeFile is not specified then the writeFile callback from the compiler host will be
-	 * used for writing the JavaScript and declaration files.  Otherwise, the writeFile parameter
-	 * will be invoked when writing the JavaScript and declaration files.
-	 */
 	emit(targetSourceFile?: ts.SourceFile, writeFile?: ts.WriteFileCallback, cancellationToken?: ts.CancellationToken): ts.EmitResult{
 		throw new Error('not implemented yet');
 	}
@@ -66,9 +53,6 @@ export class TSpoon implements ts.Program{
 	getDeclarationDiagnostics(sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
 		throw new Error('not implemented yet');
 	}
-	/**
-	 * Gets a type checker that can be used to semantically analyze source fils in the program.
-	 */
 	getTypeChecker(): ts.TypeChecker {
 		throw new Error('not implemented yet');
 	}
