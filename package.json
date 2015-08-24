@@ -7,9 +7,9 @@
   "main": "dist/src/index.js",
   "scripts": {
     "build:src": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/src src/*.ts",
+    "build:test": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist test/*.ts",
     "build:testkit": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/test-kit test-kit/*.ts",
-    "build:test": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/test test/*.ts",
-    "build": "rm -rf dist && mkdir dist && npm run build:test && npm run build:testkit && npm run build:src",
+    "build": "rm -rf dist && mkdir dist && npm run build:src && npm run build:testkit && npm run build:test",
     "publish:tc": "./node_modules/.bin/ci",
     "pretest": "npm run build",
     "test": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
