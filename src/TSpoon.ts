@@ -4,26 +4,40 @@ import * as ts from 'typescript';
 import {Visitor, VisitContext} from '../src/Visitor';
 
 
-export class TSpoon implements ts.Program{
+export class TSpoon {
 
-	private _program:ts.Program;
+	private _innerProgram:IntermediateProgram;
+
+	constructor(program:ts.Program, visitors:Array<Visitor>) {
+		this._innerProgram = new IntermediateProgram(program, visitors);
+	}
+
+	getIntermediateProgram():ts.Program {
+		return this._innerProgram;
+	}
+}
+
+class IntermediateProgram  implements ts.Program{
+
+	private _innerProgram:ts.Program;
 	private _visitors:Array<Visitor>;
 
-	constructor(program : ts.Program, visitors : Array<Visitor>){
-		this._program = program;
+	constructor(program:ts.Program, visitors:Array<Visitor>) {
+		this._innerProgram = program;
 		this._visitors = visitors;
 	}
+
 	getCompilerOptions(): ts.CompilerOptions{
-		return this._program.getCompilerOptions();
-	}
-	getSourceFile(fileName: string): ts.SourceFile{
-		return this._program.getSourceFile(fileName);
+		return this._innerProgram.getCompilerOptions();
 	}
 	getCurrentDirectory(): string{
-		return this._program.getCurrentDirectory();
+		return this._innerProgram.getCurrentDirectory();
 	}
-	getSourceFiles(){
-		return this._program.getSourceFiles();
+	getSourceFile(fileName: string): ts.SourceFile{
+		throw new Error('not implemented yet');
+	}
+	getSourceFiles(): ts.SourceFile[]{
+		throw new Error('not implemented yet');
 	}
 	emit(targetSourceFile?: ts.SourceFile, writeFile?: ts.WriteFileCallback, cancellationToken?: ts.CancellationToken): ts.EmitResult{
 		throw new Error('not implemented yet');
@@ -44,6 +58,6 @@ export class TSpoon implements ts.Program{
 		throw new Error('not implemented yet');
 	}
 	getTypeChecker(): ts.TypeChecker {
-		throw new Error('not implemented yet');
+		throw new Error('not gonna be implemented');
 	}
 }
