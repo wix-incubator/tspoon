@@ -1,8 +1,10 @@
 /// <reference path="../../typings/chai.d.ts" />
 /// <reference path="../../typings/mocha.d.ts" />
 /// <reference path="../../src/visitors/TyporamaVisitor.d.ts" />
+/// <reference path="../../node_modules/typescript/lib/typescript.d.ts" />
+/// <reference path="../../node_modules/typescript/lib/typescriptServices.d.ts"/>
 
-import { tsToAst, parseForCompare } from "../../test-kit/index";
+import { tsToAst, SimpleHost } from "../../test-kit/index";
 import { Visitor, VisitContext } from "../../src/Visitor";
 import { TyporamaVisitor } from "../../src/visitors/TyporamaVisitor";
 import * as ts from "typescript";
@@ -23,6 +25,7 @@ function spy(fn: any) {
 }
 
 describe("typorama visitor", function() {
+
     it("doesn't touch class that doesn't extend typorama.BaseType", function() {
         var code = `
             class A {}
@@ -34,9 +37,7 @@ describe("typorama visitor", function() {
 
         chai.expect(mockVisitContext.hasCahnges()).to.be.false;
     });
-});
 
-describe("typorama visitor", function() {
     it("makes changes to classes that extend typorama.BaseType", function() {
         var code = `
             import typorama from 'typorama';
@@ -49,9 +50,7 @@ describe("typorama visitor", function() {
 
         chai.expect(mockVisitContext.hasCahnges()).to.be.true;
     });
-});
 
-describe("typorama visitor", function() {
     it("adds the decorator @typorama to classes that extend typorama.BaseType", function() {
         var code = `
             import typorama from 'typorama';
@@ -66,24 +65,33 @@ describe("typorama visitor", function() {
         chai.expect(tspy.calledCount).to.equal(1);
         chai.expect(tspy.args).to.eql(["@typorama()"]);
     });
-});
 
-describe("typorama visitor", function() {
     it("calls decorator with type information", function() {
-        var code = `
-            import typorama from 'typorama';
-            class A extends typorama.BaseType {
-                n: number = 3;
-                s: string = 'blah';
-            }
-        `;
-        var node: ts.Node = tsToAst(code);
+
+        var host: ts.CompilerHost = new SimpleHost({
+            "typorama.ts": `
+                export module typorama {
+                    export class BaseType {}
+                }
+            `,
+            "index.ts": `
+                import typorama from './typorama';
+                class A extends typorama.BaseType {
+                    n: number = 3;
+                    s: string = 'blah';
+                }
+            `
+        });
+
+        debugger;
+
+        var program: ts.Program = ts.createProgram(["index.ts"], {}, host);
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
         var tspy = mockVisitContext.prependLine = spy(mockVisitContext.prependLine);
-        visitor.visit(node, mockVisitContext);
+        visitor.visit(program.getSourceFiles()[0], mockVisitContext);
 
         chai.expect(tspy.calledCount).to.equal(1);
-        chai.expect(tspy.args).to.eql(["@typorama({'n': 'number', 's': 'string'})"]);
+        chai.expect(tspy.args).to.eql(["@typorama({'n':'number','s':'string','sa':'Array<string>'})"]);
     });
 });
