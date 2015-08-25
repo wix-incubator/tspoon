@@ -40,7 +40,7 @@ class IntermediateProgram  implements ts.Program{
 		throw new Error('not implemented yet');
 	}
 	emit(targetSourceFile?: ts.SourceFile, writeFile?: ts.WriteFileCallback, cancellationToken?: ts.CancellationToken): ts.EmitResult{
-		throw new Error('not implemented yet');
+		return this._innerProgram.emit(targetSourceFile, writeFile, cancellationToken);
 	}
 	getOptionsDiagnostics(cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
 		throw new Error('not implemented yet');

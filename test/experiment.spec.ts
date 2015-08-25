@@ -16,8 +16,6 @@ describe("AST", function() {
 //        var member = statement.members[0];
 //        var memberType = member.type;
 
-        debugger;
-
         expect(statement.kind).to.equal(ts.SyntaxKind.ClassDeclaration);
 //        expect(memberType.kind).to.equal(ts.SyntaxKind.NumberKeyword);
     });
