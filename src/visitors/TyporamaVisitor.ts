@@ -10,7 +10,13 @@ export class TyporamaVisitor extends Visitor {
         return false;
     }
 
-    public visit(node: ts.Node, context: VisitContext): void {
+    public visit(node: ts.Node, typeChecker: ts.TypeChecker, context: VisitContext): void {
+        if(node.kind != ts.SyntaxKind.ClassDeclaration) {
+            throw TypeError("Node is not a class declaration");
+        }
+
+        var symbol: ts.Symbol = typeChecker.getSymbolAtLocation(node);
+
     }
 }
 

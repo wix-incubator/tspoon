@@ -32,7 +32,11 @@ export class SimpleHost implements ts.CompilerHost {
     }
 
     public getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
-        return ts.createSourceFile(fileName, this.sourceFiles[fileName], ts.ScriptTarget.ES5, true);
+        console.log("SimpleHost.getSourceFile: ", fileName);
+        return ts.createSourceFile(
+            fileName,
+            this.sourceFiles[fileName] ? this.sourceFiles[fileName] : "",
+            ts.ScriptTarget.ES5, true);
     }
 
     public getDefaultLibFileName(options: ts.CompilerOptions): string {

@@ -22,6 +22,6 @@ export class Visitor {
 		return false;
 	}
 
-	public visit(node: ts.Node, context: VisitContext): void {
+	public visit(node: ts.Node, typeChecker: ts.TypeChecker, context: VisitContext): void {
 	}
 }
