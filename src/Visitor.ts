@@ -10,6 +10,10 @@ export class VisitContext {
 
 	public report(diagnostics: ts.Diagnostic, halt?: boolean): void {
 	}
+
+	public hasCahnges(): boolean {
+		return false;
+	}
 }
 
 export class Visitor {
@@ -19,6 +23,5 @@ export class Visitor {
 	}
 
 	public visit(node: ts.Node, context: VisitContext): void {
-
 	}
 }
