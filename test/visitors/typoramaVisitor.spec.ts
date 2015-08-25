@@ -3,12 +3,14 @@
 /// <reference path="../../src/visitors/TyporamaVisitor.d.ts" />
 /// <reference path="../../node_modules/typescript/lib/typescript.d.ts" />
 /// <reference path="../../node_modules/typescript/lib/typescriptServices.d.ts"/>
+/// <reference path="../../test-kit/mocks/typorama.d.ts" />
 
 import { tsToAst, SimpleHost } from "../../test-kit/index";
 import { Visitor, VisitContext } from "../../src/Visitor";
 import { TyporamaVisitor } from "../../src/visitors/TyporamaVisitor";
 import * as ts from "typescript";
 import * as chai from 'chai';
+import * as typorama from "../../test-kit/mocks/typorama";
 
 function spy(fn: any) {
     var t: any;
@@ -33,7 +35,7 @@ describe("typorama visitor", function() {
         var node: ts.Node = tsToAst(code);
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
-        visitor.visit(node, mockVisitContext);
+        visitor.visit(node.statements[0], mockVisitContext);
 
         chai.expect(mockVisitContext.hasCahnges()).to.be.false;
     });
@@ -46,7 +48,7 @@ describe("typorama visitor", function() {
         var node: ts.Node = tsToAst(code);
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
-        visitor.visit(node, mockVisitContext);
+        visitor.visit(node.statements[0], mockVisitContext);
 
         chai.expect(mockVisitContext.hasCahnges()).to.be.true;
     });
@@ -60,7 +62,7 @@ describe("typorama visitor", function() {
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
         var tspy = mockVisitContext.prependLine = spy(mockVisitContext.prependLine);
-        visitor.visit(node, mockVisitContext);
+        visitor.visit(node.statements[0], mockVisitContext);
 
         chai.expect(tspy.calledCount).to.equal(1);
         chai.expect(tspy.args).to.eql(["@typorama()"]);
@@ -69,27 +71,57 @@ describe("typorama visitor", function() {
     it("calls decorator with type information", function() {
 
         var host: ts.CompilerHost = new SimpleHost({
-            "typorama.ts": `
+            "typorama.d.ts": `
+                export declare module typorama {
+                    class BaseType {
+                        setValue(p: any): void;
+                    }
+                }
+            `,
+            "typorama.tsx": `
                 export module typorama {
-                    export class BaseType {}
+                    export class BaseType {
+                        setValue(p: any): void {
+                        }
+                    }
                 }
             `,
             "index.ts": `
-                import typorama from './typorama';
-                class A extends typorama.BaseType {
+                /// <reference path="./typorama.d.ts" />
+                import BaseType from './typorama';
+                class A extends BaseType {
                     n: number = 3;
                     s: string = 'blah';
                 }
+            `,
+            "dummy.ts": `
+                /// <reference path="./typorama.d.ts" />
+                import BaseType from './typorama';
+                var foo: BaseType;
             `
         });
 
-        debugger;
-
         var program: ts.Program = ts.createProgram(["index.ts"], {}, host);
+        var da = program.getDeclarationDiagnostics();
+        da.forEach(function(d) {
+            console.log("#$%@#$%@#$%", d);
+        });
+
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
         var tspy = mockVisitContext.prependLine = spy(mockVisitContext.prependLine);
-        visitor.visit(program.getSourceFiles()[0], mockVisitContext);
+        var node: ts.Node = program.getSourceFile("index.ts");
+        var statement = node.statements[1];
+        var typeChecker = program.getTypeChecker();
+        var expression = statement.heritageClauses[0].types[0].expression;
+        var symbol = typeChecker.getSymbolAtLocation(expression);
+        var type  = program.getTypeChecker().getTypeOfSymbolAtLocation(symbol, expression);
+
+        console.log("\n\n\n****************\n\n\n");
+        console.log("symbol:", symbol);
+        console.log("\n\n\n****************\n\n\n");
+
+        visitor.visit(statement, typeChecker, mockVisitContext);
 
         chai.expect(tspy.calledCount).to.equal(1);
         chai.expect(tspy.args).to.eql(["@typorama({'n':'number','s':'string','sa':'Array<string>'})"]);
