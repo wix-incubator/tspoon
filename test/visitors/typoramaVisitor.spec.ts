@@ -11,21 +11,19 @@ import { Visitor, VisitContext } from "../../src/Visitor";
 import { TyporamaVisitor } from "../../src/visitors/TyporamaVisitor";
 import * as ts from "typescript";
 import * as sinon from "sinon";
-import * as sinonChai from 'sinon-chai';
-
-chai.use(sinonChai);
 
 describe("typorama visitor", function() {
     it("doesn't touch class that doesn't extend typorama.BaseType", function() {
         var code = `
             class A {}
         `;
-        var node: ts.node = tsToAst(code);
+        var node: ts.Node = tsToAst(code);
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
-        mockVisitContext.prependLine = sinon.spy();
+		var prependLineSpy : sinon.SinonSpy = sinon.spy();
+		mockVisitContext.prependLine = prependLineSpy;
         visitor.visit(node, mockVisitContext);
 
-        expect(mockVisitContext.prependLine).to.not.have.been.called();
+		expect(prependLineSpy.callCount === 0).to.be.true;
     });
 });
