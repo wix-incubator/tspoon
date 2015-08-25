@@ -1,13 +1,12 @@
 /// <reference path="../../typings/chai.d.ts" />
 /// <reference path="../../typings/mocha.d.ts" />
-/// <reference path="../../typings/jasmine.d.ts" />
 /// <reference path="../../src/visitors/TyporamaVisitor.d.ts" />
 
 import { tsToAst } from "../../test-kit/index";
 import { Visitor, VisitContext } from "../../src/Visitor";
 import { TyporamaVisitor } from "../../src/visitors/TyporamaVisitor";
 import * as ts from "typescript";
-import { expect, use } from 'chai';
+import * as chai from 'chai';
 
 function spy(fn: any) {
     var t: any;
@@ -28,12 +27,12 @@ describe("typorama visitor", function() {
         var code = `
             class A {}
         `;
-        var node: ts.node = tsToAst(code);
+        var node: ts.Node = tsToAst(code);
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
         mockVisitContext.prependLine = spy(mockVisitContext.prependLine);
         visitor.visit(node, mockVisitContext);
 
-        expect(<boolean>((<any>mockVisitContext.prependLine).called)).to.be.false();
+        chai.expect((<any>mockVisitContext.prependLine).called).to.be.false;
     });
 });
