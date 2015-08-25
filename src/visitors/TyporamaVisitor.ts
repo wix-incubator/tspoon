@@ -13,3 +13,4 @@ export class TyporamaVisitor extends Visitor {
     public visit(node: ts.Node, context: VisitContext): void {
     }
 }
+
