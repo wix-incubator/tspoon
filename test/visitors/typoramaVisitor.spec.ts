@@ -1,21 +1,27 @@
 /// <reference path="../../typings/chai.d.ts" />
 /// <reference path="../../typings/mocha.d.ts" />
-/// <reference path="../../typings/sinon.d.ts" />
-/// <reference path="../../typings/sinon-chai.d.ts" />
-/// <reference path="../../test-kit/matchers.d.ts" />
+/// <reference path="../../typings/jasmine.d.ts" />
 /// <reference path="../../src/visitors/TyporamaVisitor.d.ts" />
 
-import { expect, use } from 'chai';
-import matchers from "../../test-kit/matchers";
 import { tsToAst } from "../../test-kit/index";
 import { Visitor, VisitContext } from "../../src/Visitor";
 import { TyporamaVisitor } from "../../src/visitors/TyporamaVisitor";
 import * as ts from "typescript";
-import * as sinon from "sinon";
-import { sinonChai } from 'sinon-chai';
+import { expect, use } from 'chai';
 
-chai.use(sinonChai);
-chai.use(matchers);
+function spy(fn: any) {
+    var t: any;
+    t = function (...args) {
+        t.called = true;
+        t.calledCount = 1 + t.calledCount ? t.calledCount : 0;
+        t.args = args;
+        t.ret = fn.apply(this, args);
+        return t.ret;
+    }
+    t.called = false;
+    t.calledCount = 0;
+    return t;
+}
 
 describe("typorama visitor", function() {
     it("doesn't touch class that doesn't extend typorama.BaseType", function() {
@@ -25,9 +31,9 @@ describe("typorama visitor", function() {
         var node: ts.node = tsToAst(code);
         var visitor: Visitor = new TyporamaVisitor();
         var mockVisitContext = new VisitContext();
-        mockVisitContext.prependLine = sinon.spy();
+        mockVisitContext.prependLine = spy(mockVisitContext.prependLine);
         visitor.visit(node, mockVisitContext);
 
-        expect(mockVisitContext.prependLine).to.not.have.been.called();
+        expect(<boolean>((<any>mockVisitContext.prependLine).called)).to.be.false();
     });
 });
