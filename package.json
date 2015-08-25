@@ -19,6 +19,7 @@
   },
   "description": "see README.md ",
   "devDependencies": {
+	"source-map-support" : "0.3.2",
     "chai": "^2.1.2",
     "mocha": "^2.2.1",
     "mocha-loader": "^0.7.1",
