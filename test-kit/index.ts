@@ -1,28 +1,14 @@
 /// <reference path="../node_modules/typescript/lib/typescript.d.ts" />
 ///<reference path="../node_modules/typescript/lib/typescriptServices.d.ts"/>
+
 import * as ts from 'typescript';
-import _ from 'lodash';
-import esprima from 'esprima-fb';
+//import * as esprima from 'esprima-fb';
 
 export function tsToAst(code: string): ts.Node {
     return ts.createSourceFile("test.ts", code, ts.ScriptTarget.ES5, true);
 }
 
-
-function findCodePosition(code, snippet) {
-    var lines = code.split(/[\r\n]/);
-    var lineNo = _.findIndex(lines, (line) => _.contains(line, snippet));
-    if(lineNo > -1) {
-        var column = (lineNo > -1) && lines[lineNo].indexOf(snippet);
-        return {
-            line: lineNo + 1,
-            column: column
-        };
-    } else {
-        return null;
-    }
-}
-
+/*
 export function parseForCompare(code) {
 
     return esprima.parse(code, {
@@ -33,3 +19,40 @@ export function parseForCompare(code) {
         sourceType: 'module'
     });
 }
+*/
+
+export class SimpleHost implements ts.CompilerHost {
+
+    private sourceFiles: any;
+
+    writeFile: ts.WriteFileCallback;
+
+    constructor(_sourceFiles: any) {
+        this.sourceFiles = _sourceFiles;
+    }
+
+    public getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+        return ts.createSourceFile(fileName, this.sourceFiles[fileName], ts.ScriptTarget.ES5, true);
+    }
+
+    public getDefaultLibFileName(options: ts.CompilerOptions): string {
+        return "index.ts";
+    }
+
+    public getCurrentDirectory(): string {
+        return "/";
+    }
+
+    public getCanonicalFileName(fileName: string): string {
+        return fileName;
+    }
+
+    public useCaseSensitiveFileNames(): boolean {
+        return true;
+    }
+
+    public getNewLine(): string {
+        return "\n";
+    }
+}
+
