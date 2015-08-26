@@ -41,7 +41,7 @@ describe("typorama visitor", function() {
         var node = program.getSourceFile("index.ts");
         visitor.visit(node.statements.pop(), mockVisitContext);
 
-        chai.expect(mockVisitContext.hasCahnges()).to.be.false;
+        chai.expect(mockVisitContext.hasChanges()).to.be.false;
     });
 
     it("makes changes to classes that extend typorama.BaseType", function() {
@@ -58,16 +58,16 @@ describe("typorama visitor", function() {
         var node = program.getSourceFile("index.ts");
         visitor.visit(node.statements.pop(), mockVisitContext);
 
-        chai.expect(mockVisitContext.hasCahnges()).to.be.true;
+        chai.expect(mockVisitContext.hasChanges()).to.be.true;
     });
 
     it("makes changes to classes with typorama.BaseType superclass", function() {
         var host: ts.CompilerHost = new SimpleCompilerHost({
             "index.ts": `
-                module typorama { class BaseType {}}
+                module typorama { class BaseType {} }
                 interface I {}
                 class A extends typorama.BaseType {}
-                class B implements I extends A {}
+                class B extends A implements I {}
             `
         });
 
@@ -78,9 +78,30 @@ describe("typorama visitor", function() {
         var node = program.getSourceFile("index.ts");
         visitor.visit(node.statements.pop(), mockVisitContext);
 
-        chai.expect(mockVisitContext.hasCahnges()).to.be.true;
+        chai.expect(mockVisitContext.hasChanges()).to.be.true;
     });
 
+    it("extracts members types into decorator", function() {
+        var host: ts.CompilerHost = new SimpleCompilerHost({
+            "index.ts": `
+                module typorama { class BaseType {} }
+                class A extends typorama.BaseType {
+                    n: number;
+                    s: string;
+                    sa: Array<string>;
+                }
+            `
+        });
+
+        var program: ts.Program = ts.createProgram(["index.ts"], {}, host);
+        printDiagnostics(program);
+        var visitor: Visitor = new TyporamaVisitor(program);
+        var mockVisitContext = new VisitContext();
+        var node = program.getSourceFile("index.ts");
+        visitor.visit(node.statements.pop(), mockVisitContext);
+
+        chai.expect(mockVisitContext.hasChanges()).to.be.true;
+    });
 });
 
 /*

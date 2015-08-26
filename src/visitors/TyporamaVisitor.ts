@@ -27,8 +27,8 @@ export class TyporamaVisitor extends Visitor {
         }
 
         var members = this.getMembers(classDeclaration);
-        context.prependLine("BLYAT!" + JSON.stringify(members) + ";");
-        console.log("YES!");
+        context.prependLine("@typorama.decorator(" + JSON.stringify(members) + ")");
+        console.log("@typorama.decorator(" + JSON.stringify(members) + ")");
     }
 
     private isTypeSubclassOfBaseType(type: ts.Type): boolean {
@@ -46,7 +46,6 @@ export class TyporamaVisitor extends Visitor {
                 flag = flag || thus.isSubclassOfBaseType(<ts.ClassLikeDeclaration>d);
             }
         });
-        console.log(symbol);
         return true;
     }
 
@@ -61,10 +60,16 @@ export class TyporamaVisitor extends Visitor {
         return this.isTypeSubclassOfBaseType(type);
     }
 
-    private getMembers(classDeclaration: ts.ClassLikeDeclaration): Array<ts.Type> {
+    private getMembers(classDeclaration: ts.ClassLikeDeclaration): Array<{ name: string, type: ts.Type }> {
+        var members: Array<{ name: string, type: ts.Type }> = [];
+        var thus = this;
         classDeclaration.members.forEach(function(ce: ts.ClassElement) {
-           console.log(ce);
+            //console.log(ce)
+            var name = ce.name.getText();
+            var symbol = thus.program.getTypeChecker().getSymbolAtLocation(ce);
+            var type = thus.program.getTypeChecker().getTypeAtLocation(ce);
+            members.push({ name, type});
         });
-        return [];
+        return members;
     }
 }
