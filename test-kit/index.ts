@@ -21,42 +21,31 @@ export function parseForCompare(code) {
 }
 */
 
-export class SimpleHost implements ts.CompilerHost {
-
-    private sourceFiles: any;
-
-    writeFile: ts.WriteFileCallback;
-
-    constructor(_sourceFiles: any) {
-        this.sourceFiles = _sourceFiles;
-    }
-
-    public getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
-        console.log("SimpleHost.getSourceFile: ", fileName);
-        return ts.createSourceFile(
-            fileName,
-            this.sourceFiles[fileName] ? this.sourceFiles[fileName] : "",
-            ts.ScriptTarget.ES5, true);
-    }
-
-    public getDefaultLibFileName(options: ts.CompilerOptions): string {
-        return "index.ts";
-    }
-
-    public getCurrentDirectory(): string {
-        return "/";
-    }
-
-    public getCanonicalFileName(fileName: string): string {
-        return fileName;
-    }
-
-    public useCaseSensitiveFileNames(): boolean {
-        return true;
-    }
-
-    public getNewLine(): string {
-        return "\n";
-    }
+function printDiagnostic(d: ts.Diagnostic) {
+    console.log(d.category, d.messageText, d.file?d.file.fileName:null, d.code);
 }
+
+export function printDiagnostics(program: ts.Program) {
+    var da = program.getDeclarationDiagnostics();
+    da.forEach((d) => {
+        printDiagnostic(d)
+    });
+    var da = program.getGlobalDiagnostics();
+    da.forEach((d) => {
+        printDiagnostic(d)
+    });
+    var da = program.getOptionsDiagnostics();
+    da.forEach((d) => {
+        printDiagnostic(d)
+    });
+    var da = program.getSemanticDiagnostics();
+    da.forEach((d) => {
+        printDiagnostic(d)
+    });
+    var da = program.getSyntacticDiagnostics();
+    da.forEach((d) => {
+        printDiagnostic(d)
+    });
+}
+
 
