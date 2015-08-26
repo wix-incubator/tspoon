@@ -5,17 +5,23 @@ import * as ts from 'typescript';
 
 export class VisitContext {
 
-	private hasChanges: boolean = false;
+	private _hasChanges: boolean = false;
+	private _lines: Array<string> = [];
 
 	public prependLine(line: string): void {
-		this.hasChanges = true;
+		this._hasChanges = true;
+		this._lines.push(line);
 	}
 
 	public report(diagnostics: ts.Diagnostic, halt?: boolean): void {
 	}
 
-	public hasCahnges(): boolean {
-		return this.hasChanges;
+	public hasChanges(): boolean {
+		return this._hasChanges;
+	}
+
+	public getLines(): Array<string> {
+		return this._lines;
 	}
 }
 
