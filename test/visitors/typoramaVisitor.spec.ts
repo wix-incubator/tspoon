@@ -30,7 +30,7 @@ function spy(fn: any) {
 
 describe("typorama visitor", function() {
 
-    it("doesn't touch classes that don't extend typorama.BaseType", function() {
+    it("doesn't touch classes that don't have decorators", function() {
         var host: ts.CompilerHost = new SimpleCompilerHost({
             "index.ts": "class A {}"
         });
@@ -44,11 +44,11 @@ describe("typorama visitor", function() {
         chai.expect(mockVisitContext.hasChanges()).to.be.false;
     });
 
-    it("makes changes to classes that extend typorama.BaseType", function() {
+    it("doesn't touch classes that have a different decorator", function() {
         var host: ts.CompilerHost = new SimpleCompilerHost({
             "index.ts": `
-                module typorama { export class BaseType {}}
-                class A extends typorama.BaseType {}
+                @fubar
+                class A {}
             `
         });
         var program: ts.Program = ts.createProgram(["index.ts"], {}, host);
@@ -58,19 +58,16 @@ describe("typorama visitor", function() {
         var node = program.getSourceFile("index.ts");
         visitor.visit(node.statements.pop(), mockVisitContext);
 
-        chai.expect(mockVisitContext.hasChanges()).to.be.true;
+        chai.expect(mockVisitContext.hasChanges()).to.be.false;
     });
 
-    it("makes changes to classes with typorama.BaseType superclass", function() {
+    it("makes changes to classes that have the decorator", function() {
         var host: ts.CompilerHost = new SimpleCompilerHost({
             "index.ts": `
-                module typorama { class BaseType {} }
-                interface I {}
-                class A extends typorama.BaseType {}
-                class B extends A implements I {}
+                @core3type
+                class A {}
             `
         });
-
         var program: ts.Program = ts.createProgram(["index.ts"], {}, host);
         printDiagnostics(program);
         var visitor: Visitor = new TyporamaVisitor(program);
@@ -84,11 +81,12 @@ describe("typorama visitor", function() {
     it("extracts members types into decorator", function() {
         var host: ts.CompilerHost = new SimpleCompilerHost({
             "index.ts": `
-                module typorama { class BaseType {} }
-                class A extends typorama.BaseType {
+                @core3type
+                class A {
                     n: number;
                     s: string;
-                    sa: Array<string>;
+                    b: boolean;
+                    c: Custom;
                 }
             `
         });
