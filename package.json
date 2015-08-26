@@ -38,7 +38,8 @@
   },
   "dependencies": {
     "lodash": "3.7.0",
-    "typescript": "Microsoft/TypeScript#53239d4a8bff80b7ae802a9a0392edd91d1a1295"
+    "typescript": "Microsoft/TypeScript#53239d4a8bff80b7ae802a9a0392edd91d1a1295",
+    "typorama": "0.0.64"
   },
   "config": {
     "projectLint": "overreact-private"

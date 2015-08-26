@@ -43,21 +43,21 @@ class IntermediateProgram  implements ts.Program{
 		return this._innerProgram.emit(targetSourceFile, writeFile, cancellationToken);
 	}
 	getOptionsDiagnostics(cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
-		throw new Error('not implemented yet');
+		return this._innerProgram.getOptionsDiagnostics(cancellationToken);
 	}
 	getGlobalDiagnostics(cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
-		throw new Error('not implemented yet');
+		return this._innerProgram.getGlobalDiagnostics(cancellationToken);
 	}
 	getSyntacticDiagnostics(sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
-		throw new Error('not implemented yet');
+		return this._innerProgram.getSyntacticDiagnostics(sourceFile, cancellationToken);
 	}
 	getSemanticDiagnostics(sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
-		throw new Error('not implemented yet');
+		return this._innerProgram.getSemanticDiagnostics(sourceFile, cancellationToken);
 	}
 	getDeclarationDiagnostics(sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken): ts.Diagnostic[]{
-		throw new Error('not implemented yet');
+		return this._innerProgram.getDeclarationDiagnostics(sourceFile, cancellationToken);
 	}
 	getTypeChecker(): ts.TypeChecker {
-		throw new Error('not gonna be implemented');
+		return this._innerProgram.getTypeChecker();
 	}
 }
