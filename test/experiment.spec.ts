@@ -21,34 +21,33 @@ describe("AST", function() {
     });
 });
 
-describe("Inheritence works for typorama objects", function() {
+it("Inheritance works for typorama objects", function() {
 
     function decoA(fields: Array<string>): any {
         return function(clazz: any) {
             if(!clazz.prototype.fields) {
                 clazz.prototype.fields = [];
             }
+            /*
             if(clazz.prototype.__proto__.fields) {
                 clazz.prototype.fields = clazz.prototype.fields.concat(clazz.prototype.__proto__.fields);
-            }
+            }*/
             clazz.prototype.fields = clazz.prototype.fields.concat(fields);
             return clazz;
         }
     }
 
-    @decoA([])
     class Base {
-
     }
 
     @decoA(["field1"])
     class A extends Base{
-        field1 : string;
+        field1: string;
     }
 
     @decoA(["field2"])
     class B extends A {
-        field2 : string;
+        field2: string;
     }
 
     @decoA(["field2"])
@@ -56,7 +55,12 @@ describe("Inheritence works for typorama objects", function() {
         field2:string;
     }
 
-    var b: Base = new B();
-    var c: Base = new C();
+    @decoA(["field3"])
+    class D extends A {
+        field3: string;
+    }
 
+    expect(B.prototype.fields).to.eql(["field1", "field2"]);
+    expect(C.prototype.fields).to.eql(["field2"]);
+    expect(D.prototype.fields).to.eql(["field1", "field3"]);
 });
