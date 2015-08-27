@@ -20,3 +20,43 @@ describe("AST", function() {
 //        expect(memberType.kind).to.equal(ts.SyntaxKind.NumberKeyword);
     });
 });
+
+describe("Inheritence works for typorama objects", function() {
+
+    function decoA(fields: Array<string>): any {
+        return function(clazz: any) {
+            if(!clazz.prototype.fields) {
+                clazz.prototype.fields = [];
+            }
+            if(clazz.prototype.__proto__.fields) {
+                clazz.prototype.fields = clazz.prototype.fields.concat(clazz.prototype.__proto__.fields);
+            }
+            clazz.prototype.fields = clazz.prototype.fields.concat(fields);
+            return clazz;
+        }
+    }
+
+    @decoA([])
+    class Base {
+
+    }
+
+    @decoA(["field1"])
+    class A extends Base{
+        field1 : string;
+    }
+
+    @decoA(["field2"])
+    class B extends A {
+        field2 : string;
+    }
+
+    @decoA(["field2"])
+    class C extends Base{
+        field2:string;
+    }
+
+    var b: Base = new B();
+    var c: Base = new C();
+
+});
