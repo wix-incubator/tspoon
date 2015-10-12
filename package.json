@@ -18,7 +18,7 @@
     "test:browser": "./node_modules/.bin/karma start --single-run",
     "test:node": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
     "build:webpack": "webpack -v --display-modules",
-    "build:declarations": "mkdir -p dist/src && cp src/*.d.ts dist/src ",
+    "build:declarations": "mkdir -p dist/src ",
     "build:tsc": "./node_modules/.bin/tsc",
     "build": "npm run clean && npm run build:declarations && npm run build:tsc && npm run build:webpack",
     "build:src": "npm run build",
