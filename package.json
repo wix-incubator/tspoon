@@ -4,7 +4,7 @@
     "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
   "name": "tspoon",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "see README.md",
   "main": "dist/index.js",
   "jsnext:main": "src/index.ts",
