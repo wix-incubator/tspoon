@@ -4,8 +4,7 @@
 		"module": "commonjs",
 	  	"sourceMap": true,
 		"target": "ES5",
-		"outDir": "dist",
-		"jsx": "react"
+		"outDir": "dist"
 	},
 	"exclude": [
 		"node_modules",

@@ -3,8 +3,8 @@
   "publishConfig": {
     "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
-  "name": "smartypants",
-  "version": "1.0.51",
+  "name": "tspoon",
+  "version": "1.0.0",
   "description": "see README.md",
   "main": "dist/index.js",
   "jsnext:main": "src/index.ts",
@@ -17,7 +17,6 @@
     "test": "npm run test:node && npm run test:browser",
     "test:browser": "./node_modules/.bin/karma start --single-run",
     "test:node": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
-    "test:exper": "npm run build:eper; ./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/experiments",
     "build:webpack": "webpack -v --display-modules",
     "build:declarations": "mkdir -p dist/src && cp src/*.d.ts dist/src ",
     "build:tsc": "./node_modules/.bin/tsc",
@@ -30,14 +29,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wix/smartypants"
+    "url": "https://github.com/wix/tspoon"
   },
   "author": "core3@wix",
   "license": "C",
   "bugs": {
-    "url": "https://github.com/wix/smartypants/issues"
+    "url": "https://github.com/wix/tspoon/issues"
   },
-  "homepage": "https://github.com/wix/smartypants",
+  "homepage": "https://github.com/wix/tspoon",
   "devDependencies": {
     "chai": "3.2.0",
     "concurrently": "0.1.1",
@@ -49,20 +48,16 @@
     "mocha-loader": "0.7.1",
     "mocha-teamcity-reporter": "0.0.1",
     "raw-loader": "0.5.1",
-    "react": "0.13.3",
     "source-map-support": "0.3.2",
     "ts-loader": "0.5.3",
     "tsd": "0.6.4",
     "webpack": "1.12.0",
-    "webpack-dev-server": "1.10.1",
-    "wix-react-comp": "0.0.159"
+    "webpack-dev-server": "1.10.1"
   },
   "dependencies": {
     "magic-string": "0.6.6",
     "lodash": "3.7.0",
     "typescript": "1.6.2",
-    "source-map": "0.4.4",
-    "typorama": "0.0.83",
-    "wix-react-comp": "0.0.159"
+    "source-map": "0.4.4"
   }
 }
