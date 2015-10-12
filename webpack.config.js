@@ -1,19 +1,22 @@
 var webpack = require('webpack');
+var path = require('path');
+
 module.exports = {
 	context: __dirname,
 	devtool: 'eval',
 	entry: {
-		playground: ['./playground'],
-		test: ['mocha!./test'],
+		app: [path.join(__dirname, 'dist', 'src', 'index.js')],
+		webtest: ['mocha!'+ path.join(__dirname, 'dist', 'test', 'index.js')],
+		test: [path.join(__dirname, 'dist', 'test', 'index.js')]
 	},
 	node: {
 		fs: 'empty'
 	},
 	output: {
-		path     : __dirname + '/dist',
-		filename : '[name].bundle.js',
-		libraryTarget: 'umd',
-		pathinfo: true
+		path          : path.join(__dirname, 'dist'),
+		filename      : '[name].bundle.js',
+		libraryTarget : 'umd',
+		pathinfo      : true
 	},
 	devServer: {
 		contentBase: '/',
@@ -23,9 +26,8 @@ module.exports = {
 	module: {
 		loaders: [
 			{
-				test    : /\.js$/,
-				exclude : /node_modules/,
-				loader  : 'babel-loader'
+				test    : /\.json$/,
+				loader  : 'json-loader'
 			}
 		],
 		noParse: /\.min\.js$/

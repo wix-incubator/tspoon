@@ -1,78 +1,130 @@
-/// <reference path="../typings/chai.d.ts" />
-/// <reference path="../typings/mocha.d.ts" />
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts" />
-/// <reference path="../node_modules/typescript/lib/typescriptServices.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
-import * as ts from 'typescript';
-import { expect, use } from 'chai';
-import {Visitor} from '../src/Visitor';
-import {TSpoon} from '../src/TSpoon';
+import { expect } from 'chai';
+import { evaluateModuleExports } from '../test-kit/index';
+import { transpile } from '../src/index';
+import * as React from 'react';
+import * as _ from 'lodash';
 
-
-/*
- case 1 : simple e2e transpilation
- given a TS program with source files
- given visitors of annotation types
-
- the visitors visit all and only the class definitions that are relevent for them
-
- the visitors can insert changes to the target class
- the visitors can define diagnostic output
- the visitors can define failure to process
-
- ask for the emit of each file and get:
- code
- source-maps
- diagnostic
- error code
+const typorama = require('typorama');
 
 
- case 2: ongoing changes
- as above
+describe('e2e test', ()=> {
+    var source, transpiled, moduleInstance;
+    beforeEach(()=> {
+        source = `
+        import * as core3 from "core3";
+        import * as typorama from "typorama";
+        import {BaseType, Enum} from "typorama";
+        import {BaseComponent} from "wix-react-comp";
+        import * as React from "react";
 
- given changes to input program's source
- ask for the emit of each file and get:
- code
- source-maps
- diagnostic
- error code
- */
+        @core3
+        export default class Product extends BaseType {
+            title:string;
+            price:number = 666;
+            aMethod() {
+				var value = 'method';
+                return \`A \${value}.\`;
+            }
+            getDiscountFn(autoDiscount=0.05) {
+                return (n) => (1-(n+autoDiscount)) * this.price;
+            }
+			getObjectShort(){
+				var value = '';
+				return {
+					value
+				};
+			}
+        }
 
+        @core3
+        class PropsType extends BaseType{
+            title: string;
+            product: Product;
+        }
 
-const defaultOptions :ts.CompilerOptions  = {
-	noEmitOnError: true,
-	noImplicitAny: true,
-	target: ts.ScriptTarget.ES5,
-	module: ts.ModuleKind.CommonJS
-};
+        @core3
+        class StateType extends BaseType{
+            enabled: boolean = true;
+        }
 
-class CompilationResult {
-	diagnostics:ts.Diagnostic[];
-	error:boolean;
-	constructor( diagnostics:ts.Diagnostic[], error : boolean){
-		this.diagnostics = diagnostics;
-		this.error = error;
-	}
-}
+        @core3
+        export class ProductSize extends Enum {
+        	static X:string;
+        	static L:string;
+        	static XL:string;
+        }
 
-function compile(program : ts.Program): CompilationResult {
-	var emitResult = program.emit();
+        @core3
+        export class ProductDisplayer extends BaseComponent {
+            props: PropsType;
+            state: StateType;
+            getProductPrice():number {
+                return this.props.product.price;
+            }
+            render() {
+                return <p>{this.props.title + ": " + this.props.product.price}</p>;
+            }
+            private _fairlyPrivateMethod() {
+            	return 'prd';
+            }
 
-	var allDiagnostics = ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics);
+        }
 
-	allDiagnostics.forEach(diagnostic => {
-		var { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
-		var message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-		console.log(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
+`;
+        transpiled = transpile(source, {
+            'sourceFileName': 'wix/ecom/Product.js'
+        });
+        moduleInstance = evaluateModuleExports(transpiled.code, {});
+
+    });
+
+    it('transpiles es6 @type class to typorama type', () => {
+        const Product = moduleInstance.default;
+		expect(Product).to.be.defined.asTyporamaType
+			.withId('Product')
+			.and.withSpec({
+				title: typorama['String'],
+				price: typorama['Number'].withDefault(666)
+			})
+			.and.withMethods(['getDiscountFn', 'getObjectShort']);
+    });
+
+	it('transpiles es6 @type class to typorama enum type', () => {
+		const ProductSize = moduleInstance.ProductSize;
+		expect(ProductSize).to.be.defined.asTyporamaEnum
+			.withSpec({
+				'X': 'X',
+				'L': 'L',
+				'XL': 'XL'
+			});
 	});
 
-	return new CompilationResult(allDiagnostics, emitResult.emitSkipped);
-}
+    it('transpiles, es6 @component class to baseComponent class', () => {
+		const Product = moduleInstance.default;
+        const ProductDisplayer = moduleInstance.ProductDisplayer;
+		expect(ProductDisplayer).to.be.defined.asBaseComponent
+			.withId('ProductDisplayer')
+			.withPublicMethods(['getProductPrice', 'render'])
+			.withPrivateMethods(['_fairlyPrivateMethod']);
+		expect(ProductDisplayer).to.be.defined.asBaseComponent.withProps
+			.defined.asTyporamaType.withSpec({
+				title: typorama['String'],
+				product: Product
+			});
+		expect(ProductDisplayer).to.be.defined.asBaseComponent.withState
+			.defined.asTyporamaType.withSpec({
+				enabled: typorama['Boolean'].withDefault(true)
+			});
+    });
 
-describe("e2e", ()=> {
-	it('passes basic smoke test', () => {
-		let program = ts.createProgram(['fixture1.ts'], defaultOptions);
-		var tSpoon = new TSpoon(program, []);
-		let result = compile(tSpoon.getIntermediateProgram());
-	});
+    it.skip('generates correct source maps while transpiling', () => {
+		expect(source).to.transpileTo(transpiled)
+            .and.mapCodeFragment('return (n) => (1-(n+autoDiscount)) * this.price;')
+            	.toGeneratedCode('return function (n) { return (1 - (n + autoDiscount)) * _this.price; };')
+            .and.mapCodeFragment('return `A ${value}.`;')
+				.toGeneratedCode('return "A " + value + ".";');
+    });
 });
+

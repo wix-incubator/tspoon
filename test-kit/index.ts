@@ -1,51 +1,26 @@
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts" />
-///<reference path="../node_modules/typescript/lib/typescriptServices.d.ts"/>
+/// <reference path="../test-kit/matchers/matchers.d.ts" />
 
-import * as ts from 'typescript';
-//import * as esprima from 'esprima-fb';
+import * as chai from 'chai';
+import { evaluateModuleExports, transpileAndEvaluate } from './evaluate-module';
+import syntaxKindMap from "./syntax-kind-map";
+import matchCode from './matchers/match-code';
+import transpileTo from './matchers/transpile-to';
+import { findCodePosition, findCodeRange } from './code-positions';
+import passTypecheck from './matchers/pass-typecheck';
+import defined from './matchers/defined';
+import applyVisitor from "./apply-visitor";
 
-export function tsToAst(code: string): ts.Node {
-    return ts.createSourceFile("test.ts", code, ts.ScriptTarget.ES5, true);
-}
+chai.use(matchCode);
+chai.use(transpileTo);
+chai.use(passTypecheck);
+chai.use(defined);
 
-/*
-export function parseForCompare(code) {
-
-    return esprima.parse(code, {
-        loc: false,
-        range: false,
-        comment: true,
-        tolerant: true,
-        sourceType: 'module'
-    });
-}
-*/
-
-function printDiagnostic(d: ts.Diagnostic) {
-    console.log(d.category, d.messageText, d.file?d.file.fileName:null, d.code);
-}
-
-export function printDiagnostics(program: ts.Program) {
-    var da = program.getDeclarationDiagnostics();
-    da.forEach((d) => {
-        printDiagnostic(d)
-    });
-    var da = program.getGlobalDiagnostics();
-    da.forEach((d) => {
-        printDiagnostic(d)
-    });
-    var da = program.getOptionsDiagnostics();
-    da.forEach((d) => {
-        printDiagnostic(d)
-    });
-    var da = program.getSemanticDiagnostics();
-    da.forEach((d) => {
-        printDiagnostic(d)
-    });
-    var da = program.getSyntacticDiagnostics();
-    da.forEach((d) => {
-        printDiagnostic(d)
-    });
-}
-
-
+export {
+    evaluateModuleExports,
+    transpileAndEvaluate,
+    findCodePosition,
+    findCodeRange,
+    syntaxKindMap,
+    applyVisitor,
+    passTypecheck
+};
