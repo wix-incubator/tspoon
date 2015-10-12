@@ -6,6 +6,8 @@ import { RawSourceMap } from 'source-map';
 import { Visitor, VisitorContext } from "./visitor";
 
 export {
+	TranspilerOutput,
+	TranspilerConfig,
 	Visitor,
 	VisitorContext,
 	transpile
