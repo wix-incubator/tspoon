@@ -3,10 +3,10 @@
 
 import { transpile, TranspilerOutput, TranspilerConfig } from './transpile';
 import { RawSourceMap } from 'source-map';
+import { Visitor, VisitorContext } from "./visitor";
 
-export const ModuleFormats = {
-	NAIVE_CJS: 'naiveCjs',
-	SYSTEM: 'system'
+export {
+	Visitor,
+	VisitorContext,
+	transpile
 };
-
-export { transpile };
