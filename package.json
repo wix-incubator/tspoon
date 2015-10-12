@@ -1,57 +1,68 @@
 {
-  "private": true,
+  "private": false,
   "publishConfig": {
     "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
-  "version": "0.1.0",
-  "main": "dist/src/index.js",
-  "scripts": {
-    "build:src": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/src src/*.ts",
-    "build:test": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist test/*.ts",
-    "build:testkit": "tsc --declaration --module CommonJS -sourcemap --target ES5 --outDir dist/test-kit test-kit/*.ts",
-    "build": "rm -rf dist && mkdir dist && npm run build:src && npm run build:testkit && npm run build:test",
-    "publish:tc": "./node_modules/.bin/ci",
-    "pretest": "npm run build",
-    "test": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
-    "start": "npm run webtest",
-    "webtest": "webpack-dev-server --progress --hot --inline --no-colors",
-    "webbuild": "webpack --progress -p --colors"
-  },
-  "description": "see README.md ",
-  "devDependencies": {
-	"source-map-support" : "0.3.2",
-    "esprima-fb": "git+ssh://git@github.com:wix/esprima-fb.git#feature/class-property-init",
-    "chai": "^2.1.2",
-    "mocha": "^2.2.1",
-    "mocha-loader": "^0.7.1",
-    "mocha-teamcity-reporter": "^0.0.1",
-    "requirejs": "^2.1.17",
-    "source-map": "^0.4.2",
-    "vinyl": "^0.4.6",
-    "webpack": "^1.7.3",
-    "webpack-dev-server": "^1.7.0",
-    "sinon": "git://github.com/cjohansen/Sinon.JS#b672042043517b9f84e14ed0fb8265126168778a",
-    "sinon-chai": "^2.7.0"
-  },
-  "engines": {
-    "node": ">=0.12"
-  },
-  "dependencies": {
-    "lodash": "3.7.0",
-    "typescript": "Microsoft/TypeScript#53239d4a8bff80b7ae802a9a0392edd91d1a1295",
-    "typorama": "0.0.64"
-  },
-  "config": {
-    "projectLint": "overreact-private"
-  },
-  "name": "tspoon",
+  "name": "smartypants",
+  "version": "1.0.51",
+  "description": "see README.md",
+  "main": "dist/index.js",
+  "jsnext:main": "src/index.ts",
   "directories": {
     "test": "test"
   },
+  "scripts": {
+    "clean": "rm -rf dist && mkdir dist",
+    "pretest": "npm run build",
+    "test": "npm run test:node && npm run test:browser",
+    "test:browser": "./node_modules/.bin/karma start --single-run",
+    "test:node": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
+    "test:exper": "npm run build:eper; ./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/experiments",
+    "build:webpack": "webpack -v --display-modules",
+    "build:declarations": "mkdir -p dist/src && cp src/*.d.ts dist/src ",
+    "build:tsc": "./node_modules/.bin/tsc",
+    "build": "npm run clean && npm run build:declarations && npm run build:tsc && npm run build:webpack",
+    "build:src": "npm run build",
+    "prestart": "npm run build",
+    "start": "./node_modules/.bin/concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
+    "start:webpack": "./node_modules/.bin/webpack-dev-server --progress --hot --inline --no-colors",
+    "start:tsc": "./node_modules/.bin/tsc -w"
+  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/wix/tspoon.git"
+    "url": "https://github.com/wix/smartypants"
   },
-  "author": "Mrs. Pepperpot",
-  "license": "ISC"
+  "author": "core3@wix",
+  "license": "C",
+  "bugs": {
+    "url": "https://github.com/wix/smartypants/issues"
+  },
+  "homepage": "https://github.com/wix/smartypants",
+  "devDependencies": {
+    "chai": "3.2.0",
+    "concurrently": "0.1.1",
+    "json-loader": "^0.5.1",
+    "karma": "0.13.9",
+    "karma-chrome-launcher": "0.2.0",
+    "karma-mocha": "0.2.0",
+    "mocha": "2.2.5",
+    "mocha-loader": "0.7.1",
+    "mocha-teamcity-reporter": "0.0.1",
+    "raw-loader": "0.5.1",
+    "react": "0.13.3",
+    "source-map-support": "0.3.2",
+    "ts-loader": "0.5.3",
+    "tsd": "0.6.4",
+    "webpack": "1.12.0",
+    "webpack-dev-server": "1.10.1",
+    "wix-react-comp": "0.0.159"
+  },
+  "dependencies": {
+    "magic-string": "0.6.6",
+    "lodash": "3.7.0",
+    "typescript": "1.6.2",
+    "source-map": "0.4.4",
+    "typorama": "0.0.83",
+    "wix-react-comp": "0.0.159"
+  }
 }
