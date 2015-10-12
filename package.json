@@ -14,7 +14,7 @@
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
     "pretest": "npm run build",
-    "test": "npm run test:node && npm run test:browser",
+    "test": "npm run test:node",
     "test:browser": "./node_modules/.bin/karma start --single-run",
     "test:node": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
     "build:webpack": "webpack -v --display-modules",
