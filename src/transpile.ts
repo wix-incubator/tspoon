@@ -2,14 +2,13 @@
 /// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
 
 import { FileTranspilationHost } from './file-transpilation-host';
-import * as collector from './schema-collector';
-import * as traverse from './traverse-ast';
+import { traverseAst } from './traverse-ast';
 import { MutableSourceCode, Insertion } from './mutable-source-code';
 import { RawSourceMap, SourceMapConsumer } from 'source-map';
-import { defaultCompilerOptions, defaultVisitors } from './configuration';
 import { Visitor, VisitorContext } from './visitor';
 import { Node, DiagnosticCategory, Diagnostic, CompilerOptions, createSourceFile, createProgram } from 'typescript';
 import { TranspilerContext } from "./transpiler-context";
+import { defaultCompilerOptions } from "./configuration";
 
 export interface TranspilerOutput {
 	code: string,
@@ -21,7 +20,7 @@ export interface TranspilerOutput {
 export interface TranspilerConfig {
 	sourceFileName: string;
 	compilerOptions?: CompilerOptions;
-	visitors?: Visitor[];
+	visitors: Visitor[];
 }
 
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput {
@@ -30,7 +29,6 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	// If it doesn't, we use the default as defined in ./configuration.ts
 
 	const compilerOptions = config.compilerOptions || defaultCompilerOptions;
-	const visitors = config.visitors || defaultVisitors;
 
 	// First we initialize a SourceFile object with the given source code
 
@@ -48,8 +46,8 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	// lines to be pushed into the code and diagbostic messages.
 	// If one of the visitors halts the transilation process we return the halted object.
 
-	visitors.some((visitor) => {
-		traverse.traverseAst(ast, visitor, context);
+	config.visitors.some((visitor) => {
+		traverseAst(ast, visitor, context);
 		return context.halted;
 	});
 

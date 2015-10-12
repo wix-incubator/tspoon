@@ -2,7 +2,6 @@
 /// <reference path="../typings/node/node.d.ts"/>
 
 import * as ts from 'typescript';
-import { defaultCompilerOptions } from './configuration';
 import { RawSourceMap } from 'source-map';
 
 function fileExtensionIs(path: string, extension: string): boolean {
@@ -63,7 +62,7 @@ export class FileTranspilationHost implements ts.CompilerHost {
 	}
 
 	getNewLine() {
-		return (<any>ts).getNewLineCharacter(defaultCompilerOptions);
+		return "\n";
 	}
 
 	getDefaultLibFileName(options:ts.CompilerOptions): string {

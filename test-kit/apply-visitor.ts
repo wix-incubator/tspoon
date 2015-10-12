@@ -5,7 +5,7 @@
 /// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
 
 import * as ts from 'typescript';
-import { defaultCompilerOptions, defaultVisitors } from '../src/configuration';
+import { defaultCompilerOptions } from '../src/configuration';
 import { traverseAst } from '../src/traverse-ast';
 import { Visitor } from "../src/visitor";
 import { Insertion, MutableSourceCode } from '../src/mutable-source-code';
