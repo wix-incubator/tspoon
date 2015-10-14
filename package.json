@@ -6,7 +6,7 @@
   "name": "tspoon",
   "version": "1.0.0",
   "description": "see README.md",
-  "main": "dist/index.js",
+  "main": "./index.js",
   "jsnext:main": "src/index.ts",
   "directories": {
     "test": "test"
@@ -19,7 +19,7 @@
     "test:node": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
     "build:webpack": "webpack -v --display-modules",
     "build:declarations": "mkdir -p dist/src ",
-    "build:tsc": "./node_modules/.bin/tsc",
+    "build:tsc": "./node_modules/.bin/tsc -declaration",
     "build": "npm run clean && npm run build:declarations && npm run build:tsc && npm run build:webpack",
     "build:src": "npm run build",
     "prestart": "npm run build",
