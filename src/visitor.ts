@@ -1,5 +1,3 @@
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
-
 import { Node, Diagnostic, DiagnosticCategory } from 'typescript';
 
 export interface VisitorContext {
