@@ -1,5 +1,4 @@
 /// <reference path="../typings/source-map/source-map.d.ts"/>
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
 
 import { MutableSourceCode, Insertion } from './mutable-source-code';
 import { Visitor, VisitorContext } from './visitor';
