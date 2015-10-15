@@ -1,6 +1,10 @@
 import * as ts from "typescript";
 import * as SourceMap from "source-map";
-import { Insertion } from './src/mutable-source-code';
+
+export interface Insertion {
+    position: number;
+    str: string;
+}
 
 export interface TranspilerOutput {
     code: string,
@@ -12,7 +16,7 @@ export interface TranspilerOutput {
 export interface TranspilerConfig {
     sourceFileName: string;
     compilerOptions?: ts.CompilerOptions;
-    visitors?: Visitor[];
+    visitors: Visitor[];
 }
 
 export interface VisitorContext {
