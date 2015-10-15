@@ -1,6 +1,4 @@
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../test-kit/matchers/matchers.d.ts" />
 
 import { expect } from 'chai';
 import * as chai from "chai";
@@ -45,11 +43,9 @@ function transpile(source: string): { code: string, map: RawSourceMap } {
 
 describe("given a source code and a str to prepend, sourcemapper should", ()=> {
 
-    const source = `
-        class A {}
-        class B {}
-        fubar();
-    `;
+    const source = "class A {}\nclass B {}\nfubar();";
+
+    const target = "class A {}\n@foo\nclass B {}\nfubar();";
 
     const insertion: Insertion = anInsertion(source, "class B", "@foo\n");
     var mutableCode: MutableSourceCode = aSourceMapperFor(source);
@@ -57,14 +53,7 @@ describe("given a source code and a str to prepend, sourcemapper should", ()=> {
 
     it("generate a new string that matches the expected target", ()=> {
 
-        const target = `
-            class A {}
-            @foo
-            class B {}
-            fubar();
-        `;
-
-        expect(mutableCode.code).to.matchCode(target);
+        expect(mutableCode.code).to.equal(target);
     });
 
     it("generate correct sourcemap that reflects the changes", ()=> {
