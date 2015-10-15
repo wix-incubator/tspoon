@@ -2,14 +2,12 @@
  * Created by gadig on 9/21/15.
  */
 
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
-
 import * as ts from 'typescript';
-import { defaultCompilerOptions } from '../src/configuration';
-import { traverseAst } from '../src/traverse-ast';
-import { Visitor } from "../src/visitor";
-import { Insertion, MutableSourceCode } from '../src/mutable-source-code';
-import { TranspilerContext } from "../src/transpiler-context";
+import { defaultCompilerOptions } from './configuration';
+import { traverseAst } from './traverse-ast';
+import { Visitor } from "./visitor";
+import { Insertion, MutableSourceCode } from './mutable-source-code';
+import { TranspilerContext } from "./transpiler-context";
 
 export interface ApplyVisitorResult {
     file: ts.SourceFile,
@@ -18,7 +16,7 @@ export interface ApplyVisitorResult {
     diags: ts.Diagnostic[];
 }
 
-export default function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult {
+export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult {
     const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
     let context: TranspilerContext = new TranspilerContext();
 

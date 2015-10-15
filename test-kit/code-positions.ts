@@ -4,7 +4,6 @@
 
 /// <reference path="../typings/tsd.d.ts"/>
 /// <reference path="../typings/lodash/lodash.d.ts"/>
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
 
 import * as SourceMap from 'source-map';
 import * as _ from 'lodash';
