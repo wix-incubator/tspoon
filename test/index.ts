@@ -2,3 +2,4 @@
 
 require('source-map-support').install();
 import "./mutable-source-code.spec";
+import "./visitor.spec";
