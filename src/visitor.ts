@@ -1,12 +1,12 @@
-import { Node, Diagnostic, DiagnosticCategory } from 'typescript';
+import * as ts from 'typescript';
 
 export interface VisitorContext {
 	halted: boolean;
 	insertLine(position: number, str: string): void;
-	reportDiag(node: Node, category: DiagnosticCategory, message: string, halt?: boolean): void;
+	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
 }
 
 export interface Visitor {
-	filter(node: Node) : boolean;
-	visit(node: Node, context: VisitorContext): void;
+	filter(node: ts.Node) : boolean;
+	visit(node: ts.Node, context: VisitorContext): void;
 }
