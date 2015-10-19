@@ -1,10 +1,10 @@
-import { CompilerOptions, ModuleKind, JsxEmit, ScriptTarget } from 'typescript';
+import * as ts from 'typescript';
 import { Visitor } from "./visitor";
 
-export const defaultCompilerOptions: CompilerOptions = {
-	module: ModuleKind.CommonJS,
-	jsx: JsxEmit.React,
-	target: ScriptTarget.ES5,
+export const defaultCompilerOptions: ts.CompilerOptions = {
+	module: ts.ModuleKind.CommonJS,
+	jsx: ts.JsxEmit.React,
+	target: ts.ScriptTarget.ES5,
 	experimentalDecorators: true,
 	noEmitHelpers: true,
 	sourceMap: true,
