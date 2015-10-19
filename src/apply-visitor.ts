@@ -1,8 +1,5 @@
-/**
- * Created by gadig on 9/21/15.
- */
+import * as ts from "typescript";
 
-import * as ts from 'typescript';
 import { defaultCompilerOptions } from './configuration';
 import { traverseAst } from './traverse-ast';
 import { Visitor } from "./visitor";

@@ -2,13 +2,13 @@
 
 import { MutableSourceCode, Insertion } from './mutable-source-code';
 import { Visitor, VisitorContext } from './visitor';
-import { Node, DiagnosticCategory, Diagnostic, CompilerOptions, createSourceFile, createProgram } from 'typescript';
+import * as ts from 'typescript';
 
 export class TranspilerContext implements VisitorContext {
 
 	private _halted = false;
 	private _insertions: Insertion[] = [];
-	private _diags: Diagnostic[] = [];
+	private _diags: ts.Diagnostic[] = [];
 
 	isHalted(): boolean {
 		return this._halted;
@@ -18,11 +18,11 @@ export class TranspilerContext implements VisitorContext {
 		this._insertions.push({ position, str: str + "\n" });
 	}
 
-	reportDiag(node: Node, category: DiagnosticCategory, message: string, halt?: boolean): void {
-		let diagnostic: Diagnostic = {
+	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void {
+		let diagnostic: ts.Diagnostic = {
 			file: node.getSourceFile(),
-			start: node.pos,
-			length: node.end - node.pos,
+			start: node.getStart(),
+			length: node.getEnd() - node.getStart(),
 			messageText: message,
 			category: category,
 			code: 0
@@ -31,7 +31,7 @@ export class TranspilerContext implements VisitorContext {
 		this._halted = this._halted || halt;
 	}
 
-	pushDiag(diagnostic: Diagnostic): void {
+	pushDiag(diagnostic: ts.Diagnostic): void {
 		this._diags.push(diagnostic);
 	}
 
@@ -39,7 +39,7 @@ export class TranspilerContext implements VisitorContext {
 		return this._insertions;
 	}
 
-	get diags(): Diagnostic[] {
+	get diags(): ts.Diagnostic[] {
 		return this._diags;
 	}
 

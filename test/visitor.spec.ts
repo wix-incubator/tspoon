@@ -26,7 +26,7 @@ function applyVisitor(source: string, visitor: Visitor): TranspilerOutput {
 }
 
 function matchDiagRanges(expected: ts.TextRange, actual: ts.Diagnostic): void {
-    expect({
+    chai.expect({
         start: expected.pos,
         end: expected.end
     }).to.eqls({
@@ -35,9 +35,10 @@ function matchDiagRanges(expected: ts.TextRange, actual: ts.Diagnostic): void {
     });
 }
 
+
 describe("given source code and a visitor, transpiler should", ()=> {
 
-    const source = "class A {}\nclass B {}\nvar a: string = 3;";
+    const source = "\nclass A {}\n\n\nclass B {}";
 
     const mockVisitor: Visitor = {
         filter: (node: ts.Node): boolean => {
@@ -51,18 +52,16 @@ describe("given source code and a visitor, transpiler should", ()=> {
 
     const intermResult = applyVisitor(source, mockVisitor);
 
-    const target = "@blah\nclass A {}\n@blah\nclass B {}\nvar a: string = 3;";
+    const target = "\n@blah\nclass A {}\n\n\n@blah\nclass B {}";
 
     it("generate the correct intermediate code", ()=> {
 
-        expect(intermResult.code).to.equal(target);
+        chai.expect(intermResult.code).to.equal(target);
     });
 
     it("give correct diag positions", ()=> {
 
-        console.log(intermResult.diags);
-
-        expect(intermResult.diags.length).to.equal(2);
+        chai.expect(intermResult.diags.length).to.equal(2);
 
         matchDiagRanges(
             findCodeRange(source, "class A {}"),
