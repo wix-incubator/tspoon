@@ -32,7 +32,7 @@ export class MutableSourceCode {
 	}
 
 	execute(insertionList: Array<{ position: number, str: string }>): void {
-		insertionList.forEach(insertion => {
+		insertionList.reverse().forEach(insertion => {
 			this.magicString.insert(insertion.position, insertion.str);
 			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(insertion.position, insertion.position);
 			const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, insertion.str.length);
