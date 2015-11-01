@@ -20,6 +20,7 @@ export interface TranspilerConfig {
 	sourceFileName: string;
 	compilerOptions?: ts.CompilerOptions;
 	visitors: Visitor[];
+	compilerHost?: ts.CompilerHost;
 }
 
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput {
@@ -66,7 +67,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
 	// This intermediate code has to be transpiled by TypeScript
 
-	const compilerHost = new FileTranspilationHost(mutable.ast);
+	const compilerHost = config.compilerHost || new FileTranspilationHost(mutable.ast);
 	const program = ts.createProgram([fileName], compilerOptions, compilerHost);
 	const emitResult = program.emit();
 
