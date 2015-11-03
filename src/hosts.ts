@@ -2,7 +2,6 @@
 /// <reference path="../typings/node/node.d.ts"/>
 
 import * as ts from 'typescript';
-import { RawSourceMap } from 'source-map';
 
 
 function fileExtensionIs(path: string, extension: string): boolean {
@@ -102,7 +101,7 @@ export class FileTranspilationHost extends HostBase implements ts.CompilerHost {
 		return this._output;
 	}
 
-	public get sourceMap(): RawSourceMap {
+	public get sourceMap(): SourceMap.RawSourceMap {
 		return JSON.parse(this._map);
 	}
 

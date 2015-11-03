@@ -1,7 +1,7 @@
 /// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
 /// <reference path="../typings/tsd.d.ts"/>
 
-import { FileTranspilationHost, FileValidationHost } from './file-transpilation-host';
+import { FileTranspilationHost, FileValidationHost } from './hosts';
 import { traverseAst } from './traverse-ast';
 import { MutableSourceCode, Insertion } from './mutable-source-code';
 import { RawSourceMap, SourceMapConsumer } from 'source-map';

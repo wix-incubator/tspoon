@@ -17,7 +17,6 @@ export interface TranspilerConfig {
     sourceFileName: string;
     compilerOptions?: ts.CompilerOptions;
     visitors: Visitor[];
-	resolutionHosts?: ts.ModuleResolutionHost[];
 }
 
 export interface VisitorContext {
