@@ -1,5 +1,5 @@
 import * as ts from "typescript";
-import * as SourceMap from "source-map";
+import {RawSourceMap} from "source-map";
 
 export interface Insertion {
     position: number;
@@ -8,7 +8,7 @@ export interface Insertion {
 
 export interface TranspilerOutput {
     code: string,
-    sourceMap: SourceMap.RawSourceMap,
+    sourceMap: RawSourceMap,
     diags: ts.Diagnostic[],
     halted: boolean
 }
@@ -40,3 +40,12 @@ export interface ApplyVisitorResult {
 }
 
 export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult;
+
+export interface ValidatorConfig {
+	resolutionHosts?: ts.ModuleResolutionHost[];
+	visitors?: Visitor[];
+}
+
+export function parse(fileName: string, content: string, compilerOptions: ts.CompilerOptions): ts.SourceFile;
+
+export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagnostic[];
