@@ -17,6 +17,7 @@ export interface TranspilerConfig {
     sourceFileName: string;
     compilerOptions?: ts.CompilerOptions;
     visitors: Visitor[];
+	resolutionHosts?: ts.ModuleResolutionHost[];
 }
 
 export interface VisitorContext {
@@ -40,3 +41,12 @@ export interface ApplyVisitorResult {
 }
 
 export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult;
+
+export interface ValidatorConfig {
+	resolutionHosts?: ts.ModuleResolutionHost[];
+	visitors?: Visitor[];
+}
+
+export function parse(fileName: string, content: string, compilerOptions: ts.CompilerOptions): ts.SourceFile;
+
+export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagnostic[];
