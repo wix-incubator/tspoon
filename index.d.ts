@@ -1,5 +1,5 @@
 import * as ts from "typescript";
-import * as SourceMap from "source-map";
+import {RawSourceMap} from "source-map";
 
 export interface Insertion {
     position: number;
@@ -8,7 +8,7 @@ export interface Insertion {
 
 export interface TranspilerOutput {
     code: string,
-    sourceMap: SourceMap.RawSourceMap,
+    sourceMap: RawSourceMap,
     diags: ts.Diagnostic[],
     halted: boolean
 }
