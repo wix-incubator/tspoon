@@ -7,7 +7,6 @@ import { findCodeRange, findCodePosition } from "../test-kit/index";
 import { defaultCompilerOptions } from '../src/configuration';
 import { Visitor, VisitorContext, transpile, TranspilerOutput } from "../src/index";
 import { traverseAst } from "../src/traverse-ast";
-import { RawSourceMap, SourceMapConsumer } from 'source-map';
 import { TranspilerContext } from "../src/transpiler-context";
 import { MutableSourceCode, Insertion } from "../src/mutable-source-code";
 

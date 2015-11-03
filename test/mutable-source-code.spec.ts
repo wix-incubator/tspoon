@@ -6,7 +6,7 @@ import * as ts from "typescript";
 import { MutableSourceCode, Insertion } from "../src/mutable-source-code";
 import { traverseAst } from '../src/traverse-ast';
 import { findCodeRange, findCodePosition } from "../test-kit/index";
-import { FileTranspilationHost } from '../src/file-transpilation-host';
+import { FileTranspilationHost } from '../src/hosts';
 import { defaultCompilerOptions } from '../src/configuration';
 import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map';
 
