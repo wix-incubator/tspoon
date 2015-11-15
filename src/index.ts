@@ -4,4 +4,6 @@
 export { transpile, TranspilerOutput, TranspilerConfig, ValidatorConfig, parse, validate } from './transpile';
 export { Visitor, VisitorContext } from "./visitor";
 export { applyVisitor } from "./apply-visitor";
+export * from "./hosts";
+
 
