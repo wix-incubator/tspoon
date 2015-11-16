@@ -19,7 +19,6 @@
     "test:node": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
     "build:tsc": "./node_modules/.bin/tsc",
     "build": "npm run clean && npm run build:tsc",
-    "build:src": "npm run build",
     "prestart": "npm run build",
     "start": "./node_modules/.bin/concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
     "start:tsc": "./node_modules/.bin/tsc -w"
