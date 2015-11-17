@@ -41,6 +41,8 @@ export interface ApplyVisitorResult {
 
 export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult;
 
+export function applyVisitorOnAst(ast: ts.SourceFile, visitor: Visitor): ApplyVisitorResult;
+
 export interface ValidatorConfig {
 	resolutionHosts?: ts.ModuleResolutionHost[];
 	visitors?: Visitor[];

@@ -76,7 +76,6 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	const program = ts.createProgram([fileName], compilerOptions, compilerHost);
 	const emitResult = program.emit();
 
-
 	emitResult.diagnostics.forEach((d: ts.Diagnostic) => {
 		context.pushDiag(mutable.translateDiagnostic(d));
 	});
