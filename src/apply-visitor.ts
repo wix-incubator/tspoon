@@ -14,13 +14,19 @@ export interface ApplyVisitorResult {
 }
 
 export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult {
+
     const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
+    return applyVisitorOnAst(ast, visitor);
+}
+
+export function applyVisitorOnAst(ast: ts.SourceFile, visitor: Visitor): ApplyVisitorResult {
+
     let context: TranspilerContext = new TranspilerContext();
 
     traverseAst(ast, visitor, context);
 
-	const mapper = new MutableSourceCode(ast);
-	mapper.execute(context.insertions);
+    const mapper = new MutableSourceCode(ast);
+    mapper.execute(context.insertions);
 
     return {
         code: mapper.code,
