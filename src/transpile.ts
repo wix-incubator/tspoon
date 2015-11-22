@@ -28,6 +28,12 @@ export interface ValidatorConfig {
 	visitors?: Visitor[];
 }
 
+function getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
+	// We're accessing here an internal property. It would be more legit to access it through
+	// ts.Program.getSyntacticDiagsnostics(), but we want to bail out ASAP.
+	return sourceFile['parseDiagnostics'];
+}
+
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput {
 
 	// The context may contain compiler options and a list of visitors.
@@ -42,6 +48,15 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	// Then we let TypeScript parse it into an AST
 
 	const ast = ts.createSourceFile(fileName, content, compilerOptions.target, true);
+	const parserErrors = getParserErrors(ast);
+	if(parserErrors.length>0) {
+		return {
+			code: null,
+			diags: parserErrors,
+			halted: true,
+			sourceMap: null
+		}
+	}
 
 	// The context contains code modifications and diagnostics
 
@@ -73,7 +88,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	// This intermediate code has to be transpiled by TypeScript
 
 	const compilerHost = new FileTranspilationHost(mutable.ast);
-	const program = ts.createProgram([fileName], compilerOptions, compilerHost);
+	const program: ts.Program = ts.createProgram([fileName], compilerOptions, compilerHost);
 	const emitResult = program.emit();
 
 	emitResult.diagnostics.forEach((d: ts.Diagnostic) => {
