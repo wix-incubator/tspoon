@@ -34,6 +34,8 @@ function getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
 	return sourceFile['parseDiagnostics'];
 }
 
+
+
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput {
 
 	// The context may contain compiler options and a list of visitors.
