@@ -9,6 +9,8 @@ import { Visitor, VisitorContext } from './visitor';
 import * as ts from 'typescript';
 import { TranspilerContext } from "./transpiler-context";
 import { defaultCompilerOptions } from "./configuration";
+import {CodeTransformer} from "./transformer";
+import {VisitorBasedTransformer} from "./transformer";
 
 export interface TranspilerOutput {
 	code: string,
@@ -26,6 +28,7 @@ export interface TranspilerConfig {
 export interface ValidatorConfig {
 	resolutionHosts?: ts.ModuleResolutionHost[];
 	visitors?: Visitor[];
+	mutators?: Visitor[];
 }
 
 function getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
@@ -33,6 +36,8 @@ function getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
 	// ts.Program.getSyntacticDiagsnostics(), but we want to bail out ASAP.
 	return sourceFile['parseDiagnostics'];
 }
+
+
 
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput {
 
@@ -132,9 +137,11 @@ export function parse(fileName: string, content: string, compilerOptions: ts.Com
 }
 
 export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagnostic[] {
-	const compilerHost = new FileValidationHost(ast, config.resolutionHosts || [], defaultCompilerOptions);
-	const program = ts.createProgram([ast.fileName], defaultCompilerOptions, compilerHost);
+	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
+	const validationHost = new FileValidationHost(ast, config.resolutionHosts || [], defaultCompilerOptions, transformer);
+	const program = ts.createProgram([ast.fileName], defaultCompilerOptions, validationHost);
 	let context: TranspilerContext = new TranspilerContext();
 	config.visitors && config.visitors.forEach(visitor => traverseAst(ast, visitor, context));
-	return program.getSemanticDiagnostics().concat(context.diags);
+	const diags: ts.Diagnostic[] = program.getSemanticDiagnostics().concat(context.diags);
+	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
 }
