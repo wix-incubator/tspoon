@@ -9,8 +9,8 @@ import { Visitor, VisitorContext } from './visitor';
 import * as ts from 'typescript';
 import { TranspilerContext } from "./transpiler-context";
 import { defaultCompilerOptions } from "./configuration";
-import {Transformer} from "./transformer";
-import {VisitorTransformer} from "./transformer";
+import {CodeTransformer} from "./transformer";
+import {VisitorBasedTransformer} from "./transformer";
 
 export interface TranspilerOutput {
 	code: string,
@@ -137,11 +137,11 @@ export function parse(fileName: string, content: string, compilerOptions: ts.Com
 }
 
 export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagnostic[] {
-	const transformer: Transformer = new VisitorTransformer(config.transformers || []);
-	const compilerHost = new FileValidationHost(ast, config.resolutionHosts || [], defaultCompilerOptions, transformer);
-	const program = ts.createProgram([ast.fileName], defaultCompilerOptions, compilerHost);
+	const transformer: CodeTransformer = new VisitorBasedTransformer(config.transformers || []);
+	const validationHost = new FileValidationHost(ast, config.resolutionHosts || [], defaultCompilerOptions, transformer);
+	const program = ts.createProgram([ast.fileName], defaultCompilerOptions, validationHost);
 	let context: TranspilerContext = new TranspilerContext();
 	config.visitors && config.visitors.forEach(visitor => traverseAst(ast, visitor, context));
 	const diags: ts.Diagnostic[] = program.getSemanticDiagnostics().concat(context.diags);
-	return compilerHost.remapDiagnostics(diags);
+	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
 }

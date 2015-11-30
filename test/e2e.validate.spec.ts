@@ -3,26 +3,28 @@ import * as tspoon from '../src/index';
 import * as ts from 'typescript';
 import {ValidatorConfig} from "../src/transpile";
 import {VisitorContext} from "../index";
-import {VisitorTransformer} from "../src/transformer";
+import {VisitorBasedTransformer} from "../src/transformer";
 import {Visitor} from "../src/visitor";
 
-function selectVariableDeclaration(varName: string): (node: ts.Node) => boolean {
-	return (node: ts.Node) => {
-		if(node.kind === ts.SyntaxKind.VariableDeclarationList) {
-			const declList = <ts.VariableDeclarationList>node;
-			return declList.declarations.some((decl: ts.VariableDeclaration) => decl.name.getText() === varName);
+function beforeVariable(varName: string) {
+	return {
+		insert(code: string): Visitor {
+			return {
+				filter: (node:ts.Node) => {
+					if (node.kind === ts.SyntaxKind.VariableDeclarationList) {
+						const declList = <ts.VariableDeclarationList>node;
+						return declList.declarations.some((decl:ts.VariableDeclaration) => decl.name.getText() === varName);
+					}
+					return false;
+				},
+
+				visit: (node:ts.Node, context:VisitorContext) => {
+					context.insertLine(node.pos, code);
+				}
+			}
 		}
-		return false;
 	}
 }
-
-function insertBefore(code: string): (node: ts.Node, context: VisitorContext) => void {
-	return (node: ts.Node, context: VisitorContext) => {
-		context.insertLine(node.pos, code);
-	};
-}
-
-
 
 describe('tspoon.validate()', function () {
 	it("lets valid code pass", function () {
@@ -54,12 +56,10 @@ describe('tspoon.validate()', function () {
 			const perfectlyInvalid: SomeWeirdType = "HAHAHA";
 		`;
 		const ast: ts.SourceFile = tspoon.parse('sample.tsx', source);
-		const transformer: Visitor = {
-			filter: selectVariableDeclaration('perfectlyInvalid'),
-			visit: insertBefore('\ntype SomeWeirdType = string;')
-		};
 		const config: ValidatorConfig = {
-			transformers: [ transformer ]
+			transformers: [
+				beforeVariable('perfectlyInvalid').insert('\ntype SomeWeirdType = string;')
+			]
 		};
 		expect(tspoon.validate(ast, config)).to.pass();
 	});
@@ -74,12 +74,10 @@ describe('tspoon.validate()', function () {
 		`;
 
 		const ast: ts.SourceFile = tspoon.parse('sample.tsx', source);
-		const transformer: Visitor = {
-			filter: selectVariableDeclaration('perfectlyInvalid'),
-			visit: insertBefore('\nconst anotherValidLine: number = 777;')
-		};
 		const config: ValidatorConfig = {
-			transformers: [ transformer ]
+			transformers: [
+				beforeVariable('perfectlyInvalid').insert('\nconst anotherValidLine: number = 777;')
+			]
 		};
 		expect(tspoon.validate(ast, config)).to.fail()
 			.withMessageCount(1)
