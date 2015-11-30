@@ -57,7 +57,7 @@ describe('tspoon.validate()', function () {
 		`;
 		const ast: ts.SourceFile = tspoon.parse('sample.tsx', source);
 		const config: ValidatorConfig = {
-			transformers: [
+			mutators: [
 				beforeVariable('perfectlyInvalid').insert('\ntype SomeWeirdType = string;')
 			]
 		};
@@ -75,7 +75,7 @@ describe('tspoon.validate()', function () {
 
 		const ast: ts.SourceFile = tspoon.parse('sample.tsx', source);
 		const config: ValidatorConfig = {
-			transformers: [
+			mutators: [
 				beforeVariable('perfectlyInvalid').insert('\nconst anotherValidLine: number = 777;')
 			]
 		};

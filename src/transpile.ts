@@ -28,7 +28,7 @@ export interface TranspilerConfig {
 export interface ValidatorConfig {
 	resolutionHosts?: ts.ModuleResolutionHost[];
 	visitors?: Visitor[];
-	transformers?: Visitor[];
+	mutators?: Visitor[];
 }
 
 function getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
@@ -137,7 +137,7 @@ export function parse(fileName: string, content: string, compilerOptions: ts.Com
 }
 
 export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagnostic[] {
-	const transformer: CodeTransformer = new VisitorBasedTransformer(config.transformers || []);
+	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
 	const validationHost = new FileValidationHost(ast, config.resolutionHosts || [], defaultCompilerOptions, transformer);
 	const program = ts.createProgram([ast.fileName], defaultCompilerOptions, validationHost);
 	let context: TranspilerContext = new TranspilerContext();
