@@ -46,6 +46,7 @@ export function applyVisitorOnAst(ast: ts.SourceFile, visitor: Visitor): ApplyVi
 export interface ValidatorConfig {
 	resolutionHosts?: ts.ModuleResolutionHost[];
 	visitors?: Visitor[];
+	mutators?: Visitor[];
 }
 
 export function parse(fileName: string, content: string, compilerOptions: ts.CompilerOptions): ts.SourceFile;
