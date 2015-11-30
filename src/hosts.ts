@@ -2,6 +2,7 @@
 /// <reference path="../typings/node/node.d.ts"/>
 
 import * as ts from 'typescript';
+import {Transformer} from "./transformer";
 
 
 function fileExtensionIs(path: string, extension: string): boolean {
@@ -51,12 +52,15 @@ class HostBase implements ts.CompilerHost {
 }
 
 export class FileValidationHost extends HostBase implements ts.CompilerHost {
+	private _ast: ts.SourceFile;
 	constructor(
-		private _ast: ts.SourceFile,
+		_rootAst: ts.SourceFile,
 		private _resolutionHosts: ts.ModuleResolutionHost[],
-		private _compilerOptions: ts.CompilerOptions
+		private _compilerOptions: ts.CompilerOptions,
+		private _transformer: Transformer
 	) {
 		super();
+		this._ast = _transformer.transform(_rootAst);
 	}
 
 	fileExists(fileName: string): boolean{
@@ -81,7 +85,8 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 		} else {
 			const source = this.readFile(fileName);
 			if(source) {
-				return ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
+				const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
+				return this._transformer.transform(ast);
 			} else {
 				return null;
 			}
