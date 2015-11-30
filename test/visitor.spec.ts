@@ -35,7 +35,7 @@ function matchDiagRanges(expected: ts.TextRange, actual: ts.Diagnostic): void {
 }
 
 
-describe.only("given source code and a visitor, transpiler should", ()=> {
+describe("given source code and a visitor, transpiler should", ()=> {
 
     const source = "\nclass A {}\n\n\nclass B {}";
 
