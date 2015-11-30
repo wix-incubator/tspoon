@@ -13,15 +13,18 @@
   },
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
-    "pretest": "npm run build",
-    "test": "npm run test:node",
-    "test:browser": "./node_modules/.bin/karma start --single-run",
-    "test:node": "./node_modules/.bin/mocha --reporter $npm_config_reporter ./dist/test",
-    "build:tsc": "./node_modules/.bin/tsc",
-    "build": "npm run clean && npm run build:tsc",
+	"pretest": "npm run build",
+	"test": "npm run test:node",
+	"test:browser": "karma start --single-run",
+	"test:node": "mocha --reporter $npm_config_reporter ./dist/test",
+	"build": "npm run clean && npm run build:tsc",
+	"build:webpack": "webpack -v --display-modules",
+	"build:smarty": "webpack --display-modules --config=\"./smartyPack.js\"",
+	"build:tsc": "tsc",
     "prestart": "npm run build",
-    "start": "./node_modules/.bin/concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
-    "start:tsc": "./node_modules/.bin/tsc -w"
+    "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
+    "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
+    "start:tsc": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -52,8 +55,9 @@
   },
   "dependencies": {
     "magic-string": "0.6.6",
-    "lodash": "3.7.0",
-    "typescript": "1.6.2",
-    "source-map": "0.4.4"
+	"lodash": "3.7.0",
+	"typescript": "1.6.2",
+	"source-map": "0.4.4",
+	"tmp": "0.0.28"
   }
 }

@@ -1,13 +1,13 @@
 /// <reference path="../typings/source-map/source-map.d.ts"/>
 
-import { MutableSourceCode, Insertion } from './mutable-source-code';
+import { MutableSourceCode, Replacement } from './mutable-source-code';
 import { Visitor, VisitorContext } from './visitor';
 import * as ts from 'typescript';
 
 export class TranspilerContext implements VisitorContext {
 
 	private _halted = false;
-	private _insertions: Insertion[] = [];
+	private _actions: Replacement[] = [];
 	private _diags: ts.Diagnostic[] = [];
 
 	isHalted(): boolean {
@@ -15,7 +15,11 @@ export class TranspilerContext implements VisitorContext {
 	}
 
 	insertLine(position: number, str: string): void {
-		this._insertions.push({ position, str: str + "\n" });
+		this._actions.push({ start: position, end: position, str: str + "\n" });
+	}
+
+	replace(start: number, end: number, str: string): void {
+		this._actions.push({ start, end, str });
 	}
 
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void {
@@ -35,8 +39,8 @@ export class TranspilerContext implements VisitorContext {
 		this._diags.push(diagnostic);
 	}
 
-	get insertions(): Insertion[] {
-		return this._insertions;
+	get actions(): Replacement[] {
+		return this._actions;
 	}
 
 	get diags(): ts.Diagnostic[] {

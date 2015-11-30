@@ -15,7 +15,7 @@ function applyVisitor(source: string, visitor: Visitor): TranspilerOutput {
     let context: TranspilerContext = new TranspilerContext();
     traverseAst(ast, visitor, context);
     const mutable = new MutableSourceCode(ast);
-    mutable.execute(context.insertions);
+    mutable.execute(context.actions);
     return {
         code: mutable.code,
         diags: context.diags,
@@ -35,7 +35,7 @@ function matchDiagRanges(expected: ts.TextRange, actual: ts.Diagnostic): void {
 }
 
 
-describe("given source code and a visitor, transpiler should", ()=> {
+describe.only("given source code and a visitor, transpiler should", ()=> {
 
     const source = "\nclass A {}\n\n\nclass B {}";
 
@@ -45,16 +45,20 @@ describe("given source code and a visitor, transpiler should", ()=> {
         },
         visit: (node: ts.Node, context: VisitorContext): void => {
             context.insertLine(node.getStart(), "@blah");
+            context.replace(node.getStart(), node.getStart() + 'class'.length, "interface");
             context.reportDiag(node, ts.DiagnosticCategory.Error, "Test message");
         }
     };
 
-    const intermResult = applyVisitor(source, mockVisitor);
+    let intermResult;
 
-    const target = "\n@blah\nclass A {}\n\n\n@blah\nclass B {}";
+	beforeEach(()=>{
+    	intermResult = applyVisitor(source, mockVisitor);
+	});
 
-    it("generate the correct intermediate code", ()=> {
+    const target = "\n@blah\ninterface A {}\n\n\n@blah\ninterface B {}";
 
+    it("generate the correct intermediate code", function () {
         chai.expect(intermResult.code).to.equal(target);
     });
 
