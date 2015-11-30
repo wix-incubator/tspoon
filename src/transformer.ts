@@ -26,7 +26,7 @@ export class VisitorBasedTransformer implements CodeTransformer {
 			return null;
 		} else {
 			const mutable = new MutableSourceCode(ast);
-			mutable.execute(context.insertions);
+			mutable.execute(context.actions);
 			return mutable;
 		}
 	}
