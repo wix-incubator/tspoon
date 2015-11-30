@@ -5,6 +5,7 @@ import {ValidatorConfig} from "../src/transpile";
 import {VisitorContext} from "../index";
 import {VisitorBasedTransformer} from "../src/transformer";
 import {Visitor} from "../src/visitor";
+import {MockModule} from "../test-kit/mocks/resolution-hosts";
 
 function beforeVariable(varName: string) {
 	return {
@@ -83,5 +84,25 @@ describe('tspoon.validate()', function () {
 			.withMessageCount(1)
 			.withMessage(/.* -> 5:\d+ Cannot find name 'SomeWeirdType'./);
 	});
+
+	it("modifies a dependency of the validated file", function () {
+		const source = `
+			import Product from './Product';
+			const product: Product = { title: 'Sample' };
+		`;
+		const config: ValidatorConfig = {
+			resolutionHosts: [
+				new MockModule('Product.ts', `
+					interface Product { title: string; }
+					const somethingUnrelated: string = 'what?';
+				`)
+			],
+			mutators: [
+				beforeVariable('somethingUnrelated').insert('export default Product;')
+			]
+		};
+		const ast: ts.SourceFile = tspoon.parse('sample.tsx', source);
+		expect(tspoon.validate(ast, config)).to.pass();
+	})
 
 });
