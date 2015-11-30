@@ -3,13 +3,13 @@ import * as ts from "typescript";
 import { defaultCompilerOptions } from './configuration';
 import { traverseAst } from './traverse-ast';
 import { Visitor } from "./visitor";
-import { Insertion, MutableSourceCode } from './mutable-source-code';
+import { Replacement, MutableSourceCode } from './mutable-source-code';
 import { TranspilerContext } from "./transpiler-context";
 
 export interface ApplyVisitorResult {
     file: ts.SourceFile,
     code: string;
-    insertions: Insertion[];
+    actions: Replacement[];
     diags: ts.Diagnostic[];
 }
 
@@ -26,11 +26,11 @@ export function applyVisitorOnAst(ast: ts.SourceFile, visitor: Visitor): ApplyVi
     traverseAst(ast, visitor, context);
 
     const mapper = new MutableSourceCode(ast);
-    mapper.execute(context.insertions);
+    mapper.execute(context.actions);
 
     return {
         code: mapper.code,
-        insertions: context.insertions,
+        actions: context.actions,
         diags: context.diags,
         file: ast.getSourceFile()
     };
