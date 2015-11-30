@@ -4,40 +4,31 @@ import {TranspilerContext} from "./transpiler-context";
 import { traverseAst } from './traverse-ast';
 import {MutableSourceCode} from "./mutable-source-code";
 
-export interface Transformer {
-	transform(ast: ts.SourceFile): TransformerResult;
+export interface CodeTransformer {
+	transform(ast: ts.SourceFile): MutableSourceCode;
 }
 
-export interface TransformerResult {
-	modifiedAst: ts.SourceFile;
-	mapper: (diag: ts.Diagnostic) => ts.Diagnostic;
-}
-
-export class VisitorTransformer implements Transformer {
+export class VisitorBasedTransformer implements CodeTransformer {
 	constructor(private visitors: Visitor[]) {}
 
-	transform(ast: ts.SourceFile): TransformerResult {
+	transform(ast: ts.SourceFile): MutableSourceCode {
 		const parserErrors = this.getParserErrors(ast);
 		if(parserErrors.length>0) {
 			return null;
 		}
 
 		const context: TranspilerContext = new TranspilerContext();
-		this.visitors.some((visitor) => {
-			traverseAst(ast, visitor, context);
-			return context.halted;
+		this.visitors.forEach((visitor) => {
+			context.halted || traverseAst(ast, visitor, context);
 		});
 
 		if(context.halted) {
 			return null;
+		} else {
+			const mutable = new MutableSourceCode(ast);
+			mutable.execute(context.insertions);
+			return mutable;
 		}
-
-		const mutable = new MutableSourceCode(ast);
-		mutable.execute(context.insertions);
-		return {
-			modifiedAst: mutable.ast,
-			mapper: mutable.translateDiagnostic.bind(mutable)
-		};
 	}
 
 	private getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
