@@ -142,5 +142,6 @@ export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagno
 	const program = ts.createProgram([ast.fileName], defaultCompilerOptions, compilerHost);
 	let context: TranspilerContext = new TranspilerContext();
 	config.visitors && config.visitors.forEach(visitor => traverseAst(ast, visitor, context));
-	return program.getSemanticDiagnostics().concat(context.diags);
+	const diags: ts.Diagnostic[] = program.getSemanticDiagnostics().concat(context.diags);
+	return compilerHost.remapDiagnostics(diags);
 }

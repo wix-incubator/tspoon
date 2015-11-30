@@ -5,15 +5,18 @@ import { traverseAst } from './traverse-ast';
 import {MutableSourceCode} from "./mutable-source-code";
 
 export interface Transformer {
-	transform(ast: ts.SourceFile): ts.SourceFile;
+	transform(ast: ts.SourceFile): TransformerResult;
+}
+
+export interface TransformerResult {
+	modifiedAst: ts.SourceFile;
+	mapper: (diag: ts.Diagnostic) => ts.Diagnostic;
 }
 
 export class VisitorTransformer implements Transformer {
-	constructor(private visitors: Visitor[]) {
+	constructor(private visitors: Visitor[]) {}
 
-	}
-
-	transform(ast: ts.SourceFile): ts.SourceFile {
+	transform(ast: ts.SourceFile): TransformerResult {
 		const parserErrors = this.getParserErrors(ast);
 		if(parserErrors.length>0) {
 			return null;
@@ -31,20 +34,10 @@ export class VisitorTransformer implements Transformer {
 
 		const mutable = new MutableSourceCode(ast);
 		mutable.execute(context.insertions);
-		console.log(mutable.code);
-		return mutable.ast;
-
-		// This intermediate code has to be transpiled by TypeScript
-
-		//const compilerHost = new FileTranspilationHost(mutable.ast);
-		//const program: ts.Program = ts.createProgram([fileName], compilerOptions, compilerHost);
-		//const emitResult = program.emit();
-        //
-        //emitResult.diagnostics.forEach((d: ts.Diagnostic) => {
-			//context.pushDiag(mutable.translateDiagnostic(d));
-		//});
-
-
+		return {
+			modifiedAst: mutable.ast,
+			mapper: mutable.translateDiagnostic.bind(mutable)
+		};
 	}
 
 	private getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {

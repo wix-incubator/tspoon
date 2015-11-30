@@ -45,7 +45,7 @@ describe('tspoon.validate()', function () {
 			.withMessage(/.* -> 5:\d+ Cannot find name 'SomeWeirdType'./);
 	});
 
-	it.only("lets pass invalid code (modified by a visitor to a valid code)", function () {
+	it("lets pass invalid code (modified by a visitor to a valid code)", function () {
 		const source = `
 			// This comment here
 			// is just
@@ -64,7 +64,7 @@ describe('tspoon.validate()', function () {
 		expect(tspoon.validate(ast, config)).to.pass();
 	});
 
-	it("makes invalid code (modified by a visitor to a still invalid code) fail", function () {
+	it("preserves error lines despite the modifications", function () {
 		const source = `
 			// This comment here
 			// is just
@@ -74,9 +74,16 @@ describe('tspoon.validate()', function () {
 		`;
 
 		const ast: ts.SourceFile = tspoon.parse('sample.tsx', source);
-		expect(tspoon.validate(ast, {})).to.fail()
+		const transformer: Visitor = {
+			filter: selectVariableDeclaration('perfectlyInvalid'),
+			visit: insertBefore('\nconst anotherValidLine: number = 777;')
+		};
+		const config: ValidatorConfig = {
+			transformers: [ transformer ]
+		};
+		expect(tspoon.validate(ast, config)).to.fail()
 			.withMessageCount(1)
-			.withMessage(/.* -> 5:\d+ Cannot find name 'StillWeirdType'./);
-	})
+			.withMessage(/.* -> 5:\d+ Cannot find name 'SomeWeirdType'./);
+	});
 
 });

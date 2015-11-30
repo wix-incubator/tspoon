@@ -34,7 +34,7 @@ ${printErrors(this.diags)}
 			.to.equal(expectedCount,
 			`Expected to fail with ${expectedCount} errors, but got ${this.diags.length}.
 Actual errors:
-${this.diags.join('\n')}
+${printErrors(this.diags)}
 `);
 		return this;
 	}
