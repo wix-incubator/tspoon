@@ -53,6 +53,7 @@ class HostBase implements ts.CompilerHost {
 
 export class FileValidationHost extends HostBase implements ts.CompilerHost {
 	private _ast: ts.SourceFile;
+	private _mapper: (diag: ts.Diagnostic) => ts.Diagnostic;
 	constructor(
 		_rootAst: ts.SourceFile,
 		private _resolutionHosts: ts.ModuleResolutionHost[],
@@ -60,7 +61,9 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 		private _transformer: Transformer
 	) {
 		super();
-		this._ast = _transformer.transform(_rootAst);
+		const result = _transformer.transform(_rootAst);
+		this._ast = result.modifiedAst;
+		this._mapper = result.mapper;
 	}
 
 	fileExists(fileName: string): boolean{
@@ -86,11 +89,16 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 			const source = this.readFile(fileName);
 			if(source) {
 				const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
-				return this._transformer.transform(ast);
+				const transformation = this._transformer.transform(ast);
+				return transformation.modifiedAst;
 			} else {
 				return null;
 			}
 		}
+	}
+
+	remapDiagnostics(diags: ts.Diagnostic[]): ts.Diagnostic[] {
+		return diags.map(this._mapper);
 	}
 }
 
