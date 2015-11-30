@@ -2,6 +2,8 @@
 /// <reference path="../typings/node/node.d.ts"/>
 
 import * as ts from 'typescript';
+import {CodeTransformer} from "./transformer";
+import {MutableSourceCode} from "./mutable-source-code";
 
 
 function fileExtensionIs(path: string, extension: string): boolean {
@@ -51,12 +53,18 @@ export class HostBase implements ts.CompilerHost {
 }
 
 export class FileValidationHost extends HostBase implements ts.CompilerHost {
+	private _ast: ts.SourceFile;
+	private _transformations: { [fileName: string]: MutableSourceCode } = {};
 	constructor(
-		private _ast: ts.SourceFile,
+		_rootAst: ts.SourceFile,
 		private _resolutionHosts: ts.ModuleResolutionHost[],
-		private _compilerOptions: ts.CompilerOptions
+		private _compilerOptions: ts.CompilerOptions,
+		private _transformer: CodeTransformer
 	) {
 		super();
+		const result = _transformer.transform(_rootAst);
+		this._transformations[_rootAst.fileName] = result;
+		this._ast = result.ast;
 	}
 
 	fileExists(fileName: string): boolean{
@@ -81,11 +89,19 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 		} else {
 			const source = this.readFile(fileName);
 			if(source) {
-				return ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
+				const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
+				const transformation = this._transformer.transform(ast);
+				this._transformations[ast.fileName] = transformation;
+				return transformation.ast;
 			} else {
 				return null;
 			}
 		}
+	}
+
+	translateDiagnostic(diagnostic: ts.Diagnostic): ts.Diagnostic {
+		const transformation = this._transformations[diagnostic.file.fileName];
+		return transformation ? transformation.translateDiagnostic(diagnostic) : diagnostic;
 	}
 }
 
