@@ -91,6 +91,7 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 			if(source) {
 				const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
 				const transformation = this._transformer.transform(ast);
+				this._transformations[ast.fileName] = transformation;
 				return transformation.ast;
 			} else {
 				return null;
