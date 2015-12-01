@@ -88,7 +88,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	// Now, we mutate the code with the resulting list of strings to be pushed
 
 	const mutable = new MutableSourceCode(ast);
-	mutable.execute(context.insertions);
+	mutable.execute(context.actions);
 
 	// This intermediate code has to be transpiled by TypeScript
 
