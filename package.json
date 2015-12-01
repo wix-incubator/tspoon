@@ -19,7 +19,6 @@
 	"test:node": "mocha --reporter $npm_config_reporter ./dist/test",
 	"build": "npm run clean && npm run build:tsc",
 	"build:webpack": "webpack -v --display-modules",
-	"build:smarty": "webpack --display-modules --config=\"./smartyPack.js\"",
 	"build:tsc": "tsc",
     "prestart": "npm run build",
     "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
@@ -57,7 +56,6 @@
     "magic-string": "0.6.6",
 	"lodash": "3.7.0",
 	"typescript": "1.6.2",
-	"source-map": "0.4.4",
-	"tmp": "0.0.28"
+	"source-map": "0.4.4"
   }
 }
