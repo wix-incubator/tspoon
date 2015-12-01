@@ -38,13 +38,13 @@ export class MutableSourceCode {
 	}
 
 	execute(actionList: Array<Replacement>): void {
-		actionList.sort((n1,n2) => n1.start - n2.start).forEach(action => {
+		actionList.forEach(action => {
 			if (action.start === action.end){
 				this.magicString.insert(action.start, action.str);
 			} else {
 				this.magicString.overwrite(action.start, action.end, action.str);
 			}
-			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(action.start, action.end);
+			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.magicString.locateOrigin(action.start), this.magicString.locateOrigin(action.end));
 			const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, action.str.length);
 			this._ast = this._ast.update(this.magicString.toString(), textChangeRange);
 		});
