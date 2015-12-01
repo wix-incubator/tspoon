@@ -12,7 +12,7 @@ function fileExtensionIs(path: string, extension: string): boolean {
 	return pathLen > extLen && path.substr(pathLen - extLen, extLen) === extension;
 }
 
-class HostBase implements ts.CompilerHost {
+export class HostBase implements ts.CompilerHost {
 	fileExists(fileName: string): boolean{
 		return false;
 	}
