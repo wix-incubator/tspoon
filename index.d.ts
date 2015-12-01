@@ -1,9 +1,10 @@
 import * as ts from "typescript";
 import {RawSourceMap} from "source-map";
 
-export interface Insertion {
-    position: number;
-    str: string;
+export interface Replacement {
+	start: number;
+	end: number;
+	str: string;
 }
 
 export interface TranspilerOutput {
@@ -20,9 +21,10 @@ export interface TranspilerConfig {
 }
 
 export interface VisitorContext {
-    halted: boolean;
-    insertLine(position: number, str: string): void;
-    reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
+	halted: boolean;
+	insertLine(position: number, str: string): void;
+	replace(start: number, end: number, str: string): void;
+	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
 }
 
 export interface Visitor {
@@ -33,10 +35,10 @@ export interface Visitor {
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput;
 
 export interface ApplyVisitorResult {
-    file: ts.SourceFile,
-    code: string;
-    insertions: Insertion[];
-    diags: ts.Diagnostic[];
+	file: ts.SourceFile,
+	code: string;
+	actions: Replacement[];
+	diags: ts.Diagnostic[];
 }
 
 export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult;
