@@ -4,7 +4,7 @@
     "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
   "name": "tspoon",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "see README.md",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
@@ -13,13 +13,13 @@
   },
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
-	"pretest": "npm run build",
-	"test": "npm run test:node",
-	"test:browser": "karma start --single-run",
-	"test:node": "mocha --reporter $npm_config_reporter ./dist/test",
-	"build": "npm run clean && npm run build:tsc",
-	"build:webpack": "webpack -v --display-modules",
-	"build:tsc": "tsc",
+    "pretest": "npm run build",
+    "test": "npm run test:node",
+    "test:browser": "karma start --single-run",
+    "test:node": "mocha --reporter $npm_config_reporter ./dist/test",
+    "build": "npm run clean && npm run build:tsc",
+    "build:webpack": "webpack -v --display-modules",
+    "build:tsc": "tsc",
     "prestart": "npm run build",
     "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
     "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
@@ -54,8 +54,8 @@
   },
   "dependencies": {
     "magic-string": "0.6.6",
-	"lodash": "3.7.0",
-	"typescript": "1.6.2",
-	"source-map": "0.4.4"
+    "lodash": "3.7.0",
+    "typescript": "1.6.2",
+    "source-map": "0.4.4"
   }
 }
