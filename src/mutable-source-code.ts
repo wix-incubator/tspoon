@@ -38,7 +38,7 @@ export class MutableSourceCode {
 	}
 
 	execute(actionList: Array<Replacement>): void {
-		actionList.sort((n1,n2) => n1.start - n2.start).reverse().forEach(action => {
+		actionList.sort((n1,n2) => -(n1.start - n2.start)).forEach(action => {
 			if (action.start === action.end){
 				this.magicString.insert(action.start, action.str);
 			} else {
