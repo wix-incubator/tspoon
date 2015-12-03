@@ -1,61 +1,61 @@
 {
   "private": false,
   "publishConfig": {
-	"registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
+    "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
   "name": "tspoon",
-  "version": "1.0.20",
+  "version": "1.0.23",
   "description": "see README.md",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
   "directories": {
-	"test": "test"
+    "test": "test"
   },
   "scripts": {
-	"clean": "rm -rf dist && mkdir dist",
-	"pretest": "npm run build",
-	"test": "npm run test:node",
-	"test:browser": "karma start --single-run",
-	"test:node": "mocha --reporter $npm_config_reporter ./dist/test",
-	"build": "npm run clean && npm run build:tsc",
-	"build:webpack": "webpack -v --display-modules",
-	"build:tsc": "tsc",
-	"prestart": "npm run build",
-	"start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
-	"start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
-	"start:tsc": "tsc -w"
+    "clean": "rm -rf dist && mkdir dist",
+    "pretest": "npm run build",
+    "test": "npm run test:node",
+    "test:browser": "karma start --single-run",
+    "test:node": "mocha --reporter $npm_config_reporter ./dist/test",
+    "build": "npm run clean && npm run build:tsc",
+    "build:webpack": "webpack -v --display-modules",
+    "build:tsc": "tsc",
+    "prestart": "npm run build",
+    "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
+    "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
+    "start:tsc": "tsc -w"
   },
   "repository": {
-	"type": "git",
-	"url": "https://github.com/wix/tspoon"
+    "type": "git",
+    "url": "https://github.com/wix/tspoon"
   },
   "author": "core3@wix",
   "license": "C",
   "bugs": {
-	"url": "https://github.com/wix/tspoon/issues"
+    "url": "https://github.com/wix/tspoon/issues"
   },
   "homepage": "https://github.com/wix/tspoon",
   "devDependencies": {
-	"chai": "2.2.0",
-	"concurrently": "0.1.1",
-	"json-loader": "0.5.1",
-	"karma": "0.13.9",
-	"karma-chrome-launcher": "0.2.0",
-	"karma-mocha": "0.2.0",
-	"mocha": "2.2.5",
-	"mocha-loader": "0.7.1",
-	"mocha-teamcity-reporter": "0.0.1",
-	"raw-loader": "0.5.1",
-	"source-map-support": "0.3.2",
-	"ts-loader": "0.5.3",
-	"tsd": "0.6.4",
-	"webpack": "1.12.0",
-	"webpack-dev-server": "1.10.1"
+    "chai": "2.2.0",
+    "concurrently": "0.1.1",
+    "json-loader": "0.5.1",
+    "karma": "0.13.9",
+    "karma-chrome-launcher": "0.2.0",
+    "karma-mocha": "0.2.0",
+    "mocha": "2.2.5",
+    "mocha-loader": "0.7.1",
+    "mocha-teamcity-reporter": "0.0.1",
+    "raw-loader": "0.5.1",
+    "source-map-support": "0.3.2",
+    "ts-loader": "0.5.3",
+    "tsd": "0.6.4",
+    "webpack": "1.12.0",
+    "webpack-dev-server": "1.10.1"
   },
   "dependencies": {
-	"magic-string": "0.6.6",
-	"lodash": "3.7.0",
-	"typescript": "1.6.2",
-	"source-map": "0.4.4"
+    "magic-string": "0.6.6",
+    "lodash": "3.7.0",
+    "typescript": "1.6.2",
+    "source-map": "0.4.4"
   }
 }
