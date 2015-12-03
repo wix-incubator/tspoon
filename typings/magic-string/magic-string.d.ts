@@ -41,7 +41,7 @@ declare module 'magic-string' {
 		getIndentString(): string;
 		indent(indentStr: string, options?: IndentOptions): MagicString;
 		insert(index: number, content: string ): MagicString;
-		locate(index: number ): MagicString;
+		locate(index: number ): number;
 		locateOrigin(index: number ): number;
 		overwrite(start: number, end: number, content: string ): MagicString;
 		prepend(content: string ): MagicString;

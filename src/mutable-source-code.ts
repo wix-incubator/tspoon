@@ -8,11 +8,6 @@ import * as traverse from './traverse-ast';
 import MagicString = require('magic-string');
 import binarySearch from "./binary-search";
 
-export interface Insertion {
-	position: number;
-	str: string;
-}
-
 export interface Replacement {
 	start: number;
 	end: number;
@@ -38,17 +33,50 @@ export class MutableSourceCode {
 	}
 
 	execute(actionList: Array<Replacement>): void {
-		actionList.sort((n1,n2) => -(n1.start - n2.start)).forEach(action => {
-			if (action.start === action.end){
-				this.magicString.insert(action.start, action.str);
-			} else {
-				this.magicString.overwrite(action.start, action.end, action.str);
-			}
-			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(action.start, action.end);
-			const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, action.str.length);
-			this._ast = this._ast.update(this.magicString.toString(), textChangeRange);
+		actionList.forEach(action => {
+		//	try {
+				var start = this.locate(action.start);
+				var end = this.locate(action.end);
+				const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(start, end);
+				const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, action.str.length);
+
+			//	if (action.start === action.end){
+			//		this.magicString.insert(this.magicString.locateOrigin(start), action.str);
+			//	} else {
+					this.magicString.overwrite(this.magicString.locateOrigin(start), this.magicString.locateOrigin(end), action.str);
+			//	}
+				this._ast = this._ast.update(this.magicString.toString(), textChangeRange);
+			//} catch(e){
+			//	debugger;
+			//	console.log('magicString:\n', this.magicString.toString());
+			//	console.log('ast:\n', this._ast.text);
+			//	console.log('action:', action);
+			//	console.log(e.message);
+			//	console.log(e.stack);
+			//	throw e;
+			//}
 		});
 	}
+
+	private locate(idx) {
+		var result = this.magicString.locate(idx);
+		if (result === null && idx > 0){
+			result = this.magicString.locate(idx-1);
+			if (result != null && false){
+				result += 1;
+			}
+		}
+		if (result === null && idx < this.magicString.toString().length){
+			result = this.magicString.locate(idx+1);
+			if (result != null && result > 0 && false){
+				result -= 1;
+			}
+		}
+		if (result === null){
+			throw new Error( `Visitor referring an outdated location ${idx}`);
+		}
+		return result;
+	};
 
 	get sourceMap(): RawSourceMap {
 		return this.magicString.generateMap({
