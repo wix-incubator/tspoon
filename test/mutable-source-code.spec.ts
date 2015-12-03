@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import * as chai from "chai";
 import * as ts from "typescript";
-import { MutableSourceCode, Insertion, Replacement} from "../src/mutable-source-code";
+import { MutableSourceCode, Replacement} from "../src/mutable-source-code";
 import { traverseAst } from '../src/traverse-ast';
 import { findCodeRange, findCodePosition } from "../test-kit/index";
 import { FileTranspilationHost } from '../src/hosts';
@@ -13,6 +13,11 @@ import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map'
 function makeReplacement(source: string, atStr: string, insStr: string): Replacement {
 	const textRange = findCodeRange(source, atStr);
 	return { start: textRange.pos, end: textRange.end, str: insStr };
+}
+
+function makeLineInsersion(source: string, atStr: string, insStr: string): Replacement {
+	const textRange = findCodeRange(source, atStr);
+	return { start: textRange.pos, end: textRange.pos, str: insStr + "\n" };
 }
 
 function aSourceMapperFor(source: string): MutableSourceCode {
@@ -52,12 +57,16 @@ fubar();`;
 	describe("and given a replacement command, sourcemapper should", ()=> {
 
 		const target = `class A {}
+@bar
 @foo
 class B {}
 fubar();`;
 		before(() =>{
-			const action = makeReplacement(source, "PLACE_HOLDER", "@foo\n");
-			mutableCode.execute([action]);
+			const action1 = makeLineInsersion(source, "PLACE_HOLDER", "@bar");
+			const action2 = makeReplacement(source, "PLACE_HOLDER", "@foo\n");
+			// TODO uncomment
+			const action3 = makeLineInsersion(source, "PLACE_HOLDER", "@baz");
+			mutableCode.execute([action1, action2/*, action3*/]);
 		});
 
 		it("generate a new string that matches the expected target", ()=> {
