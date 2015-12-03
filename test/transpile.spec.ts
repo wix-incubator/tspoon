@@ -19,7 +19,7 @@ describe('transpiler', function () {
 		expect(transpiled.diags).not.to.be.empty;
 	});
 
-	describe.only('e2e regression test', ()=> {
+	describe('e2e regression test', ()=> {
 
 		const config2: TranspilerConfig = {
 			compilerOptions : <CompilerOptions>{
@@ -40,7 +40,7 @@ describe('transpiler', function () {
 					if(!_.isEmpty(classNode.decorators)) {
 						targetPosition = (<Decorator>_.last(classNode.decorators)).end + 1;
 					}
-					console.log(targetPosition);
+			//		console.log("targetPosition", targetPosition);
 					context.insertLine(targetPosition, `@fooo(\`------------------------
 					"tags": ["@type"],
 					"properties": [
@@ -67,7 +67,7 @@ describe('transpiler', function () {
 			}]
 		};
 
-		it.only('checks sample code doesn\'t get garbled up the same way it once did', () => {
+		it('checks sample code doesn\'t get garbled up the same way it once did', () => {
 			const source = `
 /// <reference path="../../../typings/tsd.d.ts"/>
 
