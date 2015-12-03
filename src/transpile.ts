@@ -3,7 +3,7 @@
 
 import { FileTranspilationHost, FileValidationHost } from './hosts';
 import { traverseAst } from './traverse-ast';
-import { MutableSourceCode, Insertion } from './mutable-source-code';
+import { MutableSourceCode } from './mutable-source-code';
 import { RawSourceMap, SourceMapConsumer } from 'source-map';
 import { Visitor, VisitorContext } from './visitor';
 import * as ts from 'typescript';

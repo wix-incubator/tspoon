@@ -8,7 +8,7 @@ import { defaultCompilerOptions } from '../src/configuration';
 import { Visitor, VisitorContext, transpile, TranspilerOutput } from "../src/index";
 import { traverseAst } from "../src/traverse-ast";
 import { TranspilerContext } from "../src/transpiler-context";
-import { MutableSourceCode, Insertion } from "../src/mutable-source-code";
+import { MutableSourceCode } from "../src/mutable-source-code";
 
 function applyVisitor(source: string, visitor: Visitor): TranspilerOutput {
     const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
@@ -37,16 +37,16 @@ function matchDiagRanges(expected: ts.TextRange, actual: ts.Diagnostic): void {
 
 describe("given source code and a visitor, transpiler should", ()=> {
 
-    const source = "\nclass A {}\n\n\nclass B {}";
+    const source = "\nclass A {}\nclass B {}\n";
 
     const mockVisitor: Visitor = {
         filter: (node: ts.Node): boolean => {
             return node.kind == ts.SyntaxKind.ClassDeclaration;
         },
         visit: (node: ts.Node, context: VisitorContext): void => {
-            context.insertLine(node.getStart(), "@blah");
-            context.replace(node.getStart(), node.getStart() + 'class'.length, "interface");
-            context.reportDiag(node, ts.DiagnosticCategory.Error, "Test message");
+			context.insertLine(node.getStart(), "@blah");
+			context.replace(node.getStart(), node.getStart() + 'class'.length, "interface");
+			context.reportDiag(node, ts.DiagnosticCategory.Error, "Test message");
         }
     };
 
@@ -56,7 +56,7 @@ describe("given source code and a visitor, transpiler should", ()=> {
     	intermResult = applyVisitor(source, mockVisitor);
 	});
 
-    const target = "\n@blah\ninterface A {}\n\n\n@blah\ninterface B {}";
+    const target = "\n@blah\ninterface A {}\n@blah\ninterface B {}\n";
 
     it("generate the correct intermediate code", function () {
         chai.expect(intermResult.code).to.equal(target);
