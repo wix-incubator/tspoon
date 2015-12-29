@@ -62,17 +62,19 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 		private _transformer: CodeTransformer
 	) {
 		super();
-		const result = _transformer.transform(_rootAst);
-		this._transformations[_rootAst.fileName] = result;
-		this._ast = result.ast;
+		if(_rootAst) {
+			const result = _transformer.transform(_rootAst);
+			this._transformations[_rootAst.fileName] = result;
+			this._ast = result.ast;
+		}
 	}
 
 	fileExists(fileName: string): boolean{
-		return fileName === this._ast.fileName || this._resolutionHosts.some(host => host.fileExists(fileName));
+		return (this._ast && fileName === this._ast.fileName) || this._resolutionHosts.some(host => host.fileExists(fileName));
 	}
 
 	readFile(fileName: string): string {
-		if(fileName === this._ast.fileName) {
+		if(this._ast && fileName === this._ast.fileName) {
 			return this._ast.text;
 		} else {
 			return this._resolutionHosts.reduce<string>(
@@ -84,7 +86,7 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 	}
 
 	getSourceFile(fileName: string): ts.SourceFile {
-		if(fileName === this._ast.fileName) {
+		if(this._ast && fileName === this._ast.fileName) {
 			return this._ast;
 		} else {
 			const source = this.readFile(fileName);

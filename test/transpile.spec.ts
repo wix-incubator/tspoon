@@ -127,7 +127,6 @@ export default class Image{
 }
 `;
 			const transpiled = transpile(source, config2);
-			console.log(transpiled.code);
 			expect(() => eval(transpiled.code)).not.to.throw();
 		});
 	});
