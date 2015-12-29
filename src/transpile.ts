@@ -132,20 +132,6 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	};
 }
 
-export function parse(fileName: string, content: string, compilerOptions: ts.CompilerOptions = defaultCompilerOptions): ts.SourceFile {
-	return ts.createSourceFile(fileName, content, compilerOptions.target, true);
-}
-
-export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagnostic[] {
-	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
-	const validationHost = new FileValidationHost(ast, config.resolutionHosts || [], defaultCompilerOptions, transformer);
-	const program = ts.createProgram([ast.fileName], defaultCompilerOptions, validationHost);
-	let context: TranspilerContext = new TranspilerContext();
-	config.visitors && config.visitors.forEach(visitor => traverseAst(ast, visitor, context));
-	const diags: ts.Diagnostic[] = program.getSemanticDiagnostics().concat(context.diags);
-	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
-}
-
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
 	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
 	const validationHost = new FileValidationHost(null, config.resolutionHosts || [], defaultCompilerOptions, transformer);
