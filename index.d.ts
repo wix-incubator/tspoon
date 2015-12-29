@@ -54,3 +54,4 @@ export interface ValidatorConfig {
 export function parse(fileName: string, content: string, compilerOptions: ts.CompilerOptions): ts.SourceFile;
 
 export function validate(ast: ts.SourceFile, config: ValidatorConfig): ts.Diagnostic[];
+export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[];
