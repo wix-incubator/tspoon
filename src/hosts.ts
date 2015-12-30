@@ -53,51 +53,36 @@ export class HostBase implements ts.CompilerHost {
 }
 
 export class FileValidationHost extends HostBase implements ts.CompilerHost {
-	private _ast: ts.SourceFile;
 	private _transformations: { [fileName: string]: MutableSourceCode } = {};
 	constructor(
-		_rootAst: ts.SourceFile,
 		private _resolutionHosts: ts.ModuleResolutionHost[],
 		private _compilerOptions: ts.CompilerOptions,
 		private _transformer: CodeTransformer
 	) {
 		super();
-		if(_rootAst) {
-			const result = _transformer.transform(_rootAst);
-			this._transformations[_rootAst.fileName] = result;
-			this._ast = result.ast;
-		}
 	}
 
 	fileExists(fileName: string): boolean{
-		return (this._ast && fileName === this._ast.fileName) || this._resolutionHosts.some(host => host.fileExists(fileName));
+		return this._resolutionHosts.some(host => host.fileExists(fileName));
 	}
 
 	readFile(fileName: string): string {
-		if(this._ast && fileName === this._ast.fileName) {
-			return this._ast.text;
-		} else {
-			return this._resolutionHosts.reduce<string>(
-				(acc:string, host: ts.ModuleResolutionHost) => (!acc && host.fileExists(fileName))
-					? host.readFile(fileName)
-					: acc,
-				null);
-		}
+		return this._resolutionHosts.reduce<string>(
+			(acc:string, host: ts.ModuleResolutionHost) => (!acc && host.fileExists(fileName))
+				? host.readFile(fileName)
+				: acc,
+			null);
 	}
 
 	getSourceFile(fileName: string): ts.SourceFile {
-		if(this._ast && fileName === this._ast.fileName) {
-			return this._ast;
+		const source = this.readFile(fileName);
+		if(source) {
+			const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
+			const transformation = this._transformer.transform(ast);
+			this._transformations[ast.fileName] = transformation;
+			return transformation.ast;
 		} else {
-			const source = this.readFile(fileName);
-			if(source) {
-				const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
-				const transformation = this._transformer.transform(ast);
-				this._transformations[ast.fileName] = transformation;
-				return transformation.ast;
-			} else {
-				return null;
-			}
+			return null;
 		}
 	}
 
