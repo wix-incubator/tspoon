@@ -134,10 +134,9 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
 	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
-	const validationHost = new FileValidationHost(null, config.resolutionHosts || [], defaultCompilerOptions, transformer);
+	const validationHost = new FileValidationHost(config.resolutionHosts || [], defaultCompilerOptions, transformer);
 	const program = ts.createProgram(files, defaultCompilerOptions, validationHost);
 	let context: TranspilerContext = new TranspilerContext();
-	//config.visitors && config.visitors.forEach(visitor => traverseAst(ast, visitor, context));
 	const diags: ts.Diagnostic[] = program.getSemanticDiagnostics().concat(context.diags);
 	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
 }
