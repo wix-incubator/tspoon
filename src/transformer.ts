@@ -12,11 +12,6 @@ export class VisitorBasedTransformer implements CodeTransformer {
 	constructor(private visitors: Visitor[]) {}
 
 	transform(ast: ts.SourceFile): MutableSourceCode {
-		const parserErrors = this.getParserErrors(ast);
-		if(parserErrors.length>0) {
-			return null;
-		}
-
 		const context: TranspilerContext = new TranspilerContext();
 		this.visitors.forEach((visitor) => {
 			context.halted || traverseAst(ast, visitor, context);
@@ -31,11 +26,7 @@ export class VisitorBasedTransformer implements CodeTransformer {
 		}
 	}
 
-	private getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
-		// We're accessing here an internal property. It would be more legit to access it through
-		// ts.Program.getSyntacticDiagsnostics(), but we want to bail out ASAP.
-		return sourceFile['parseDiagnostics'];
-	}
+
 }
 
 
