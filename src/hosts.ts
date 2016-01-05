@@ -54,6 +54,8 @@ export class HostBase implements ts.CompilerHost {
 
 export class FileValidationHost extends HostBase implements ts.CompilerHost {
 	private _transformations: { [fileName: string]: MutableSourceCode } = {};
+	private _syntacticErrors: ts.Diagnostic[] = [];
+
 	constructor(
 		private _resolutionHosts: ts.ModuleResolutionHost[],
 		private _compilerOptions: ts.CompilerOptions,
@@ -78,9 +80,15 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 		const source = this.readFile(fileName);
 		if(source) {
 			const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
-			const transformation = this._transformer.transform(ast);
-			this._transformations[ast.fileName] = transformation;
-			return transformation.ast;
+			const syntacticErors = this.getParserErrors(ast);
+			if(syntacticErors.length>0) {
+				this._syntacticErrors.push(...syntacticErors);
+				return null;
+			} else {
+				const transformation = this._transformer.transform(ast);
+				this._transformations[ast.fileName] = transformation;
+				return transformation.ast;
+			}
 		} else {
 			return null;
 		}
@@ -89,6 +97,16 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 	translateDiagnostic(diagnostic: ts.Diagnostic): ts.Diagnostic {
 		const transformation = this._transformations[diagnostic.file.fileName];
 		return transformation ? transformation.translateDiagnostic(diagnostic) : diagnostic;
+	}
+
+	getSyntacticErrors(): ts.Diagnostic[] {
+		return this._syntacticErrors;
+	}
+
+	private getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
+		// We're accessing here an internal property. It would be more legit to access it through
+		// ts.Program.getSyntacticDiagsnostics(), but we want to bail out ASAP.
+		return sourceFile['parseDiagnostics'];
 	}
 }
 
