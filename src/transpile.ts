@@ -139,7 +139,8 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
 	let context: TranspilerContext = new TranspilerContext();
 	const diags: ts.Diagnostic[] = [].concat(
 		validationHost.getSyntacticErrors(),
-		program.getSemanticDiagnostics().concat(context.diags)
+		program.getSemanticDiagnostics(),
+		context.diags
 	);
 	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
 }
