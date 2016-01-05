@@ -112,6 +112,40 @@ describe('tspoon.validateAll()', function () {
 			]
 		};
 		expect(tspoon.validateAll(['index.ts'], config)).to.pass();
-	})
+	});
+
+	it("fails gracefully with syntactically incorrect input", function () {
+		const config: ValidatorConfig = {
+			resolutionHosts: [
+				new MockModule('index.ts', `
+					import {Product} from './Product';
+					const product: Product = { title: 'Sample'
+				`),
+				new MockModule('Product.ts', `
+					export class Product { title: string; }
+					const somethingUnrelated: string = 'what?';
+				`)
+			]
+		};
+		expect(tspoon.validateAll(['index.ts'], config)).to.fail()
+			.withMessage(/index.ts -> \d+:\d+ '}' expected./);
+	});
+
+	it("fails gracefully with syntactically incorrect dependency", function () {
+		const config: ValidatorConfig = {
+			resolutionHosts: [
+				new MockModule('index.ts', `
+					import {Product} from './Product';
+					const product: Product = { title: 'Sample' }
+				`),
+				new MockModule('Product.ts', `
+					export class Product { title: string; }
+					const somethingUnrelated: string = 'what?
+				`)
+			]
+		};
+		expect(tspoon.validateAll(['index.ts'], config)).to.fail()
+			.withMessage(/Product.ts -> \d+:\d+ Unterminated string literal./);
+	});
 
 });
