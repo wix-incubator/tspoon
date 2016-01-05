@@ -82,7 +82,7 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 			const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
 			const syntacticErors = this.getParserErrors(ast);
 			if(syntacticErors.length>0) {
-				this._syntacticErrors.push.apply(this._syntacticErrors, syntacticErors);
+				this._syntacticErrors.push(...syntacticErors);
 				return null;
 			} else {
 				const transformation = this._transformer.transform(ast);
