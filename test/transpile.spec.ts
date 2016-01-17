@@ -15,7 +15,7 @@ describe('transpiler', function () {
 	it('fails on parser errors', function () {
 		const source = 'let a = <div><div></div>;';
 		const transpiled = transpile(source, config);
-		expect(transpiled.code).to.equal(null);
+		expect(transpiled.code).not.to.be.ok;
 		expect(transpiled.diags).not.to.be.empty;
 	});
 
