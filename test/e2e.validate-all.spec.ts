@@ -47,16 +47,16 @@ describe('tspoon.validateAll()', function () {
 					// is just
 					// to add some lines
 					export const perfectlyValid: number = 666;
-					export const perfectlyInvalid: SomeWeirdType = "HAHAHA";
+					export const perfectlyInvalid: SomeUndefinedType = "HAHAHA";
 				`)
 			]
 		};
 		expect(tspoon.validateAll(['index.ts', 'index2.ts'], config)).to.fail()
 			.withMessageCount(1)
-			.withMessage(/index2.ts -> 5:\d+ Cannot find name 'SomeWeirdType'./);
+			.withMessage(/index2.ts -> 5:\d+ Cannot find name 'SomeUndefinedType'./);
 	});
 
-	it("lets pass invalid code (modified by a visitor to a valid code)", function () {
+	it("lets invalid code that was fixed by a visitor pass", function () {
 		const config: ValidatorConfig = {
 			resolutionHosts: [
 				new MockModule('index.ts', `
@@ -64,12 +64,12 @@ describe('tspoon.validateAll()', function () {
 					// is just
 					// to add some lines
 					const perfectlyValid: number = 666;
-					const perfectlyInvalid: SomeWeirdType = "HAHAHA";
+					const perfectlyInvalid: SomeUndefinedType = "HAHAHA";
 				`)
 			],
 
 			mutators: [
-				beforeVariable('perfectlyInvalid').insert('\ntype SomeWeirdType = string;')
+				beforeVariable('perfectlyInvalid').insert('\ntype SomeUndefinedType = string;')
 			]
 		};
 		expect(tspoon.validateAll(['index.ts'], config)).to.pass();
@@ -83,7 +83,7 @@ describe('tspoon.validateAll()', function () {
 					// is just
 					// to add some lines
 					const perfectlyValid: number = 666;
-					const perfectlyInvalid: SomeWeirdType = "HAHAHA";
+					const perfectlyInvalid: SomeUndefinedType = "HAHAHA";
 				`)
 			],
 			mutators: [
@@ -92,7 +92,7 @@ describe('tspoon.validateAll()', function () {
 		};
 		expect(tspoon.validateAll(['index.ts'], config)).to.fail()
 			.withMessageCount(1)
-			.withMessage(/.* -> 5:\d+ Cannot find name 'SomeWeirdType'./);
+			.withMessage(/.* -> 5:\d+ Cannot find name 'SomeUndefinedType'./);
 	});
 
 	it("modifies a dependency of the validated file", function () {

@@ -34,12 +34,11 @@ function matchDiagRanges(expected: ts.TextRange, actual: ts.Diagnostic): void {
     });
 }
 
-
 describe("given source code and a visitor, transpiler should", ()=> {
 
     const source = "\nclass A {}\nclass B {}\n";
 
-    const mockVisitor: Visitor = {
+    const fakeVisitor: Visitor = {
         filter: (node: ts.Node): boolean => {
             return node.kind == ts.SyntaxKind.ClassDeclaration;
         },
@@ -50,28 +49,28 @@ describe("given source code and a visitor, transpiler should", ()=> {
         }
     };
 
-    let intermResult;
+    let postVisitorOutput;
 
 	beforeEach(()=>{
-    	intermResult = applyVisitor(source, mockVisitor);
+    	postVisitorOutput = applyVisitor(source, fakeVisitor);
 	});
 
     const target = "\n@blah\ninterface A {}\n@blah\ninterface B {}\n";
 
     it("generate the correct intermediate code", function () {
-        chai.expect(intermResult.code).to.equal(target);
+        chai.expect(postVisitorOutput.code).to.equal(target);
     });
 
     it("give correct diag positions", ()=> {
 
-        chai.expect(intermResult.diags.length).to.equal(2);
+        chai.expect(postVisitorOutput.diags).to.have.length(2);
 
         matchDiagRanges(
             findCodeRange(source, "class A {}"),
-            intermResult.diags[0]);
+            postVisitorOutput.diags[0]);
 
         matchDiagRanges(
             findCodeRange(source, "class B {}"),
-            intermResult.diags[1]);
+            postVisitorOutput.diags[1]);
     });
 });
