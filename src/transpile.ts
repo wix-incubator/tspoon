@@ -135,7 +135,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
 	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
 	const validationHost = new FileValidationHost(config.resolutionHosts || [], defaultCompilerOptions, transformer);
-	const program = ts.createProgram(files, defaultCompilerOptions, validationHost);
+	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, validationHost);
 	let context: TranspilerContext = new TranspilerContext();
 	const diags: ts.Diagnostic[] = [].concat(
 		validationHost.getSyntacticErrors(),
