@@ -12,6 +12,6 @@ function printMessage(messageText:string | ts.DiagnosticMessageChain):string {
 export function printDiagnostic(diagnostic: ts.Diagnostic) {
 	const linePos: ts.LineAndCharacter = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
 	const message: string = printMessage(diagnostic.messageText);
-	return `${diagnostic.file.fileName} -> ${linePos.line}:${linePos.character} ${message}`;
+	return `${diagnostic.file.fileName} -> ${linePos.line + 1}:${linePos.character} ${message}`;
 }
 
