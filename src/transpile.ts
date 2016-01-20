@@ -12,10 +12,25 @@ import { defaultCompilerOptions } from "./configuration";
 import {CodeTransformer} from "./transformer";
 import {VisitorBasedTransformer} from "./transformer";
 
+/**
+ * result of transpilation action
+ */
 export interface TranspilerOutput {
+	/**
+	 * the transpiled code, if transpilation was not halted
+	 */
 	code: string,
+	/**
+	 * a raw sourcemap object representing all changes made from the supplied source to the transpiled code (visitors and typescript alike)
+	 */
 	sourceMap: RawSourceMap,
+	/**
+	 * diagnostics produced by Typescript or the visitors
+	 */
 	diags: ts.Diagnostic[],
+	/**
+	 * did the transpilation fail
+	 */
 	halted: boolean
 }
 
@@ -48,7 +63,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
 	// First we initialize a SourceFile object with the given source code
 
-	const fileName: string = config.sourceFileName + '.tsx';
+	const fileName: string = config.sourceFileName; // + '.tsx';
 
 	// Then we let TypeScript parse it into an AST
 
