@@ -33,6 +33,10 @@ module.exports = {
 	module: {
 		loaders: [
 			{
+				test    : /\.ts$/,
+				loader  : 'raw-loader'
+			},
+			{
 				test    : /\.json$/,
 				loader  : 'json-loader'
 			}

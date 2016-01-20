@@ -33,4 +33,6 @@ dist
 *.sublime-workspace
 sftp-config.json
 .DS_Store
-
+!example-poc/build.js
+!example-poc/deletePrivate.js
+!webpack.config.js
