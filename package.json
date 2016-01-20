@@ -4,7 +4,7 @@
     "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
   "name": "tspoon",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "see README.md",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
@@ -47,8 +47,8 @@
     "mocha-teamcity-reporter": "0.0.1",
     "raw-loader": "0.5.1",
     "source-map-support": "0.3.2",
-	"convert-source-map": "1.1.2",
-	"ts-loader": "0.5.3",
+    "convert-source-map": "1.1.2",
+    "ts-loader": "0.5.3",
     "tsd": "0.6.4",
     "webpack": "1.12.0",
     "webpack-dev-server": "1.10.1"
