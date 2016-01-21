@@ -2,7 +2,7 @@
 /// <reference path="../typings/node/node.d.ts"/>
 /// <reference path="../typings/magic-string/magic-string.d.ts"/>
 
-import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map';
+import { RawSourceMap, SourceMapConsumer, SourceMapGenerator, MappedPosition } from 'source-map';
 import * as ts from 'typescript';
 import * as traverse from './traverse-ast';
 import MagicString = require('magic-string');
@@ -34,29 +34,13 @@ export class MutableSourceCode {
 
 	execute(actionList: Array<Replacement>): void {
 		actionList.forEach(action => {
-			var start = this.locate(action.start);
-			var end = this.locate(action.end);
-			this.magicString.overwrite(this.magicString.locateOrigin(start), this.magicString.locateOrigin(end), action.str);
-			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(start, end);
+			this.magicString.overwrite(action.start, action.end, action.str);
+			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(action.start, action.end);
 			const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, action.str.length);
 			this._ast = this._ast.update(this.magicString.toString(), textChangeRange);
 
 		});
 	}
-
-	private locate(idx) {
-		var result = this.magicString.locate(idx);
-		if (result === null && idx > 0){
-			result = this.magicString.locate(idx-1);
-		}
-		if (result === null && idx < this.magicString.toString().length){
-			result = this.magicString.locate(idx+1);
-		}
-		if (result === null){
-			throw new Error( `Visitor referring an outdated location ${idx}`);
-		}
-		return result;
-	};
 
 	get sourceMap(): RawSourceMap {
 		return this.magicString.generateMap({
@@ -82,39 +66,39 @@ export class MutableSourceCode {
 
 		const originalText = this.originalText;
 		const intermediateAst = this._ast;
-		const magicString = this.magicString;
+		const map: RawSourceMap = this.magicString.generateMap({ source: this._ast.fileName, hires: true });
+		const mapConsumer = new SourceMapConsumer(map);
 
 		var fromSMC = new SourceMapConsumer(from);
 		var resultMap = new SourceMapGenerator();
 		resultMap.setSourceContent(intermediateAst.fileName, originalText);
 
 		fromSMC.eachMapping(mapping => {
-			var positionOfLineAndCharacter = intermediateAst.getPositionOfLineAndCharacter(mapping.originalLine - 1, mapping.originalColumn);
-			if(positionOfLineAndCharacter >= 0 && positionOfLineAndCharacter < magicString.toString().length) {
-				var originalPosition = magicString.locateOrigin(positionOfLineAndCharacter); // this is slow
-				if(originalPosition != null) {
-					resultMap.addMapping({
-						source: intermediateAst.fileName,
-						name: mapping.name,
-						generated: {
-							line: mapping.generatedLine,
-							column: mapping.generatedColumn
-						},
-						original: this.findLineAndColumnOnOrigText(originalPosition)
-					});
-				}
+			var originalPosition: MappedPosition = mapConsumer.originalPositionFor({ line: mapping.originalLine, column: mapping.originalColumn });
+			if(originalPosition.line != null) {
+				resultMap.addMapping({
+					source: intermediateAst.fileName,
+					name: mapping.name,
+					generated: {
+						line: mapping.generatedLine,
+						column: mapping.generatedColumn
+					},
+					original: originalPosition
+				});
 			}
 		});
 		return resultMap.toJSON();
 	}
 
 	translateDiagnostic(diag: ts.Diagnostic): ts.Diagnostic {
-		const startPos: number = this.magicString.locateOrigin(diag.start);
-		const endPos: number = this.magicString.locateOrigin(diag.start + diag.length);
+		const map: RawSourceMap = this.magicString.generateMap({ source: this._ast.fileName, hires: true });
+		const cosumer: SourceMapConsumer = new SourceMapConsumer(map);
+		const start: ts.LineAndCharacter = diag.file.getLineAndCharacterOfPosition(diag.start);
+		const startPos: MappedPosition = cosumer.originalPositionFor({ line: start.line + 1, column: start.character });
 		return {
 			file: diag.file,
-			start: startPos,
-			length: endPos - startPos,
+			start: diag.file.getPositionOfLineAndCharacter(startPos.line -1, startPos.column),
+			length: diag.length,
 			messageText: diag.messageText,
 			category: diag.category,
 			code: diag.code

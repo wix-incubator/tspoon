@@ -42,8 +42,7 @@ describe('tspoon.validateAll()', function () {
 		const config: ValidatorConfig = {
 			resolutionHosts: [
 				new MockModule('index.ts', 'export const perfectlyValid: number = 666;'),
-				new MockModule('index2.ts', `
-					// This comment here
+				new MockModule('index2.ts', `// This comment here
 					// is just
 					// to add some lines
 					export const perfectlyValid: number = 666;
