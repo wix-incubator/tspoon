@@ -1,13 +1,18 @@
 # tspoon
-Customizing TypeScript semantics by introducing a visitors engine.
-### who should use this tool
-Tspoon will help you define a powerful build-time [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) on top of Typescript. This means that the semantics that the DSL introduces are already evaluated by the time the code executes, saving precious runtime latency and errors.
-Tspoon also enables custom build-time validations, which unlike tools such as tsLint, also supports pre-validation code changes, allowing the developer to bypass otherwise unavoidable TypeScript diagnostics.
-Tspoon uses [Typescript's compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) to allow pluggable pieces of logic (called ```visitor```) to modify the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) before invoking the Typescript transpiler.
-## Users Documentation
-A proof of concept example can be found in the ```example-poc``` folder of this project
+A visiting engine for [TypeScript](http://typescript.org).
+### Who should use this tool
+tspoon will help you introduce language features and custom build-time validations to be resolved at [transpile-time](https://en.wikipedia.org/wiki/Compile_time).  
+This technique enables early optimizations and error detection for custom language features.
 
-### how to write a visitor
+the validation api supports pre-validation code changes, allowing the developer to bypass otherwise unavoidable TypeScript diagnostics.
+
+Tspoon uses [Typescript's compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) to allow pluggable pieces of logic (called ```visitor```) to modify the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) before invoking the Typescript transpiler.
+
+
+## Users Documentation
+A simple example can be found [here](http://gituhb.com/wix/tspoon/example-poc).
+
+### How to write a visitor
 A visitor is an instance of the visitor interface:
 ```typescript
 // from src/visitor.ts
