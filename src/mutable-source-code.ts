@@ -8,6 +8,10 @@ import * as traverse from './traverse-ast';
 import MagicString = require('magic-string');
 import binarySearch from "./binary-search";
 
+function compareActions(action1: Replacement, action2: Replacement): number {
+	return action2.start - action1.start;
+}
+
 export interface Replacement {
 	start: number;
 	end: number;
@@ -33,7 +37,8 @@ export class MutableSourceCode {
 	}
 
 	execute(actionList: Array<Replacement>): void {
-		actionList.forEach(action => {
+		const sortedActions = actionList.slice().sort(compareActions);
+		sortedActions.forEach(action => {
 			this.magicString.overwrite(action.start, action.end, action.str);
 			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(action.start, action.end);
 			const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, action.str.length);
