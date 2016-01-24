@@ -24,6 +24,7 @@ export class MutableSourceCode {
 	private magicString: MagicString;
 	private originalText: string;
 	private origLineStarts: number[];
+	private _sourceMap: RawSourceMap;
 
 	constructor(ast: ts.SourceFile) {
 		this._ast = ast;
@@ -48,31 +49,21 @@ export class MutableSourceCode {
 	}
 
 	get sourceMap(): RawSourceMap {
-		return this.magicString.generateMap({
-			file: "file.ts",
-			source: this._ast.text,
-			includeContent: false
-		});
+		if(!this._sourceMap) {
+			this._sourceMap = this.magicString.generateMap({ source: this._ast.fileName, hires: true });
+		}
+		return this._sourceMap;
 	}
 
 	get code(): string {
 		return this._ast.text;
 	}
 
-	private findLineAndColumnOnOrigText(position: number) {
-		let index = binarySearch(this.origLineStarts, position);
-		return {
-			line: index + 1,
-			column: position - this.origLineStarts[index]
-		};
-	}
-
 	translateMap(from: RawSourceMap): RawSourceMap {
-
 		const originalText = this.originalText;
 		const intermediateAst = this._ast;
-		const map: RawSourceMap = this.magicString.generateMap({ source: this._ast.fileName, hires: true });
-		const mapConsumer = new SourceMapConsumer(map);
+
+		const mapConsumer = new SourceMapConsumer(this.sourceMap);
 
 		var fromSMC = new SourceMapConsumer(from);
 		var resultMap = new SourceMapGenerator();
@@ -92,12 +83,13 @@ export class MutableSourceCode {
 				});
 			}
 		});
+		this._sourceMap = <RawSourceMap>resultMap.toJSON();
 		return resultMap.toJSON();
 	}
 
 	translateDiagnostic(diag: ts.Diagnostic): ts.Diagnostic {
-		const map: RawSourceMap = this.magicString.generateMap({ source: this._ast.fileName, hires: true });
-		const cosumer: SourceMapConsumer = new SourceMapConsumer(map);
+		const sourceMap: RawSourceMap = this.sourceMap;
+		const cosumer: SourceMapConsumer = new SourceMapConsumer(sourceMap);
 		const start: ts.LineAndCharacter = diag.file.getLineAndCharacterOfPosition(diag.start);
 		const startPos: MappedPosition = cosumer.originalPositionFor({ line: start.line + 1, column: start.character });
 		return {
@@ -108,7 +100,6 @@ export class MutableSourceCode {
 			category: diag.category,
 			code: diag.code
 		};
-
 	}
 }
 
