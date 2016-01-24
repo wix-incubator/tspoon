@@ -12,10 +12,25 @@ import { defaultCompilerOptions } from "./configuration";
 import {CodeTransformer} from "./transformer";
 import {VisitorBasedTransformer} from "./transformer";
 
+/**
+ * result of transpilation action
+ */
 export interface TranspilerOutput {
+	/**
+	 * the transpiled code, if transpilation was not halted
+	 */
 	code: string,
+	/**
+	 * a raw sourcemap object representing all changes made from the supplied source to the transpiled code (visitors and typescript alike)
+	 */
 	sourceMap: RawSourceMap,
+	/**
+	 * diagnostics produced by Typescript or the visitors
+	 */
 	diags: ts.Diagnostic[],
+	/**
+	 * did the transpilation fail
+	 */
 	halted: boolean
 }
 
@@ -135,7 +150,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
 	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
 	const validationHost = new FileValidationHost(config.resolutionHosts || [], defaultCompilerOptions, transformer);
-	const program = ts.createProgram(files, defaultCompilerOptions, validationHost);
+	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, validationHost);
 	let context: TranspilerContext = new TranspilerContext();
 	const diags: ts.Diagnostic[] = [].concat(
 		validationHost.getSyntacticErrors(),
