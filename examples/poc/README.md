@@ -14,7 +14,7 @@ README.md               build.js                deletePrivate.js        src.js  
 ```
 
 ## Structure
-- **`./deletePrivate.js`** - this file defines the transformation that should be applied. it exposes a single visitor that only operates on properties declarations with the ```private``` modifier, and completely deletes them. 
+- **`./deletePrivate.js`** - this file defines the transformation that should be applied. it exposes a single visitor that only operates on property declarations with the ```private``` modifier, and completely deletes them.
 - **`./src.ts`** - this is an example typescript code that will be subject to the visitor's transformations.
 The example defines ```class TwoNames``` with two fields: one public and one private.
 - **`./build.js`** - This code translates ```src.ts``` and produces ES5 code after applying the ```deletePrivate``` logic on it.

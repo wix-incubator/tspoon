@@ -6,7 +6,7 @@ let visitor = require('../../examples/poc/deletePrivate.js');
 describe('poc example', function () {
 	let sourceCode, configNoVisitors, configWithVisitors;
 	before(() => {
-		sourceCode = require('../../example-poc/src.ts'); // the path is relative to tspoon/dist/test
+		sourceCode = require('../../examples/poc/src.ts'); // the path is relative to tspoon/dist/test
 		configNoVisitors = {
 			sourceFileName: 'src.ts',
 			visitors: []
