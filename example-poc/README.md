@@ -13,7 +13,7 @@ $ ls
 README.md               build.js                deletePrivate.js        src.js                  src.js.map              src.ts
 ```
 
-## structure
+## Structure
 - **`./deletePrivate.js`** - this file defines the transformation that should be applied. it exposes a single visitor that only operates on properties declarations with the ```private``` modifier, and completely deletes them. 
 - **`./src.ts`** - this is an example typescript code that will be subject to the visitor's transformations.
 The example defines ```class TwoNames``` with two fields: one public and one private.
