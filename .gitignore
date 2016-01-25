@@ -36,5 +36,5 @@ sftp-config.json
 !examples/poc/build.js
 !examples/poc/deletePrivate.js
 !examples/readme/build.js
-!examples/readme/deletePrivate.js
+!examples/readme/alertProperty.js
 !webpack.config.js
