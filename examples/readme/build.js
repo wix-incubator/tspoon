@@ -1,8 +1,8 @@
 var ts = require('typescript');
-var tspoon = require("../dist/src");
+var tspoon = require("../../dist/src");
 var fs = require('fs');
 var path = require('path');
-var visitor = require('./deletePrivate');
+var visitor = require('./alertProperty');
 var convertSourceMap = require('convert-source-map');
 
 var config = {
