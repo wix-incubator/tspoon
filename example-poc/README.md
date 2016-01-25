@@ -1,7 +1,7 @@
 # POC example
 In this example we introduce a simple proof of concept transformation, that deletes private class properties.
 
-## how to build and run from source
+## How to build and run from source
 After installing and building Tspoon, run build.js which will use Tspoon together with Typescript to compile src.ts into stc.js
 from the example-di folder, run ```node build.js``` in this folder like so:
 ```shell
