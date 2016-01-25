@@ -30,4 +30,4 @@ node_modules
 *.sublime-workspace
 sftp-config.json
 dist/test*
-example-poc
+poc

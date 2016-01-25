@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import * as tspoon from '../src/index';
 import { evaluateModuleExports } from '../test-kit/index';
-let visitor = require('../../example-poc/deletePrivate.js');
+let visitor = require('../../examples/poc/deletePrivate.js');
 
 describe('poc example', function () {
 	let sourceCode, configNoVisitors, configWithVisitors;
