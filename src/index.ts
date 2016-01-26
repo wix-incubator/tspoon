@@ -5,3 +5,4 @@ export { transpile, TranspilerOutput, TranspilerConfig, ValidatorConfig, validat
 export { Visitor, VisitorContext } from "./visitor";
 export { applyVisitor } from "./apply-visitor";
 export { FileValidationHost } from "./hosts";
+export { traverseAst } from "./traverse-ast";
