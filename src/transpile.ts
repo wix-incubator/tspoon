@@ -80,7 +80,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
 	// The context contains code modifications and diagnostics
 
-	let context: TranspilerContext = new TranspilerContext();
+	let context: TranspilerContext = new TranspilerContext(ast.fileName);
 
 	// We execute the various visitors, each traversing the AST and generating
 	// lines to be pushed into the code and diagbostic messages.
@@ -151,11 +151,9 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
 	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
 	const validationHost = new FileValidationHost(config.resolutionHosts || [], defaultCompilerOptions, transformer);
 	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, validationHost);
-	let context: TranspilerContext = new TranspilerContext();
 	const diags: ts.Diagnostic[] = [].concat(
 		validationHost.getSyntacticErrors(),
-		program.getSemanticDiagnostics(),
-		context.diags
+		program.getSemanticDiagnostics()
 	);
 	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
 }

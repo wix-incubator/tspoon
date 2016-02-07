@@ -10,6 +10,8 @@ export class TranspilerContext implements VisitorContext {
 	private _actions: Replacement[] = [];
 	private _diags: ts.Diagnostic[] = [];
 
+	constructor(private _fileName: string) {}
+
 	isHalted(): boolean {
 		return this._halted;
 	}
@@ -49,5 +51,9 @@ export class TranspilerContext implements VisitorContext {
 
 	get halted(): boolean {
 		return this._halted;
+	}
+
+	get fileName(): string {
+		return this._fileName;
 	}
 }
