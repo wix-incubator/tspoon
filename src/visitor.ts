@@ -4,6 +4,7 @@ import * as ts from 'typescript';
  * a transpilation actions API supplied to Visitor at visit time
  */
 export interface VisitorContext {
+	fileName: string;
 	/**
 	 * was the transpilation declared as failed by any previous visitor
 	 */

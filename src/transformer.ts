@@ -12,7 +12,7 @@ export class VisitorBasedTransformer implements CodeTransformer {
 	constructor(private visitors: Visitor[]) {}
 
 	transform(ast: ts.SourceFile): MutableSourceCode {
-		const context: TranspilerContext = new TranspilerContext();
+		const context: TranspilerContext = new TranspilerContext(ast.fileName);
 		this.visitors.forEach((visitor) => {
 			context.halted || traverseAst(ast, visitor, context);
 		});

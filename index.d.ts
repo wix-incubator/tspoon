@@ -21,6 +21,7 @@ export interface TranspilerConfig {
 }
 
 export interface VisitorContext {
+	fileName: string;
 	halted: boolean;
 	insertLine(position: number, str: string): void;
 	replace(start: number, end: number, str: string): void;

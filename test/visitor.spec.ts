@@ -12,7 +12,7 @@ import { MutableSourceCode } from "../src/mutable-source-code";
 
 function applyVisitor(source: string, visitor: Visitor): TranspilerOutput {
     const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
-    let context: TranspilerContext = new TranspilerContext();
+    let context: TranspilerContext = new TranspilerContext(ast.fileName);
     traverseAst(ast, visitor, context);
     const mutable = new MutableSourceCode(ast);
     mutable.execute(context.actions);

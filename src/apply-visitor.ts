@@ -21,7 +21,7 @@ export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResu
 
 export function applyVisitorOnAst(ast: ts.SourceFile, visitor: Visitor): ApplyVisitorResult {
 
-    let context: TranspilerContext = new TranspilerContext();
+    let context: TranspilerContext = new TranspilerContext(ast.fileName);
 
     traverseAst(ast, visitor, context);
 
