@@ -9,10 +9,14 @@ import MagicString = require('magic-string');
 import binarySearch from "./binary-search";
 
 function compareActions(action1: Action, action2: Action): number {
-	return action2.getStart() - action1.getStart();
+	const a1 = action1.needsRemap() ? 0 : 1;
+	const a2 = action2.needsRemap() ? 0 : 1;
+
+	return (a2 - a1) || (action2.getStart() - action1.getStart());
 }
 
 export interface Action {
+	needsRemap():boolean;
 	getStart(): number;
 	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile;
 }
@@ -29,6 +33,10 @@ export class ReplaceAction {
 	getStart(): number {
 		return this.start;
 	}
+
+	needsRemap(): boolean {
+		return true;
+	}
 }
 
 export class FastAppendAction {
@@ -43,6 +51,10 @@ export class FastAppendAction {
 
 	getStart(): number {
 		return Infinity;
+	}
+
+	needsRemap(): boolean {
+		return false;
 	}
 }
 
@@ -59,6 +71,10 @@ export class FastRewriteAction {
 	getStart(): number {
 		return Infinity;
 	}
+
+	needsRemap(): boolean {
+		return false;
+	}
 }
 
 export class MutableSourceCode {
@@ -72,7 +88,6 @@ export class MutableSourceCode {
 	constructor(ast: ts.SourceFile) {
 		this._ast = ast;
 		this.originalText = ast.text;
-		this.magicString = new MagicString(ast.text);
 		this.origLineStarts = ast.getLineStarts();
 	}
 
@@ -83,11 +98,17 @@ export class MutableSourceCode {
 	execute(actionList: Array<Action>): void {
 		const sortedActions = actionList.slice().sort(compareActions);
 		sortedActions.forEach((action: Action) => {
+			if(action.needsRemap() && !this.magicString) {
+				this.magicString = new MagicString(this._ast.text);
+			}
 			this._ast = action.execute(this._ast, this.magicString);
 		});
 	}
 
 	get sourceMap(): RawSourceMap {
+		if(!this.magicString) {
+			this.magicString = new MagicString(this._ast.text);
+		}
 		if(!this._sourceMap) {
 			this._sourceMap = this.magicString.generateMap({ source: this._ast.fileName, hires: true });
 		}
