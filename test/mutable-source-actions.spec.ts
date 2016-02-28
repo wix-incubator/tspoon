@@ -53,7 +53,7 @@ describe("Mutable source actions performs", function () {
 		expect(mutableCode.code).to.equal("const __someCode = 'Some string';");
 	});
 
-	it.only("several actions in sequence", function () {
+	it("several actions in sequence", function () {
 		const source = "const someCode = 'Some string';";
 		//              0123456789012345678901234567890
 		//                        1         2         3
