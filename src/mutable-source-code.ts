@@ -8,21 +8,21 @@ import * as traverse from './traverse-ast';
 import MagicString = require('magic-string');
 import binarySearch from "./binary-search";
 
-function compareActions(action1: Action, action2: Action): number {
-	const a1 = action1.needsRemap() ? 0 : 1;
-	const a2 = action2.needsRemap() ? 0 : 1;
-
-	return (a2 - a1) || (action2.getStart() - action1.getStart());
+export abstract class MappedAction {
+	abstract execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile;
+	abstract getStart(): number;
 }
 
-export interface Action {
-	needsRemap():boolean;
-	getStart(): number;
-	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile;
+export abstract class FastAction {
+	abstract execute(ast: ts.SourceFile): ts.SourceFile;
 }
 
-export class ReplaceAction {
-	constructor(private start: number, private end: number, private str: string) {}
+export type Action = MappedAction | FastAction;
+
+export class ReplaceAction extends MappedAction {
+	constructor(private start: number, private end: number, private str: string) {
+		super();
+	}
 	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
 		magicString.overwrite(this.start, this.end, this.str);
 		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.end);
@@ -33,49 +33,35 @@ export class ReplaceAction {
 	getStart(): number {
 		return this.start;
 	}
-
-	needsRemap(): boolean {
-		return true;
-	}
 }
 
-export class FastAppendAction {
-	constructor(private str: string) {}
+export class FastAppendAction extends FastAction {
+	constructor(private str: string) {
+		super();
+	}
 
-	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
+	execute(ast: ts.SourceFile): ts.SourceFile {
 		const start = ast.text.length - 1;
 		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(start, start);
 		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
 		return ast.update(ast.text + this.str, textChangeRange);
 	}
-
-	getStart(): number {
-		return Infinity;
-	}
-
-	needsRemap(): boolean {
-		return false;
-	}
 }
 
-export class FastRewriteAction {
-	constructor(private start: number, private str: string) {}
+export class FastRewriteAction extends FastAction {
+	constructor(private start: number, private str: string) {
+		super();
+	}
 
-	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
+	execute(ast: ts.SourceFile): ts.SourceFile {
 		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start + this.str.length);
 		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
 		const newText = ast.text.slice(0,this.start) + this.str + ast.text.slice(this.start + this.str.length);
 		return ast.update(newText, textChangeRange);
 	}
-
-	getStart(): number {
-		return Infinity;
-	}
-
-	needsRemap(): boolean {
-		return false;
-	}
 }
+
+const compareActions = (action1: MappedAction, action2: MappedAction): number => (action2.getStart() - action1.getStart());
 
 export class MutableSourceCode {
 
@@ -96,11 +82,16 @@ export class MutableSourceCode {
 	}
 
 	execute(actionList: Array<Action>): void {
-		const sortedActions = actionList.slice().sort(compareActions);
+		const fastActions = <FastAction[]>actionList.filter(action => action instanceof FastAction);
+		fastActions.forEach((action: FastAction) => {
+			this._ast = action.execute(this._ast);
+		});
+		this.magicString = new MagicString(this._ast.text);
+
+		const sortedActions = actionList
+			.filter(action => action instanceof MappedAction)
+			.sort(compareActions);
 		sortedActions.forEach((action: Action) => {
-			if(action.needsRemap() && !this.magicString) {
-				this.magicString = new MagicString(this._ast.text);
-			}
 			this._ast = action.execute(this._ast, this.magicString);
 		});
 	}
