@@ -30,8 +30,8 @@ export class TranspilerContext implements VisitorContext {
 		this._actions.push(new FastAppendAction(str));
 	}
 
-	fastRewrite(start: number, end: number, str: string): void {
-		this._actions.push(new FastRewriteAction(start, end, str));
+	fastRewrite(start: number, str: string): void {
+		this._actions.push(new FastRewriteAction(start, str));
 	}
 
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void {
