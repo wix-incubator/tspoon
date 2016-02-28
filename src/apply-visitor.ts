@@ -3,13 +3,13 @@ import * as ts from "typescript";
 import { defaultCompilerOptions } from './configuration';
 import { traverseAst } from './traverse-ast';
 import { Visitor } from "./visitor";
-import { Replacement, MutableSourceCode } from './mutable-source-code';
+import { Action, MutableSourceCode } from './mutable-source-code';
 import { TranspilerContext } from "./transpiler-context";
 
 export interface ApplyVisitorResult {
     file: ts.SourceFile,
     code: string;
-    actions: Replacement[];
+    actions: Action[];
     diags: ts.Diagnostic[];
 }
 
