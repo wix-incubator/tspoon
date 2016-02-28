@@ -35,9 +35,8 @@ export class FastAppendAction {
 	constructor(private str: string) {}
 
 	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
-		const start = ast.text.length;
-		const end = start + this.str.length;
-		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(start, end);
+		const start = ast.text.length - 1;
+		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(start, start);
 		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
 		return ast.update(ast.text + this.str, textChangeRange);
 	}
@@ -48,17 +47,12 @@ export class FastAppendAction {
 }
 
 export class FastRewriteAction {
-	constructor(private start: number, private end: number, private str: string) {
-		const expectedLength = this.end - this.start;
-		if(expectedLength !== this.str.length) {
-			throw new Error(`FastRewriteAction: The length of the string of expected to be ${expectedLength}, but was ${this.str.length}`);
-		}
-	}
+	constructor(private start: number, private str: string) {}
 
 	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
-		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.end);
-		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, 0);
-		const newText = ast.text.slice(0,this.start) + this.str + ast.text.slice(this.end);
+		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start + this.str.length);
+		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
+		const newText = ast.text.slice(0,this.start) + this.str + ast.text.slice(this.start + this.str.length);
 		return ast.update(newText, textChangeRange);
 	}
 

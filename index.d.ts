@@ -26,7 +26,7 @@ export interface VisitorContext {
 	insertLine(position: number, str: string): void;
 	replace(start: number, end: number, str: string): void;
 	fastAppend(str: string): void;
-	fastRewrite(start: number, end: number, str: string): void;
+	fastRewrite(start: number, str: string): void;
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
 }
 

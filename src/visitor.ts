@@ -33,7 +33,7 @@ export interface VisitorContext {
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
 
 	fastAppend(str: string): void;
-	fastRewrite(start: number, end: number, str: string): void;
+	fastRewrite(start: number, str: string): void;
 }
 
 /**
