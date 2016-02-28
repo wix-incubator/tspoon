@@ -18,7 +18,7 @@ function aSourceMapperFor(source: string): MutableSourceCode {
 	return new MutableSourceCode(ast);
 }
 
-describe.only("Mutable source actions performs", function () {
+describe("Mutable source actions performs", function () {
 	it("FastAppendAction at the end of source", ()=> {
 		const source = "const someCode = 'Some string';";
 		const mutableCode = aSourceMapperFor(source);
@@ -53,7 +53,7 @@ describe.only("Mutable source actions performs", function () {
 		expect(mutableCode.code).to.equal("const __someCode = 'Some string';");
 	});
 
-	it("several actions in sequence", function () {
+	it.only("several actions in sequence", function () {
 		const source = "const someCode = 'Some string';";
 		//              0123456789012345678901234567890
 		//                        1         2         3
