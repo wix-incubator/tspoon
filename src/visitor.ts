@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import {Action} from "./mutable-source-code";
 
 /**
  * a transpilation actions API supplied to Visitor at visit time
@@ -30,6 +31,9 @@ export interface VisitorContext {
 	 * @param halt if true, the transpilation is declared as failed
 	 */
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
+
+	fastAppend(str: string): void;
+	fastRewrite(start: number, end: number, str: string): void;
 }
 
 /**

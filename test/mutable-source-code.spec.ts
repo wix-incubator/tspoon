@@ -3,21 +3,21 @@
 import { expect } from 'chai';
 import * as chai from "chai";
 import * as ts from "typescript";
-import { MutableSourceCode, Replacement} from "../src/mutable-source-code";
+import { MutableSourceCode, ReplaceAction, Action} from "../src/mutable-source-code";
 import { traverseAst } from '../src/traverse-ast';
 import { findCodeRange, findCodePosition } from "../test-kit/index";
 import { FileTranspilationHost } from '../src/hosts';
 import { defaultCompilerOptions } from '../src/configuration';
 import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map';
 
-function makeReplacement(source: string, atStr: string, insStr: string): Replacement {
+function makeReplacement(source: string, atStr: string, insStr: string): Action {
 	const textRange = findCodeRange(source, atStr);
-	return { start: textRange.pos, end: textRange.end, str: insStr };
+	return new ReplaceAction(textRange.pos, textRange.end, insStr);
 }
 
-function makeLineInsersion(source: string, atStr: string, insStr: string): Replacement {
+function makeLineInsersion(source: string, atStr: string, insStr: string): Action {
 	const textRange = findCodeRange(source, atStr);
-	return { start: textRange.pos, end: textRange.pos, str: insStr + "\n" };
+	return new ReplaceAction(textRange.pos, textRange.pos, insStr + "\n");
 }
 
 function aSourceMapperFor(source: string): MutableSourceCode {
