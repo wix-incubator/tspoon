@@ -25,6 +25,8 @@ export interface VisitorContext {
 	halted: boolean;
 	insertLine(position: number, str: string): void;
 	replace(start: number, end: number, str: string): void;
+	fastAppend(str: string): void;
+	fastRewrite(start: number, str: string): void;
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
 }
 
@@ -38,7 +40,6 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 export interface ApplyVisitorResult {
 	file: ts.SourceFile,
 	code: string;
-	actions: Replacement[];
 	diags: ts.Diagnostic[];
 }
 
