@@ -5,6 +5,7 @@ import { Visitor, VisitorContext } from './visitor';
 import * as ts from 'typescript';
 import {FastAppendAction} from "./mutable-source-code";
 import {FastRewriteAction} from "./mutable-source-code";
+import {InsertAction} from "./mutable-source-code";
 
 export class TranspilerContext implements VisitorContext {
 
@@ -19,7 +20,7 @@ export class TranspilerContext implements VisitorContext {
 	}
 
 	insertLine(position: number, str: string): void {
-		this._actions.push(new ReplaceAction(position, position, str + '\n'));
+		this._actions.push(new InsertAction(position, str + '\n'));
 	}
 
 	replace(start: number, end: number, str: string): void {

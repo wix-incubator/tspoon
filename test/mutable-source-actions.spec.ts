@@ -12,6 +12,7 @@ import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map'
 import {FastAppendAction} from "../src/mutable-source-code";
 import {FastRewriteAction} from "../src/mutable-source-code";
 import {ReplaceAction} from "../src/mutable-source-code";
+import {InsertAction} from "../src/mutable-source-code";
 
 function aSourceMapperFor(source: string): MutableSourceCode {
 	const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
@@ -44,13 +45,22 @@ describe("Mutable source actions performs", function () {
 		expect(mutableCode.code).to.equal("const b = 666;");
 	});
 
-	it("ReplaceAction - insert style", function () {
+	it("InsertAction", function () {
 		const source = "const someCode = 'Some string';";
 		//              0123456789012345678901234567890
 		//                        1         2         3
 		const mutableCode = aSourceMapperFor(source);
-		mutableCode.execute([ new ReplaceAction(6, 6, '__')]);
+		mutableCode.execute([ new InsertAction(6, '__')]);
 		expect(mutableCode.code).to.equal("const __someCode = 'Some string';");
+	});
+
+	it("InsertAction (beginning)", function () {
+		const source = "const someCode = 'Some string';";
+		//              0123456789012345678901234567890
+		//                        1         2         3
+		const mutableCode = aSourceMapperFor(source);
+		mutableCode.execute([ new InsertAction(0, '__')]);
+		expect(mutableCode.code).to.equal("__const someCode = 'Some string';");
 	});
 
 	it("several actions in sequence", function () {

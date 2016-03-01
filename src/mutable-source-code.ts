@@ -35,6 +35,22 @@ export class ReplaceAction extends MappedAction {
 	}
 }
 
+export class InsertAction extends MappedAction {
+	constructor(private start: number, private str: string) {
+		super();
+	}
+	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
+		magicString.insert(this.start, this.str);
+		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start);
+		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
+		return ast.update(magicString.toString(), textChangeRange);
+	}
+
+	getStart(): number {
+		return this.start;
+	}
+}
+
 export class FastAppendAction extends FastAction {
 	constructor(private str: string) {
 		super();
