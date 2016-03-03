@@ -11,6 +11,7 @@ import { TranspilerContext } from "./transpiler-context";
 import { defaultCompilerOptions } from "./configuration";
 import {CodeTransformer} from "./transformer";
 import {VisitorBasedTransformer} from "./transformer";
+import {SemanticHost} from "./hosts";
 
 /**
  * result of transpilation action
@@ -148,12 +149,13 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 }
 
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
-	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
-	const validationHost = new FileValidationHost(config.resolutionHosts || [], defaultCompilerOptions, transformer);
-	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, validationHost);
+	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || [], () => languageService);
+	const semanticHost = new SemanticHost(files, config.resolutionHosts || [], defaultCompilerOptions, transformer);
+	const languageService: ts.LanguageService = ts.createLanguageService(semanticHost);
+	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, semanticHost);
 	const diags: ts.Diagnostic[] = [].concat(
-		validationHost.getSyntacticErrors(),
+		semanticHost.getSyntacticErrors(),
 		program.getSemanticDiagnostics()
 	);
-	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
+	return diags.map(diagnostic => semanticHost.translateDiagnostic(diagnostic));
 }
