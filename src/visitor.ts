@@ -34,6 +34,8 @@ export interface VisitorContext {
 
 	fastAppend(str: string): void;
 	fastRewrite(start: number, str: string): void;
+
+	getLanguageService(): ts.LanguageService;
 }
 
 /**

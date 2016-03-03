@@ -28,6 +28,7 @@ export interface VisitorContext {
 	fastAppend(str: string): void;
 	fastRewrite(start: number, str: string): void;
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
+	getLanguageService(): ts.LanguageService;
 }
 
 export interface Visitor {

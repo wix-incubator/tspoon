@@ -4,6 +4,7 @@
 import * as ts from 'typescript';
 import {CodeTransformer} from "./transformer";
 import {MutableSourceCode} from "./mutable-source-code";
+import DocumentRegistry = ts.DocumentRegistry;
 
 
 function fileExtensionIs(path: string, extension: string): boolean {
@@ -58,7 +59,7 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 
 	constructor(
 		private _resolutionHosts: ts.ModuleResolutionHost[],
-		private _compilerOptions: ts.CompilerOptions,
+		protected _compilerOptions: ts.CompilerOptions,
 		private _transformer: CodeTransformer
 	) {
 		super();
@@ -150,3 +151,62 @@ export class FileTranspilationHost extends HostBase implements ts.CompilerHost {
 		}
 	}
 }
+
+export class SemanticHost extends FileValidationHost implements ts.LanguageServiceHost, ts.CompilerHost {
+
+	constructor(
+		private files: string[],
+		resolutionHosts: ts.ModuleResolutionHost[],
+		compilerOptions: ts.CompilerOptions,
+		transformer: CodeTransformer
+) {
+		super(resolutionHosts, compilerOptions, transformer);
+	}
+
+	getProjectVersion():string{
+		return null;
+	}
+
+	getScriptFileNames():string[]{
+		return this.files.slice();
+	}
+
+	getScriptVersion(fileName:string):string{
+		return null;
+	}
+
+	getScriptSnapshot(fileName:string):ts.IScriptSnapshot{
+		return ts.ScriptSnapshot.fromString(this.readFile(fileName));
+	}
+
+	getLocalizedDiagnosticMessages():any{
+		return null;
+	}
+
+	getCompilationSettings():ts.CompilerOptions{
+		return this._compilerOptions;
+	}
+
+
+
+	log(s:string):void {
+	}
+
+	trace(s:string):void {
+	}
+
+	error(s:string):void {
+	}
+
+	resolveModuleNames(moduleNames:string[], containingFile:string):ts.ResolvedModule[]{
+		return moduleNames.map((moduleName: string) => ({
+			resolvedFileName: moduleName,
+			isExternalLibraryImport: false
+		}));
+	}
+
+	directoryExists(directoryName:string):boolean{
+		return null;
+	}
+}
+
