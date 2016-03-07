@@ -92,8 +92,8 @@ describe("given source code", function () {
 			filter: (node: ts.Node): boolean => {
 				return node.kind == ts.SyntaxKind.ClassDeclaration;
 			},
-			visit: (node: ts.Node, context: VisitorContext, visit: (...visitors: Visitor[])=> void): void => {
-				visit(subVisitor);
+			visit: (node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[])=> void): void => {
+				traverse(subVisitor);
 			}
 		};
 
