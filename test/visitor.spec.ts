@@ -77,7 +77,7 @@ describe("given source code", function () {
 	});
 
 	describe("and a recursive visitor, transpiler should", function () {
-		const source = "class A { methodA() {} }\nclass B { method B() {} }";
+		const source = "class A { methodA() {} }\nclass B { methodB() {} }";
 
 		const subVisitor: Visitor = {
 			filter: (node:ts.Node):boolean => {
@@ -103,9 +103,9 @@ describe("given source code", function () {
 			postVisitorOutput = applyVisitor(source, fakeVisitor);
 		});
 
-		it.only("generate the correct intermediate code", function () {
+		it("generate the correct intermediate code", function () {
 			chai.expect(postVisitorOutput.code).to.equal(
-				"class A { \n@blah\nmethodA() {} }\nclass B { \n@blah\nmethod B() {} }"
+				"class A { @blah\nmethodA() {} }\nclass B { @blah\nmethodB() {} }"
 			);
 		});
 	});
