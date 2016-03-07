@@ -50,5 +50,5 @@ export interface Visitor {
 	 * @param node typescript AST node for which filter(node) returnes true
 	 * @param context transpilation actions handler for the current visit
 	 */
-	visit(node: ts.Node, context: VisitorContext): void;
+	visit(node: ts.Node, context: VisitorContext, visit: (...visitors: Visitor[])=> void): void;
 }
