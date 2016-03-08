@@ -6,7 +6,7 @@ import * as ts from "typescript";
 import { MutableSourceCode, ReplaceAction, Action} from "../src/mutable-source-code";
 import { traverseAst } from '../src/traverse-ast';
 import { findCodeRange, findCodePosition } from "../test-kit/index";
-import { FileTranspilationHost } from '../src/hosts';
+import { SingleFileHost } from '../src/hosts';
 import { defaultCompilerOptions } from '../src/configuration';
 import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map';
 
@@ -36,7 +36,7 @@ function expectSourceMapToMatchChangeForSuppliedText(source: string, target: str
 
 function transpile(source: string): { code: string, map: RawSourceMap } {
 	const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
-	const compilerHost = new FileTranspilationHost(ast);
+	const compilerHost = new SingleFileHost(ast);
 	const program = ts.createProgram(["test.ts"], defaultCompilerOptions, compilerHost);
 	program.emit();
 	return {
