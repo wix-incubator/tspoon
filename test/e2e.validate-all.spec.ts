@@ -148,6 +148,7 @@ describe('tspoon.validateAll()', function () {
 	});
 
 	it("can access semantic information", function () {
+		this.timeout(10000);
 		class MockVisitor implements Visitor {
 			public realTypeName: string;
 
