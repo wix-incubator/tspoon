@@ -5,7 +5,19 @@ import {ChainableHost} from "./hosts-base";
 import {MutableSourceCode} from "./mutable-source-code";
 import RawSourceMap = SourceMap.RawSourceMap;
 
+const normalizePath: { (path: string): string } = ts['normalizePath'];
+const getDirectoryPath: { (path: string): string } = ts['getDirectoryPath'];
+const combinePaths: { (path1: string, path2: string): string } = ts['combinePaths'];
 
+export class AstCacheHost extends ChainableHost {
+	private cache: { [fileName: string]: ts.SourceFile } = {};
+
+	getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+		const cachedAst: ts.SourceFile = this.cache[fileName];
+		return cachedAst || this.source.getSourceFile(fileName, languageVersion, onError);
+	}
+
+}
 
 export class TransformationHost extends ChainableHost {
 	private transformations: { [fileName: string]: MutableSourceCode } = {};
@@ -84,10 +96,18 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
 	}
 
 	resolveModuleNames(moduleNames:string[], containingFile:string):ts.ResolvedModule[]{
-		return moduleNames.map((moduleName: string) => ({
-			resolvedFileName: moduleName.replace(/^[.][/]/g, ''),
-			isExternalLibraryImport: false
-		}));
+		const containingDir: string = getDirectoryPath(containingFile);
+		return moduleNames.map((moduleName: string) => {
+			const resolvedBase: string = normalizePath(combinePaths(containingDir, moduleName));
+			return {
+				resolvedFileName: this.tryResolveFileName(resolvedBase + '.tsx') || this.tryResolveFileName(resolvedBase + '.ts'),
+				isExternalLibraryImport: false
+			}
+		});
+	}
+
+	private tryResolveFileName(candidate: string): string {
+		return this.source.fileExists(candidate) ? candidate : null;
 	}
 
 	directoryExists(directoryName:string):boolean{
