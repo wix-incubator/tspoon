@@ -15,6 +15,7 @@ import {SemanticHost} from "./chainable-hosts";
 import {TransformationHost} from "./chainable-hosts";
 import {chainHosts} from "./hosts-base";
 import {MockModule} from "../test-kit/mocks/resolution-hosts";
+import {AstCacheHost} from "./chainable-hosts";
 
 /**
  * result of transpilation action
@@ -154,13 +155,15 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
 	let langService: ts.LanguageService;
 	const sourceHost = new MultipleFilesHost(config.resolutionHosts, defaultCompilerOptions);
-	const semanticHost = <SemanticHost>chainHosts(sourceHost, new SemanticHost(files, defaultCompilerOptions));
+	const astCache = new AstCacheHost();
+	const cachedSource: ts.CompilerHost = chainHosts(sourceHost, astCache);
+	const semanticHost = <SemanticHost>chainHosts(cachedSource, new SemanticHost(files, defaultCompilerOptions));
 	const langServiceProvider = () => langService
 		? langService
 		: langService = ts.createLanguageService(semanticHost, semanticHost);
 	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || [], langServiceProvider);
 	const transformHost = new TransformationHost(transformer);
-	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(sourceHost, transformHost));
+	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(cachedSource, transformHost));
 	const diags: ts.Diagnostic[] = [].concat(
 		sourceHost.getSyntacticErrors(),
 		program.getSemanticDiagnostics()
