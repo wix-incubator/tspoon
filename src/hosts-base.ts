@@ -51,7 +51,11 @@ export class ChainableHost extends HostBase {
 	protected source: ts.CompilerHost = null;
 
 	setSource(source: ts.CompilerHost): void {
-		this.source = source;
+		if(this.source === null) {
+			this.source = source;
+		} else {
+			throw new Error(`A chainable host can be connected to a source only once. It looks like you're trying to include the same instance in multiple chains.`);
+		}
 	}
 
 	fileExists(fileName: string): boolean {

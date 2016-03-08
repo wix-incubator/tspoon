@@ -169,7 +169,7 @@ describe('tspoon.validateAll()', function () {
 					export default class Product {}
 				`),
 				new MockModule('index.ts', `
-					import {default as SomeClass} from './a.ts';
+					import {default as SomeClass} from './a';
 					const a: SomeClass = null;
 				`),
 				new MockModule("lib.d.ts", require('typescript/lib/lib.d.ts'))
