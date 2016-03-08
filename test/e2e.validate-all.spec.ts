@@ -147,7 +147,7 @@ describe('tspoon.validateAll()', function () {
 			.withMessage(/Product.ts -> \d+:\d+ Unterminated string literal./);
 	});
 
-	it("access semantic information", function () {
+	it("can access semantic information", function () {
 		class MockVisitor implements Visitor {
 			public realTypeName: string;
 
