@@ -9,10 +9,10 @@ export interface CodeTransformer {
 }
 
 export class VisitorBasedTransformer implements CodeTransformer {
-	constructor(private visitors: Visitor[]) {}
+	constructor(private visitors: Visitor[], private languageServiceProvider: () => ts.LanguageService) {}
 
 	transform(ast: ts.SourceFile): MutableSourceCode {
-		const context: TranspilerContext = new TranspilerContext(ast.fileName);
+		const context: TranspilerContext = new TranspilerContext(ast.fileName, this.languageServiceProvider);
 		this.visitors.forEach((visitor) => {
 			context.halted || traverseAst(ast, visitor, context);
 		});

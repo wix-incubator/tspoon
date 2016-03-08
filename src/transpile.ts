@@ -1,7 +1,7 @@
 /// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
 /// <reference path="../typings/tsd.d.ts"/>
 
-import { FileTranspilationHost, FileValidationHost } from './hosts';
+import { SingleFileHost, MultipleFilesHost } from './hosts';
 import { traverseAst } from './traverse-ast';
 import { MutableSourceCode } from './mutable-source-code';
 import { RawSourceMap, SourceMapConsumer } from 'source-map';
@@ -11,6 +11,10 @@ import { TranspilerContext } from "./transpiler-context";
 import { defaultCompilerOptions } from "./configuration";
 import {CodeTransformer} from "./transformer";
 import {VisitorBasedTransformer} from "./transformer";
+import {SemanticHost} from "./chainable-hosts";
+import {TransformationHost} from "./chainable-hosts";
+import {chainHosts} from "./hosts-base";
+import {MockModule} from "../test-kit/mocks/resolution-hosts";
 
 /**
  * result of transpilation action
@@ -107,7 +111,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
 	// This intermediate code has to be transpiled by TypeScript
 
-	const compilerHost = new FileTranspilationHost(mutable.ast);
+	const compilerHost = new SingleFileHost(mutable.ast);
 	const program: ts.Program = ts.createProgram([fileName], compilerOptions, compilerHost);
 	const emitResult = program.emit();
 
@@ -148,12 +152,18 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 }
 
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
-	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || []);
-	const validationHost = new FileValidationHost(config.resolutionHosts || [], defaultCompilerOptions, transformer);
-	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, validationHost);
+	let langService: ts.LanguageService;
+	const sourceHost = new MultipleFilesHost(config.resolutionHosts, defaultCompilerOptions);
+	const semanticHost = <SemanticHost>chainHosts(sourceHost, new SemanticHost(files, defaultCompilerOptions));
+	const langServiceProvider = () => langService
+		? langService
+		: langService = ts.createLanguageService(semanticHost, semanticHost);
+	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || [], langServiceProvider);
+	const transformHost = new TransformationHost(transformer);
+	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(sourceHost, transformHost));
 	const diags: ts.Diagnostic[] = [].concat(
-		validationHost.getSyntacticErrors(),
+		sourceHost.getSyntacticErrors(),
 		program.getSemanticDiagnostics()
 	);
-	return diags.map(diagnostic => validationHost.translateDiagnostic(diagnostic));
+	return diags.map(diagnostic => transformHost.translateDiagnostic(diagnostic));
 }

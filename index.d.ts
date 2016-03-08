@@ -28,11 +28,12 @@ export interface VisitorContext {
 	fastAppend(str: string): void;
 	fastRewrite(start: number, str: string): void;
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
+	getLanguageService(): ts.LanguageService;
 }
 
 export interface Visitor {
     filter(node: ts.Node): boolean;
-    visit(node: ts.Node, context: VisitorContext): void;
+    visit(node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[])=> void): void;
 }
 
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput;
