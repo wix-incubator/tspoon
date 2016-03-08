@@ -8,15 +8,76 @@ import * as traverse from './traverse-ast';
 import MagicString = require('magic-string');
 import binarySearch from "./binary-search";
 
-function compareActions(action1: Replacement, action2: Replacement): number {
-	return action2.start - action1.start;
+export abstract class MappedAction {
+	abstract execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile;
+	abstract getStart(): number;
 }
 
-export interface Replacement {
-	start: number;
-	end: number;
-	str: string;
+export abstract class FastAction {
+	abstract execute(ast: ts.SourceFile): ts.SourceFile;
 }
+
+export type Action = MappedAction | FastAction;
+
+export class ReplaceAction extends MappedAction {
+	constructor(private start: number, private end: number, private str: string) {
+		super();
+	}
+	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
+		magicString.overwrite(this.start, this.end, this.str);
+		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.end);
+		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
+		return ast.update(magicString.toString(), textChangeRange);
+	}
+
+	getStart(): number {
+		return this.start;
+	}
+}
+
+export class InsertAction extends MappedAction {
+	constructor(private start: number, private str: string) {
+		super();
+	}
+	execute(ast: ts.SourceFile, magicString: MagicString): ts.SourceFile {
+		magicString.insert(this.start, this.str);
+		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start);
+		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
+		return ast.update(magicString.toString(), textChangeRange);
+	}
+
+	getStart(): number {
+		return this.start;
+	}
+}
+
+export class FastAppendAction extends FastAction {
+	constructor(private str: string) {
+		super();
+	}
+
+	execute(ast: ts.SourceFile): ts.SourceFile {
+		const start = ast.text.length - 1;
+		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(start, start);
+		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
+		return ast.update(ast.text + this.str, textChangeRange);
+	}
+}
+
+export class FastRewriteAction extends FastAction {
+	constructor(private start: number, private str: string) {
+		super();
+	}
+
+	execute(ast: ts.SourceFile): ts.SourceFile {
+		const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start + this.str.length);
+		const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
+		const newText = ast.text.slice(0,this.start) + this.str + ast.text.slice(this.start + this.str.length);
+		return ast.update(newText, textChangeRange);
+	}
+}
+
+const compareActions = (action1: MappedAction, action2: MappedAction): number => (action2.getStart() - action1.getStart());
 
 export class MutableSourceCode {
 
@@ -29,7 +90,6 @@ export class MutableSourceCode {
 	constructor(ast: ts.SourceFile) {
 		this._ast = ast;
 		this.originalText = ast.text;
-		this.magicString = new MagicString(ast.text);
 		this.origLineStarts = ast.getLineStarts();
 	}
 
@@ -37,18 +97,25 @@ export class MutableSourceCode {
 		return this._ast;
 	}
 
-	execute(actionList: Array<Replacement>): void {
-		const sortedActions = actionList.slice().sort(compareActions);
-		sortedActions.forEach(action => {
-			this.magicString.overwrite(action.start, action.end, action.str);
-			const textSpan: ts.TextSpan = ts.createTextSpanFromBounds(action.start, action.end);
-			const textChangeRange: ts.TextChangeRange = ts.createTextChangeRange(textSpan, action.str.length);
-			this._ast = this._ast.update(this.magicString.toString(), textChangeRange);
+	execute(actionList: Array<Action>): void {
+		const fastActions = <FastAction[]>actionList.filter(action => action instanceof FastAction);
+		fastActions.forEach((action: FastAction) => {
+			this._ast = action.execute(this._ast);
+		});
+		this.magicString = new MagicString(this._ast.text);
 
+		const sortedActions = actionList
+			.filter(action => action instanceof MappedAction)
+			.sort(compareActions);
+		sortedActions.forEach((action: Action) => {
+			this._ast = action.execute(this._ast, this.magicString);
 		});
 	}
 
 	get sourceMap(): RawSourceMap {
+		if(!this.magicString) {
+			this.magicString = new MagicString(this._ast.text);
+		}
 		if(!this._sourceMap) {
 			this._sourceMap = this.magicString.generateMap({ source: this._ast.fileName, hires: true });
 		}
