@@ -5,7 +5,15 @@ import {ChainableHost} from "./hosts-base";
 import {MutableSourceCode} from "./mutable-source-code";
 import RawSourceMap = SourceMap.RawSourceMap;
 
+export class AstCacheHost extends ChainableHost {
+	private cache: { [fileName: string]: ts.SourceFile } = {};
 
+	getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+		const cachedAst: ts.SourceFile = this.cache[fileName];
+		return cachedAst || this.source.getSourceFile(fileName, languageVersion, onError);
+	}
+
+}
 
 export class TransformationHost extends ChainableHost {
 	private transformations: { [fileName: string]: MutableSourceCode } = {};
