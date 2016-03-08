@@ -151,16 +151,14 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 	};
 }
 
-
-
-function lazyLanguageService(semanticHost: SemanticHost) {
-	return () => ts.createLanguageService(semanticHost, semanticHost);
-}
-
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[] {
+	let langService: ts.LanguageService;
 	const sourceHost = new MultipleFilesHost(config.resolutionHosts, defaultCompilerOptions);
-	const semanticHost = new SemanticHost(files, defaultCompilerOptions);
-	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || [], lazyLanguageService(<SemanticHost>chainHosts(sourceHost, semanticHost)));
+	const semanticHost = <SemanticHost>chainHosts(sourceHost, new SemanticHost(files, defaultCompilerOptions));
+	const langServiceProvider = () => langService
+		? langService
+		: langService = ts.createLanguageService(semanticHost, semanticHost);
+	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || [], langServiceProvider);
 	const transformHost = new TransformationHost(transformer);
 	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(sourceHost, transformHost));
 	const diags: ts.Diagnostic[] = [].concat(
