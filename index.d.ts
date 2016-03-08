@@ -33,7 +33,7 @@ export interface VisitorContext {
 
 export interface Visitor {
     filter(node: ts.Node): boolean;
-    visit(node: ts.Node, context: VisitorContext): void;
+    visit(node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[])=> void): void;
 }
 
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput;
