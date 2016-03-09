@@ -13,7 +13,7 @@ export class TranspilerContext implements VisitorContext {
 	private _actions: Action[] = [];
 	private _diags: ts.Diagnostic[] = [];
 
-	constructor(private _fileName: string) {}
+	constructor(private _fileName: string, private langServiceProvider: () => ts.LanguageService = null) {}
 
 	isHalted(): boolean {
 		return this._halted;
@@ -66,5 +66,14 @@ export class TranspilerContext implements VisitorContext {
 
 	get fileName(): string {
 		return this._fileName;
+	}
+
+	getLanguageService(): ts.LanguageService {
+		if(this.langServiceProvider) {
+			return this.langServiceProvider();
+		} else {
+			return null;
+		}
+
 	}
 }
