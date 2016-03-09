@@ -14,7 +14,13 @@ export class AstCacheHost extends ChainableHost {
 
 	getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
 		const cachedAst: ts.SourceFile = this.cache[fileName];
-		return cachedAst || this.source.getSourceFile(fileName, languageVersion, onError);
+		if(!cachedAst) {
+			const ast = this.source.getSourceFile(fileName, languageVersion, onError);
+			this.cache[fileName] = ast;
+			return ast;
+		} else {
+			return cachedAst;
+		}
 	}
 
 }
