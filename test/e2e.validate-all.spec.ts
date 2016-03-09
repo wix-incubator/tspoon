@@ -147,4 +147,39 @@ describe('tspoon.validateAll()', function () {
 			.withMessage(/Product.ts -> \d+:\d+ Unterminated string literal./);
 	});
 
+	it("can access semantic information", function () {
+		this.timeout(10000);
+		class MockVisitor implements Visitor {
+			public realTypeName: string;
+
+			filter(node:ts.Node): boolean {
+				return node.getSourceFile().fileName === 'index.ts' && node.kind === ts.SyntaxKind.VariableDeclaration;
+			}
+
+			visit(node:ts.Node, context:VisitorContext): void {
+				const ls: ts.LanguageService = context.getLanguageService();
+				const x = ls.getTypeDefinitionAtPosition(node.getSourceFile().fileName, node.getStart());
+				this.realTypeName = x[0].name;
+			}
+		}
+		const visitor = new MockVisitor();
+		const config: ValidatorConfig = {
+			resolutionHosts: [
+				new MockModule('a.ts', `
+					export default class Product {}
+				`),
+				new MockModule('index.ts', `
+					import {default as SomeClass} from './a';
+					const a: SomeClass = null;
+				`),
+				new MockModule("lib.d.ts", require('typescript/lib/lib.d.ts'))
+			],
+			mutators: [
+				visitor
+			]
+		};
+		tspoon.validateAll(['index.ts'], config);
+		expect(visitor.realTypeName).to.equal('Product');
+	});
+
 });

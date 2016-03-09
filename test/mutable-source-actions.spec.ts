@@ -1,18 +1,10 @@
 /// <reference path="../typings/tsd.d.ts" />
 
 import { expect } from 'chai';
-import * as chai from "chai";
 import * as ts from "typescript";
 import { MutableSourceCode, } from "../src/mutable-source-code";
-import { traverseAst } from '../src/traverse-ast';
-import { findCodeRange, findCodePosition } from "../test-kit/index";
-import { FileTranspilationHost } from '../src/hosts';
 import { defaultCompilerOptions } from '../src/configuration';
-import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map';
-import {FastAppendAction} from "../src/mutable-source-code";
-import {FastRewriteAction} from "../src/mutable-source-code";
-import {ReplaceAction} from "../src/mutable-source-code";
-import {InsertAction} from "../src/mutable-source-code";
+import {FastAppendAction, FastRewriteAction, ReplaceAction, InsertAction} from "../src/mutable-source-code";
 
 function aSourceMapperFor(source: string): MutableSourceCode {
 	const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
