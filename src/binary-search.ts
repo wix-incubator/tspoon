@@ -1,3 +1,4 @@
+/// <reference path="../typings/tsd.d.ts"/>
 
 export default function binarySearch(array: number[], value: number): number {
     let low = 0;
