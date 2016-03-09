@@ -1,3 +1,5 @@
+/// <reference path="../typings/tsd.d.ts"/>
+
 import * as ts from "typescript";
 
 import { defaultCompilerOptions } from './configuration';

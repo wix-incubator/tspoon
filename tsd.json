@@ -25,6 +25,9 @@
 		},
 		"vinyl/vinyl.d.ts": {
 			"commit": "bb051830df88f5a55dcf06b7fe85bf6b62cc97f2"
+		},
+		"typescript/typescript.d.ts": {
+			"commit": "3a86e056dc018541d82dd74639fca18ba8d605da"
 		}
 	}
 }

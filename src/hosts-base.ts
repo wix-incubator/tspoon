@@ -1,3 +1,5 @@
+/// <reference path="../typings/tsd.d.ts"/>
+
 import * as ts from 'typescript';
 
 export class HostBase implements ts.CompilerHost {

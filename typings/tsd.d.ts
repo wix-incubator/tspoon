@@ -5,3 +5,4 @@
 /// <reference path="magic-string/magic-string.d.ts" />
 /// <reference path="source-map/source-map.d.ts" />
 /// <reference path="lodash/lodash.d.ts" />
+/// <reference path="typescript/typescript.d.ts" />
