@@ -6,10 +6,10 @@ from the example-di folder, run ```node build.js``` in this folder like so:
 ```shell
 $ cd ./example-poc
 $ ls
-README.md               build.js                deletePrivate.js        src.ts
+README.md        build.js        deletePrivate.js        src.ts
 $ node build.js
 $ ls
-README.md               build.js                deletePrivate.js        src.js                  src.js.map              src.ts
+README.md        build.js        deletePrivate.js        src.ts        src.js        src.js.map
 ```
 
 ## Structure
