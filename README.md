@@ -8,7 +8,7 @@ In addition, Tspoon's validation api supports pre-validation code changes, allow
 
 
 ## Users Documentation
-A simple example can be found [here](http://gituhb.com/wix/tspoon/example-poc).
+Simple examples can be found [here](http://gituhb.com/wix/tspoon/examples/poc) and [here](http://gituhb.com/wix/tspoon/examples/readme).
 
 ### How to write a visitor
 A visitor is an instance of the visitor interface:
@@ -21,7 +21,7 @@ interface Visitor {
 ```
 Consider for example the following visitor:
 ```javascript
-// from example-poc/deletePrivate.js
+// from examples/poc/deletePrivate.js
 {
 	filter : function filter(node){
 		return node.kind === ts.SyntaxKind.PropertyDeclaration
@@ -51,9 +51,9 @@ interface TranspilerOutput {
 	halted: boolean
 }
 ```
-a usage example can be found in the ```example-poc``` folder:
+a usage example can be found in the ```examples/poc``` folder:
 ```javascript
-// from example-poc/build.js
+// from examples/poc/build.js
 var config = {
     sourceFileName: 'src.ts',
     visitors: ... // insert visitors here
