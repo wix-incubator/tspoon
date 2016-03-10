@@ -1,11 +1,10 @@
-# tspoon
+# Tspoon
 AST visitors for [Typescript](https://github.com/Microsoft/TypeScript).
-### Who should use this tool
+### What Tspoon does
 
-Typescript transpilation is useally ```source -> AST -> target```.Tspoon uses [Typescript's compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) to allow pluggable pieces of logic (called ```visitor```) to modify the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) before invoking the Typescript transpiler. The process will look like this ```source -> AST -visitors-> AST -> target```. This technique enables early optimizations and error detection for custom language features.
+Typescript transpilation is useally ```source -> AST -> target```. Tspoon uses [Typescript's compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) to allow pluggable pieces of logic (called ```visitor```) to modify the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) before invoking the Typescript transpiler. The process will look like this ```source -> AST -visitors-> AST -> target```. This technique enables early optimizations and error detection for custom language features.
 
-the validation api supports pre-validation code changes, allowing the developer to bypass otherwise unavoidable TypeScript diagnostics.
-
+In addition, Tspoon's validation api supports pre-validation code changes, allowing the developer to bypass otherwise unavoidable TypeScript diagnostics.
 
 
 ## Users Documentation
