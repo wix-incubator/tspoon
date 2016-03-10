@@ -4,7 +4,7 @@
     "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
   },
   "name": "tspoon",
-  "version": "1.0.31",
+  "version": "1.0.46",
   "description": "see README.md",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
@@ -17,7 +17,7 @@
     "pretest": "npm run lint && npm run build",
     "test": "npm run test:node",
     "test:browser": "karma start --single-run",
-    "test:node": "mocha --reporter $npm_config_reporter ./dist/test",
+    "test:node": "mocha --reporter mocha-env-reporter ./dist/test",
     "build": "npm run clean && npm run build:tsc",
     "build:webpack": "webpack -v --display-modules",
     "build:tsc": "tsc",
@@ -30,8 +30,11 @@
     "type": "git",
     "url": "https://github.com/wix/tspoon"
   },
-  "author": "core3@wix",
-  "license": "C",
+  "author": "Amir Arad <amira@wix.com> (http ://github.com/amir-arad)",
+   "contributors": [
+    "Amir Arad <amira@wix.com> (http://github.com/amir-arad)"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
     "url": "https://github.com/wix/tspoon/issues"
   },
@@ -41,12 +44,12 @@
     "concurrently": "0.1.1",
     "convert-source-map": "1.1.2",
     "json-loader": "0.5.1",
-    "karma": "0.13.9",
+    "karma": "0.13.19",
     "karma-chrome-launcher": "0.2.0",
     "karma-mocha": "0.2.0",
     "mocha": "2.2.5",
     "mocha-loader": "0.7.1",
-    "mocha-teamcity-reporter": "0.0.1",
+    "mocha-env-reporter": "1.0.2",
     "raw-loader": "0.5.1",
     "source-map-support": "0.3.2",
     "ts-loader": "0.5.3",
@@ -56,9 +59,9 @@
     "webpack-dev-server": "1.10.1"
   },
   "dependencies": {
-    "magic-string": "0.6.6",
     "lodash": "3.7.0",
-    "typescript": "1.6.2",
-    "source-map": "0.4.4"
+    "magic-string": "0.6.6",
+    "source-map": "0.4.4",
+    "typescript": "1.8.7"
   }
 }

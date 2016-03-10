@@ -1,25 +1,38 @@
 /// <reference path="../typings/source-map/source-map.d.ts"/>
 
-import { MutableSourceCode, Replacement } from './mutable-source-code';
+import { MutableSourceCode, Action, ReplaceAction } from './mutable-source-code';
 import { Visitor, VisitorContext } from './visitor';
 import * as ts from 'typescript';
+import {FastAppendAction} from "./mutable-source-code";
+import {FastRewriteAction} from "./mutable-source-code";
+import {InsertAction} from "./mutable-source-code";
 
 export class TranspilerContext implements VisitorContext {
 
 	private _halted = false;
-	private _actions: Replacement[] = [];
+	private _actions: Action[] = [];
 	private _diags: ts.Diagnostic[] = [];
+
+	constructor(private _fileName: string, private langServiceProvider: () => ts.LanguageService = null) {}
 
 	isHalted(): boolean {
 		return this._halted;
 	}
 
 	insertLine(position: number, str: string): void {
-		this._actions.push({ start: position, end: position, str: str + "\n" });
+		this._actions.push(new InsertAction(position, str + '\n'));
 	}
 
 	replace(start: number, end: number, str: string): void {
-		this._actions.push({ start, end, str });
+		this._actions.push(new ReplaceAction(start, end, str ));
+	}
+
+	fastAppend(str: string): void {
+		this._actions.push(new FastAppendAction(str));
+	}
+
+	fastRewrite(start: number, str: string): void {
+		this._actions.push(new FastRewriteAction(start, str));
 	}
 
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void {
@@ -39,7 +52,7 @@ export class TranspilerContext implements VisitorContext {
 		this._diags.push(diagnostic);
 	}
 
-	get actions(): Replacement[] {
+	get actions(): Action[] {
 		return this._actions;
 	}
 
@@ -49,5 +62,18 @@ export class TranspilerContext implements VisitorContext {
 
 	get halted(): boolean {
 		return this._halted;
+	}
+
+	get fileName(): string {
+		return this._fileName;
+	}
+
+	getLanguageService(): ts.LanguageService {
+		if(this.langServiceProvider) {
+			return this.langServiceProvider();
+		} else {
+			return null;
+		}
+
 	}
 }
