@@ -8,7 +8,6 @@ $ cd ./example-poc
 $ ls
 README.md               build.js                deletePrivate.js        src.ts
 $ node build.js
--> src.ts:2:1 : deleted field "private privateName : string = 'John';"
 $ ls
 README.md               build.js                deletePrivate.js        src.js                  src.js.map              src.ts
 ```
