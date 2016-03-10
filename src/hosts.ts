@@ -2,8 +2,7 @@
 /// <reference path="../typings/node/node.d.ts"/>
 
 import * as ts from 'typescript';
-import {CodeTransformer} from "./transformer";
-import {MutableSourceCode} from "./mutable-source-code";
+import {HostBase} from "./hosts-base";
 
 
 function fileExtensionIs(path: string, extension: string): boolean {
@@ -12,54 +11,15 @@ function fileExtensionIs(path: string, extension: string): boolean {
 	return pathLen > extLen && path.substr(pathLen - extLen, extLen) === extension;
 }
 
-export class HostBase implements ts.CompilerHost {
-	fileExists(fileName: string): boolean{
-		return false;
-	}
 
-	readFile(fileName: string): string{
-		return null;
-	}
 
-	getSourceFile(fileName: string): ts.SourceFile {
-		return null;
-	}
+export class MultipleFilesHost extends HostBase implements ts.CompilerHost {
 
-	writeFile(name:string, text:string, writeByteOrderMark: boolean) {}
-
-	useCaseSensitiveFileNames() {
-		return false;
-	}
-
-	getCanonicalFileName(fileName: string) {
-		return fileName;
-	}
-
-	getCurrentDirectory(): string {
-		return "";
-	}
-
-	getNewLine(): string {
-		return "\n";
-	}
-
-	getDefaultLibFileName(options:ts.CompilerOptions): string {
-		return "lib.d.ts";
-	}
-
-	getCancellationToken(): ts.CancellationToken {
-		return null;
-	}
-}
-
-export class FileValidationHost extends HostBase implements ts.CompilerHost {
-	private _transformations: { [fileName: string]: MutableSourceCode } = {};
-	private _syntacticErrors: ts.Diagnostic[] = [];
+	private syntacticErrors: ts.Diagnostic[] = [];
 
 	constructor(
 		private _resolutionHosts: ts.ModuleResolutionHost[],
-		private _compilerOptions: ts.CompilerOptions,
-		private _transformer: CodeTransformer
+		private _compilerOptions: ts.CompilerOptions
 	) {
 		super();
 	}
@@ -82,25 +42,18 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 			const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
 			const syntacticErors = this.getParserErrors(ast);
 			if(syntacticErors.length>0) {
-				this._syntacticErrors.push(...syntacticErors);
+				this.syntacticErrors.push(...syntacticErors);
 				return null;
 			} else {
-				const transformation = this._transformer.transform(ast);
-				this._transformations[ast.fileName] = transformation;
-				return transformation.ast;
+				return ast;
 			}
 		} else {
 			return null;
 		}
 	}
 
-	translateDiagnostic(diagnostic: ts.Diagnostic): ts.Diagnostic {
-		const transformation = this._transformations[diagnostic.file.fileName];
-		return transformation ? transformation.translateDiagnostic(diagnostic) : diagnostic;
-	}
-
 	getSyntacticErrors(): ts.Diagnostic[] {
-		return this._syntacticErrors;
+		return this.syntacticErrors;
 	}
 
 	private getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
@@ -110,7 +63,7 @@ export class FileValidationHost extends HostBase implements ts.CompilerHost {
 	}
 }
 
-export class FileTranspilationHost extends HostBase implements ts.CompilerHost {
+export class SingleFileHost extends HostBase implements ts.CompilerHost {
 	private _output: string = 'NOT_SET';
 	private _map: string = 'NOT_SET';
 
@@ -150,3 +103,4 @@ export class FileTranspilationHost extends HostBase implements ts.CompilerHost {
 		}
 	}
 }
+

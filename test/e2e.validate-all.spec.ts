@@ -42,8 +42,7 @@ describe('tspoon.validateAll()', function () {
 		const config: ValidatorConfig = {
 			resolutionHosts: [
 				new MockModule('index.ts', 'export const perfectlyValid: number = 666;'),
-				new MockModule('index2.ts', `
-					// This comment here
+				new MockModule('index2.ts', `// This comment here
 					// is just
 					// to add some lines
 					export const perfectlyValid: number = 666;
@@ -78,12 +77,12 @@ describe('tspoon.validateAll()', function () {
 	it("preserves error lines despite the modifications", function () {
 		const config: ValidatorConfig = {
 			resolutionHosts: [
-				new MockModule('index.ts', `
-					// This comment here
-					// is just
-					// to add some lines
-					const perfectlyValid: number = 666;
-					const perfectlyInvalid: SomeUndefinedType = "HAHAHA";
+				new MockModule('index.ts', ` 									// line 1
+					// This comment here     									// line 2
+					// is just     									            // line 3
+					// to add some lines     									// line 4
+					const perfectlyValid: number = 666;     					// line 5
+					const perfectlyInvalid: SomeUndefinedType = "HAHAHA";     	// line 6
 				`)
 			],
 			mutators: [
@@ -92,7 +91,7 @@ describe('tspoon.validateAll()', function () {
 		};
 		expect(tspoon.validateAll(['index.ts'], config)).to.fail()
 			.withMessageCount(1)
-			.withMessage(/.* -> 5:\d+ Cannot find name 'SomeUndefinedType'./);
+			.withMessage(/.* -> 6:\d+ Cannot find name 'SomeUndefinedType'./);
 	});
 
 	it("modifies a dependency of the validated file", function () {
@@ -146,6 +145,41 @@ describe('tspoon.validateAll()', function () {
 		};
 		expect(tspoon.validateAll(['index.ts'], config)).to.fail()
 			.withMessage(/Product.ts -> \d+:\d+ Unterminated string literal./);
+	});
+
+	it("can access semantic information", function () {
+		this.timeout(10000);
+		class MockVisitor implements Visitor {
+			public realTypeName: string;
+
+			filter(node:ts.Node): boolean {
+				return node.getSourceFile().fileName === 'index.ts' && node.kind === ts.SyntaxKind.VariableDeclaration;
+			}
+
+			visit(node:ts.Node, context:VisitorContext): void {
+				const ls: ts.LanguageService = context.getLanguageService();
+				const x = ls.getTypeDefinitionAtPosition(node.getSourceFile().fileName, node.getStart());
+				this.realTypeName = x[0].name;
+			}
+		}
+		const visitor = new MockVisitor();
+		const config: ValidatorConfig = {
+			resolutionHosts: [
+				new MockModule('a.ts', `
+					export default class Product {}
+				`),
+				new MockModule('index.ts', `
+					import {default as SomeClass} from './a';
+					const a: SomeClass = null;
+				`),
+				new MockModule("lib.d.ts", require('typescript/lib/lib.d.ts'))
+			],
+			mutators: [
+				visitor
+			]
+		};
+		tspoon.validateAll(['index.ts'], config);
+		expect(visitor.realTypeName).to.equal('Product');
 	});
 
 });

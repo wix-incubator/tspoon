@@ -90,5 +90,5 @@ and see any changes you make in tests or code reflected in the browser
 ### Versioning
 Currently Tspoon is in alpha mode. As such, it does not respect semver.
 
-### License
-TBD
+# License
+We use a custom license, see ```LICENSE.md```

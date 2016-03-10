@@ -38,3 +38,5 @@ sftp-config.json
 !examples/readme/build.js
 !examples/readme/alertProperty.js
 !webpack.config.js
+.npmrc
+.npmrc

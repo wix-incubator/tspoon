@@ -21,15 +21,19 @@ export interface TranspilerConfig {
 }
 
 export interface VisitorContext {
+	fileName: string;
 	halted: boolean;
 	insertLine(position: number, str: string): void;
 	replace(start: number, end: number, str: string): void;
+	fastAppend(str: string): void;
+	fastRewrite(start: number, str: string): void;
 	reportDiag(node: ts.Node, category: ts.DiagnosticCategory, message: string, halt?: boolean): void;
+	getLanguageService(): ts.LanguageService;
 }
 
 export interface Visitor {
     filter(node: ts.Node): boolean;
-    visit(node: ts.Node, context: VisitorContext): void;
+    visit(node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[])=> void): void;
 }
 
 export function transpile(content: string, config: TranspilerConfig): TranspilerOutput;
@@ -37,7 +41,6 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 export interface ApplyVisitorResult {
 	file: ts.SourceFile,
 	code: string;
-	actions: Replacement[];
 	diags: ts.Diagnostic[];
 }
 
@@ -52,3 +55,5 @@ export interface ValidatorConfig {
 }
 
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[];
+
+export function traverseAst(root: ts.Node, visitor: Visitor, context: VisitorContext): boolean;
