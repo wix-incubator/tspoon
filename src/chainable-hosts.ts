@@ -154,5 +154,3 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
 		return '';
 	}
 }
-
-
