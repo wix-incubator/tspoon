@@ -13,7 +13,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
-    "pretest": "npm run build",
+    "lint": "tslint ./src/**/*.ts",
+    "pretest": "npm run lint && npm run build",
     "test": "npm run test:node",
     "test:browser": "karma start --single-run",
     "test:node": "mocha --reporter mocha-env-reporter ./dist/test",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "chai": "2.2.0",
     "concurrently": "0.1.1",
+    "convert-source-map": "1.1.2",
     "json-loader": "0.5.1",
     "karma": "0.13.19",
     "karma-chrome-launcher": "0.2.0",
@@ -50,9 +52,9 @@
     "mocha-env-reporter": "1.0.2",
     "raw-loader": "0.5.1",
     "source-map-support": "0.3.2",
-    "convert-source-map": "1.1.2",
     "ts-loader": "0.5.3",
     "tsd": "0.6.4",
+    "tslint": "2.5.1",
     "webpack": "1.12.0",
     "webpack-dev-server": "1.10.1"
   },
