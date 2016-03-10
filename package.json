@@ -29,8 +29,11 @@
     "type": "git",
     "url": "https://github.com/wix/tspoon"
   },
-  "author": "core3@wix",
-  "license": "C",
+  "author": "Amir Arad <amira@wix.com> (http ://github.com/amir-arad)",
+   "contributors": [
+    "Amir Arad <amira@wix.com> (http://github.com/amir-arad)"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
     "url": "https://github.com/wix/tspoon/issues"
   },
