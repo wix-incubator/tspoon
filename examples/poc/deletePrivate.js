@@ -10,6 +10,5 @@ module.exports = {
 	},
 	visit: function visit(node, context) {
 		context.replace(node.getStart(), node.getEnd(), '');
-		context.reportDiag(node, ts.DiagnosticCategory.Message, 'deleted field "' + node.getText()+'"', false);
 	}
 };
