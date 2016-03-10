@@ -36,5 +36,3 @@ sftp-config.json
 !example-poc/build.js
 !example-poc/deletePrivate.js
 !webpack.config.js
-.npmrc
-.npmrc
