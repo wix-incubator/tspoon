@@ -1,5 +1,7 @@
 *.js.map
-*.js
+src/*.js
+test/*.js
+test-kit/*.js
 *.vpw
 *.vpj
 *.vpwhistu
