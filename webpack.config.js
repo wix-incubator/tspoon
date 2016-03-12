@@ -5,7 +5,6 @@ module.exports = {
 	context: __dirname,
 	devtool: 'eval',
 	entry: {
-	//	smarty: [path.join(__dirname, 'dist', 'smartypants.bundle.js')],
 		app: [path.join(__dirname, 'dist', 'src', 'index.js')],
 		webtest: ['mocha!'+ path.join(__dirname, 'dist', 'test', 'index.js')],
 		test: [path.join(__dirname, 'dist', 'test', 'index.js')]
@@ -23,12 +22,6 @@ module.exports = {
 		contentBase: '/',
 		inline: true,
 		hot: true
-	},
-	resolve:{
-		alias: {
-		//	'tspoon': path.join(__dirname, 'dist', 'src', 'index.js'),
-			'source-map-support' : path.join(__dirname, 'node_modules', 'source-map-support', 'browser-source-map-support')
-		}
 	},
 	module: {
 		loaders: [

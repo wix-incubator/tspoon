@@ -11,7 +11,7 @@ import * as ts from "typescript";
 
 export function findCodePosition(code: string, snippet: string): SourceMap.Position {
     var lines: string[] = code.split(/[\r\n]/);
-    var lineNo = _.findIndex(lines, (line) => _.contains(line, snippet));
+    var lineNo = _.findIndex(lines, (line) => _.includes(line, snippet));
     if(lineNo > -1) {
         var column = (lineNo > -1) && lines[lineNo].indexOf(snippet);
         return {
