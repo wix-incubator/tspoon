@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "tspoon",
-  "version": "1.0.48",
+  "version": "1.0.49",
   "description": "see README.md",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
@@ -27,8 +27,8 @@
     "url": "https://github.com/wix/tspoon"
   },
   "author": "Gady Guy <gadig@wix.com> (https://github.com/gadiguy)",
-   "contributors": [
-      "Gady Guy <gadig@wix.com> (https://github.com/gadiguy)"
+  "contributors": [
+    "Gady Guy <gadig@wix.com> (https://github.com/gadiguy)"
   ],
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
