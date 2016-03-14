@@ -1,8 +1,5 @@
 {
   "private": false,
-  "publishConfig": {
-    "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
-  },
   "name": "tspoon",
   "version": "1.0.48",
   "description": "see README.md",
@@ -29,9 +26,9 @@
     "type": "git",
     "url": "https://github.com/wix/tspoon"
   },
-  "author": "Amir Arad <amira@wix.com> (http ://github.com/amir-arad)",
-  "contributors": [
-    "Amir Arad <amira@wix.com> (http://github.com/amir-arad)"
+  "author": "Gady Guy <gadig@wix.com> (https://github.com/gadiguy)",
+   "contributors": [
+      "Gady Guy <gadig@wix.com> (https://github.com/gadiguy)"
   ],
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
