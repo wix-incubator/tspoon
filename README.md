@@ -1,4 +1,6 @@
 # Tspoon
+[![npm version](https://badge.fury.io/js/tspoon.svg)](https://badge.fury.io/js/tspoon)
+
 AST visitors for [Typescript](https://github.com/Microsoft/TypeScript).
 ### What Tspoon does
 
