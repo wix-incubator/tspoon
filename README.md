@@ -8,7 +8,7 @@ In addition, Tspoon's validation api supports pre-validation code changes, allow
 
 
 ## Users Documentation
-Simple examples can be found [here](http://gituhb.com/wix/tspoon/examples/poc) and [here](http://gituhb.com/wix/tspoon/examples/readme).
+Simple examples can be found [here](https://github.com/wix/tspoon/examples/poc) and [here](https://github.com/wix/tspoon/examples/readme).
 
 ##Getting started
 Install tspoon using npm.
