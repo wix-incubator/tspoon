@@ -1,8 +1,5 @@
 {
   "private": false,
-  "publishConfig": {
-    "registry": "http://repo.dev.wix/artifactory/api/npm/npm-local/"
-  },
   "name": "tspoon",
   "version": "1.0.46",
   "description": "see README.md",
