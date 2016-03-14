@@ -33,7 +33,7 @@ interface TranspilerOutput {
 
 ```javascript
 var tspoon = require('tspoon');
-// from example-poc/build.js
+// from examples/poc/build.js
 var config = {
     sourceFileName: 'src.ts',
     visitors: ... // insert visitors here
