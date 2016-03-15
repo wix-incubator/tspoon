@@ -43,7 +43,7 @@ var transpilerOut = tspoon.transpile(sourceCode, config);
 ...
 fs.writeFileSync(path.join(__dirname, 'src.js'), transpilerOut.code, {encoding:'utf8'});
 ```
-#### tspon.validate()
+#### tspoon.validate()
 Documentation pending writing
 
 ### How to write a visitor
