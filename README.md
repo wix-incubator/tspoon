@@ -13,20 +13,9 @@ In addition, Tspoon's validation api supports pre-validation code changes, allow
 Simple examples can be found [here](https://github.com/wix/tspoon/tree/master/examples/poc) and [here](https://github.com/wix/tspoon/tree/master/examples/readme).
 
 ##Getting started
-Clone this project localy.
-Then, at the root folder of the project, run:
-```shell
-npm install
-npm run build
-npm test
-```
-### how to run local continous test feedback
-At the root folder of the project, run:
-```shell
-npm start
-```
-Then, open your browser at http://localhost:8080/webtest.bundle
-and see any changes you make in tests or code reflected in the browser
+ Install tspoon using npm.
+ 
+ ```npm install tspoon```
 
 Currently, Tspoon exposes only a programmatic API. Meaning, it is used by other javacript code invoking it's ```transpile``` and ```validate``` methods.
 #### tspon.transpile(content, config)
@@ -84,6 +73,20 @@ Consider for example the following visitor:
 }
 ```
 This visitor only operates on nodes representing property declarations which have the ```private``` modifier. When such a node is encountered, it is deleted from the source code, and a diagnostic message notifying the delete action is emitted.
+Clone this project localy.
+Then, at the root folder of the project, run:
+```shell
+npm install
+npm run build
+npm test
+```
+### how to run local continous test feedback
+At the root folder of the project, run:
+```shell
+npm start
+```
+Then, open your browser at http://localhost:8080/webtest.bundle
+and see any changes you make in tests or code reflected in the browser
 
 ### Versioning
 Currently Tspoon is in alpha mode. As such, it does not respect semver.
