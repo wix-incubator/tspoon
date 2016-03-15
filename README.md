@@ -73,6 +73,9 @@ Consider for example the following visitor:
 }
 ```
 This visitor only operates on nodes representing property declarations which have the ```private``` modifier. When such a node is encountered, it is deleted from the source code, and a diagnostic message notifying the delete action is emitted.
+## Developer Documentation
+
+### how to build and test locally from source
 Clone this project localy.
 Then, at the root folder of the project, run:
 ```shell
