@@ -4,7 +4,7 @@
 AST visitors for [Typescript](https://github.com/Microsoft/TypeScript).
 ### What Tspoon does
 
-Typescript transpilation is useally ```source -> AST -> target```. Tspoon uses [Typescript's compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) to allow pluggable pieces of logic (called ```visitor```) to modify the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) before invoking the Typescript transpiler. The process will look like this ```source -> AST -visitors-> AST -> target```. This technique enables early optimizations and error detection for custom language features.
+Typescript transpilation is useally `source -> AST -> target`. Tspoon uses [Typescript's compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) to allow pluggable pieces of logic (called `visitor`) to modify the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) before invoking the Typescript transpiler. The process will look like this `source -> AST -> visitors -> AST -> target`. This technique enables early optimizations and error detection for custom language features.
 
 In addition, Tspoon's validation api supports pre-validation code changes, allowing the developer to bypass otherwise unavoidable TypeScript diagnostics.
 
@@ -15,7 +15,18 @@ Simple examples can be found [here](https://github.com/wix/tspoon/tree/master/ex
 ##Getting started
  Install tspoon using npm.
  
- ```npm install tspoon```
+ ```
+ $ npm install tspoon
+ $ node 
+ > require('tspoon')
+ { transpile: [Function: transpile],
+   validateAll: [Function: validateAll],
+   applyVisitor: [Function: applyVisitor],
+   applyVisitorOnAst: [Function: applyVisitorOnAst],
+   MultipleFilesHost: [Function: MultipleFilesHost],
+   traverseAst: [Function: traverseAst] }
+ > 
+ ```
 
 Currently, Tspoon exposes only a programmatic API. Meaning, it is used by other javacript code invoking it's ```transpile``` and ```validate``` methods.
 #### tspoon.transpile(content, config)
