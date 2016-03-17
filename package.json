@@ -2,7 +2,7 @@
   "private": false,
   "name": "tspoon",
   "version": "1.0.55",
-  "description": "see README.md",
+  "description": "AST visitors for Typescript",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
   "directories": {
@@ -32,7 +32,7 @@
     "Doron Tsur <doront@wix.com> (http://github.com/qballer)",
     "Gady Guy <gadig@wix.com> (https://github.com/gadiguy)"
   ],
-  "license": "SEE LICENSE IN LICENSE.md",
+  "license": "BSD",
   "bugs": {
     "url": "https://github.com/wix/tspoon/issues"
   },
