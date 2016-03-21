@@ -159,14 +159,18 @@ export class MutableSourceCode {
 		const cosumer: SourceMapConsumer = new SourceMapConsumer(sourceMap);
 		const start: ts.LineAndCharacter = diag.file.getLineAndCharacterOfPosition(diag.start);
 		const startPos: MappedPosition = cosumer.originalPositionFor({ line: start.line + 1, column: start.character });
-		return {
-			file: diag.file,
-			start: diag.file.getPositionOfLineAndCharacter(startPos.line -1, startPos.column),
-			length: diag.length,
-			messageText: diag.messageText,
-			category: diag.category,
-			code: diag.code
-		};
+		if(startPos.line === null) {
+			return diag;
+		} else {
+			return {
+				file: diag.file,
+				start: diag.file.getPositionOfLineAndCharacter(startPos.line -1, startPos.column),
+				length: diag.length,
+				messageText: diag.messageText,
+				category: diag.category,
+				code: diag.code
+			};
+		}
 	}
 }
 
