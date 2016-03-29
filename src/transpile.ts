@@ -68,7 +68,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
 	// First we initialize a SourceFile object with the given source code
 
-	const fileName: string = config.sourceFileName + '.tsx';
+	const fileName: string = config.sourceFileName;
 
 	// Then we let TypeScript parse it into an AST
 
