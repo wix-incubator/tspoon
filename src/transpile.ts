@@ -170,3 +170,16 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
 	);
 	return diags.map(diagnostic => transformHost.translateDiagnostic(diagnostic));
 }
+
+export function applySemanticVisitors(file: string, visitors: Visitor[], resolutionHosts: ts.ModuleResolutionHost[]): string {
+	const sourceHost = new MultipleFilesHost(resolutionHosts, defaultCompilerOptions);
+	const astCache = new AstCacheHost();
+	const semanticHost = new SemanticHost([file], defaultCompilerOptions);
+	const chain = chainHosts(sourceHost, astCache, semanticHost);
+	const langService = ts.createLanguageService(semanticHost, semanticHost);
+	const transformer: CodeTransformer = new VisitorBasedTransformer(visitors, () => langService);
+	const ast: ts.SourceFile = chain.getSourceFile(file, defaultCompilerOptions.target);
+	const mutableSourceCode: MutableSourceCode = transformer.transform(ast);
+	return mutableSourceCode.code;
+
+}

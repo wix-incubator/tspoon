@@ -57,3 +57,5 @@ export interface ValidatorConfig {
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[];
 
 export function traverseAst(root: ts.Node, visitor: Visitor, context: VisitorContext): boolean;
+
+export function applySemanticVisitors(file: string, visitors: Visitor[], resolutionHosts: ts.ModuleResolutionHost[]): string;
