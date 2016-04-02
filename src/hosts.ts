@@ -64,8 +64,8 @@ export class MultipleFilesHost extends HostBase implements ts.CompilerHost {
 }
 
 export class SingleFileHost extends HostBase implements ts.CompilerHost {
-	private _output: string = 'NOT_SET';
-	private _map: string = 'NOT_SET';
+	private _output: string = null;
+	private _map: string = null;
 
 	constructor(private _ast: ts.SourceFile) {
 		super();
