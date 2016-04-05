@@ -71,7 +71,3 @@ export interface ValidatorConfig {
 export function validateAll(files: string[], config: ValidatorConfig): ts.Diagnostic[];
 
 export function traverseAst(root: ts.Node, visitor: Visitor, context: VisitorContext): boolean;
-
-export type SemanticHost = ts.LanguageServiceHost & ts.CompilerHost & ts.DocumentRegistry;
-
-export function createSemanticHost(files: string[], ...resolutionHosts: ts.ModuleResolutionHost[]): SemanticHost;
