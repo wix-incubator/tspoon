@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/main.d.ts" />
 
 import {getModuleLoader, Dependency} from './mocks/module-loaders';
 

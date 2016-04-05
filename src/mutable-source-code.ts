@@ -1,6 +1,5 @@
-/// <reference path="../typings/source-map/source-map.d.ts"/>
-/// <reference path="../typings/node/node.d.ts"/>
-/// <reference path="../typings/magic-string/magic-string.d.ts"/>
+/// <reference path="../typings/main.d.ts" />
+
 
 import { RawSourceMap, SourceMapConsumer, SourceMapGenerator, MappedPosition } from 'source-map';
 import * as ts from 'typescript';

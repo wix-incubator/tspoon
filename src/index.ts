@@ -1,5 +1,5 @@
-/// <reference path="../typings/source-map/source-map.d.ts"/>
-/// <reference path="../typings/node/node.d.ts" />
+/// <reference path="../typings/main.d.ts" />
+
 
 export { transpile, TranspilerOutput, TranspilerConfig, ValidatorConfig, validateAll } from './transpile';
 export { Visitor, VisitorContext } from "./visitor";

@@ -1,5 +1,4 @@
-/// <reference path="../node_modules/typescript/lib/typescript.d.ts"/>
-/// <reference path="../typings/tsd.d.ts"/>
+/// <reference path="../typings/main.d.ts" />
 
 import { SingleFileHost, MultipleFilesHost } from './hosts';
 import { traverseAst } from './traverse-ast';
