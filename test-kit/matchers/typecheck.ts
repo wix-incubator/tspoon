@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts"/>
+/// <reference path="../../typings/main.d.ts" />
 
 import {expect} from 'chai';
 import {printDiagnostic} from '../diagnostics-utils';

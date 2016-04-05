@@ -2,8 +2,7 @@
  * Created by gadig on 9/24/15.
  */
 
-/// <reference path="../typings/tsd.d.ts"/>
-/// <reference path="../typings/lodash/lodash.d.ts"/>
+/// <reference path="../typings/main.d.ts" />
 
 import * as SourceMap from 'source-map';
 import * as _ from 'lodash';
