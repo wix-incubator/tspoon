@@ -3,7 +3,6 @@ import * as tspoon from '../src/index';
 import * as ts from 'typescript';
 import {ValidatorConfig} from "../src/transpile";
 import {VisitorContext} from "../index";
-import {VisitorBasedTransformer} from "../src/transformer";
 import {Visitor} from "../src/visitor";
 import {MockModule} from "../test-kit/mocks/resolution-hosts";
 
