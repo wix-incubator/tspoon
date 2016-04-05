@@ -1,4 +1,4 @@
-/// <reference path="../typings/source-map/source-map.d.ts"/>
+/// <reference path="../typings/main.d.ts" />
 
 import { MutableSourceCode, Action, ReplaceAction } from './mutable-source-code';
 import { Visitor, VisitorContext } from './visitor';

@@ -18,6 +18,7 @@
     "build:webpack": "webpack -v --display-modules",
     "build:tsc": "tsc",
     "prestart": "npm run build",
+    "prepublish": "typings install",
     "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
     "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
     "start:tsc": "tsc -w"
@@ -40,17 +41,18 @@
   "devDependencies": {
     "chai": "3.5.0",
     "concurrently": "2.0.0",
+    "convert-source-map": "1.2.0",
     "json-loader": "0.5.4",
     "karma": "0.13.22",
     "karma-chrome-launcher": "0.2.3",
     "karma-mocha": "0.2.2",
     "mocha": "2.4.5",
-    "mocha-loader": "0.7.1",
     "mocha-env-reporter": "1.0.2",
+    "mocha-loader": "0.7.1",
     "raw-loader": "0.5.1",
     "source-map-support": "0.4.0",
-    "convert-source-map": "1.2.0",
     "tsd": "0.6.5",
+    "typings": "0.7.12",
     "webpack": "1.12.14",
     "webpack-dev-server": "1.14.1"
   },

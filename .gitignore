@@ -40,3 +40,4 @@ sftp-config.json
 !webpack.config.js
 .npmrc
 .npmrc
+typings

@@ -1,4 +1,4 @@
-///<reference path="matchers.d.ts"/>
+/// <reference path="../typings/main.d.ts" />
 
 import typecheck from './matchers/typecheck';
 import * as chai from 'chai';
