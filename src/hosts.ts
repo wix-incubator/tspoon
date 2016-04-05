@@ -3,6 +3,7 @@
 
 import * as ts from 'typescript';
 import {HostBase} from "./hosts-base";
+import {defaultCompilerOptions} from "./configuration";
 
 
 function fileExtensionIs(path: string, extension: string): boolean {
@@ -19,7 +20,7 @@ export class MultipleFilesHost extends HostBase implements ts.CompilerHost {
 
 	constructor(
 		private _resolutionHosts: ts.ModuleResolutionHost[],
-		private _compilerOptions: ts.CompilerOptions
+		private _compilerOptions: ts.CompilerOptions = defaultCompilerOptions
 	) {
 		super();
 	}

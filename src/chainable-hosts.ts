@@ -1,9 +1,12 @@
-import {HostBase} from "./hosts-base";
+import {chainHosts} from "./hosts-base";
 import * as ts from 'typescript';
-import {CodeTransformer} from "./transformer";
+import {CodeTransformer, VisitorBasedTransformer} from "./transformer";
 import {ChainableHost} from "./hosts-base";
 import {MutableSourceCode} from "./mutable-source-code";
 import RawSourceMap = SourceMap.RawSourceMap;
+import {defaultCompilerOptions} from "./configuration";
+import {MultipleFilesHost} from "./hosts";
+import {Visitor} from "./visitor";
 
 const normalizePath: { (path: string): string } = ts['normalizePath'];
 const getDirectoryPath: { (path: string): string } = ts['getDirectoryPath'];
@@ -27,9 +30,11 @@ export class AstCacheHost extends ChainableHost {
 
 export class TransformationHost extends ChainableHost {
 	private transformations: { [fileName: string]: MutableSourceCode } = {};
+	private transformer: CodeTransformer;
 
-	constructor(private transformer: CodeTransformer) {
+	constructor(visitors: Visitor[], languageServiceProvider: () => ts.LanguageService = () => null) {
 		super();
+		this.transformer = new VisitorBasedTransformer(visitors, languageServiceProvider);
 	}
 
 	getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
@@ -61,7 +66,7 @@ export class TransformationHost extends ChainableHost {
 export class SemanticHost extends ChainableHost implements ts.LanguageServiceHost, ts.CompilerHost, ts.DocumentRegistry {
 	constructor(
 		private files: string[],
-		private compilerOptions: ts.CompilerOptions
+		private compilerOptions: ts.CompilerOptions = defaultCompilerOptions
 	) {
 		super();
 	}
@@ -153,4 +158,11 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
 	reportStats(): string {
 		return '';
 	}
+}
+
+export function createSemanticHost(files: string[], ...resolutionHosts: ts.ModuleResolutionHost[]): SemanticHost {
+	const sourceHost = new MultipleFilesHost(resolutionHosts);
+	const astCache = new AstCacheHost();
+	const semanticHost = new SemanticHost(files);
+	return <SemanticHost>chainHosts(sourceHost, astCache, semanticHost);
 }

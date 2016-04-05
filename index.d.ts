@@ -1,5 +1,17 @@
 import * as ts from "typescript";
-import {RawSourceMap} from "source-map";
+
+interface StartOfSourceMap {
+	file?: string;
+	sourceRoot?: string;
+}
+
+export interface RawSourceMap extends StartOfSourceMap {
+	version: string;
+	sources: Array<string>;
+	names: Array<string>;
+	sourcesContent?: string;
+	mappings: string;
+}
 
 export interface Replacement {
 	start: number;
@@ -46,6 +58,8 @@ export interface ApplyVisitorResult {
 
 export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResult;
 
+export function applyVisitorOnHostedSource(file: string, visitors: Visitor[], host: ts.CompilerHost): string;
+
 export function applyVisitorOnAst(ast: ts.SourceFile, visitor: Visitor): ApplyVisitorResult;
 
 export interface ValidatorConfig {
@@ -58,4 +72,6 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
 
 export function traverseAst(root: ts.Node, visitor: Visitor, context: VisitorContext): boolean;
 
-export function applySemanticVisitors(file: string, visitors: Visitor[], resolutionHosts: ts.ModuleResolutionHost[]): string;
+export type SemanticHost = ts.LanguageServiceHost & ts.CompilerHost & ts.DocumentRegistry;
+
+export function createSemanticHost(files: string[], ...resolutionHosts: ts.ModuleResolutionHost[]): SemanticHost;

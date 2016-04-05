@@ -4,17 +4,14 @@
 import { SingleFileHost, MultipleFilesHost } from './hosts';
 import { traverseAst } from './traverse-ast';
 import { MutableSourceCode } from './mutable-source-code';
-import { RawSourceMap, SourceMapConsumer } from 'source-map';
-import { Visitor, VisitorContext } from './visitor';
+import { RawSourceMap } from 'source-map';
+import { Visitor } from './visitor';
 import * as ts from 'typescript';
 import { TranspilerContext } from "./transpiler-context";
 import { defaultCompilerOptions } from "./configuration";
-import {CodeTransformer} from "./transformer";
-import {VisitorBasedTransformer} from "./transformer";
 import {SemanticHost} from "./chainable-hosts";
 import {TransformationHost} from "./chainable-hosts";
 import {chainHosts} from "./hosts-base";
-import {MockModule} from "../test-kit/mocks/resolution-hosts";
 import {AstCacheHost} from "./chainable-hosts";
 
 /**
@@ -161,8 +158,7 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
 	const langServiceProvider = () => langService
 		? langService
 		: langService = ts.createLanguageService(semanticHost, semanticHost);
-	const transformer: CodeTransformer = new VisitorBasedTransformer(config.mutators || [], langServiceProvider);
-	const transformHost = new TransformationHost(transformer);
+	const transformHost = new TransformationHost(config.mutators || [], langServiceProvider);
 	const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(cachedSource, transformHost));
 	const diags: ts.Diagnostic[] = [].concat(
 		sourceHost.getSyntacticErrors(),
@@ -171,15 +167,3 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
 	return diags.map(diagnostic => transformHost.translateDiagnostic(diagnostic));
 }
 
-export function applySemanticVisitors(file: string, visitors: Visitor[], resolutionHosts: ts.ModuleResolutionHost[]): string {
-	const sourceHost = new MultipleFilesHost(resolutionHosts, defaultCompilerOptions);
-	const astCache = new AstCacheHost();
-	const semanticHost = new SemanticHost([file], defaultCompilerOptions);
-	const chain = chainHosts(sourceHost, astCache, semanticHost);
-	const langService = ts.createLanguageService(semanticHost, semanticHost);
-	const transformer: CodeTransformer = new VisitorBasedTransformer(visitors, () => langService);
-	const ast: ts.SourceFile = chain.getSourceFile(file, defaultCompilerOptions.target);
-	const mutableSourceCode: MutableSourceCode = transformer.transform(ast);
-	return mutableSourceCode.code;
-
-}
