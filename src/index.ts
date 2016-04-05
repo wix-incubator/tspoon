@@ -6,4 +6,3 @@ export { Visitor, VisitorContext } from "./visitor";
 export { applyVisitor, applyVisitorOnAst, applyVisitorOnHostedSource } from "./apply-visitor";
 export { MultipleFilesHost } from "./hosts";
 export { traverseAst } from "./traverse-ast";
-export { createSemanticHost } from './chainable-hosts';
