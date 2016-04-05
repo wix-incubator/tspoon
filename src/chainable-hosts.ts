@@ -160,9 +160,3 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
 	}
 }
 
-export function createSemanticHost(files: string[], ...resolutionHosts: ts.ModuleResolutionHost[]): SemanticHost {
-	const sourceHost = new MultipleFilesHost(resolutionHosts);
-	const astCache = new AstCacheHost();
-	const semanticHost = new SemanticHost(files);
-	return <SemanticHost>chainHosts(sourceHost, astCache, semanticHost);
-}
