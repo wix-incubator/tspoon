@@ -31,3 +31,16 @@ export class SemanticHost extends ChainableHost {
 	constructor(files: string[], compilerOptions?: ts.CompilerOptions);
 }
 
+
+
+export class MultipleFilesHost extends HostBase {
+	constructor(resolutionHosts: ts.ModuleResolutionHost[], compilerOptions?: ts.CompilerOptions)
+	getSyntacticErrors(): ts.Diagnostic[];
+}
+
+export class SingleFileHost extends HostBase {
+	constructor(ast: ts.SourceFile);
+	public output: string;
+	public sourceMap: RawSourceMap;
+}
+
