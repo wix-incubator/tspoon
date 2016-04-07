@@ -1,107 +1,100 @@
-/// <reference path="../typings/main.d.ts" />
-
-
 import * as ts from 'typescript';
-import {HostBase} from "./hosts-base";
-import {defaultCompilerOptions} from "./configuration";
-
+import {HostBase} from './hosts-base';
+import {defaultCompilerOptions} from './configuration';
 
 function fileExtensionIs(path: string, extension: string): boolean {
-	let pathLen = path.length;
-	let extLen = extension.length;
-	return pathLen > extLen && path.substr(pathLen - extLen, extLen) === extension;
+    let pathLen = path.length;
+    let extLen = extension.length;
+    return pathLen > extLen && path.substr(pathLen - extLen, extLen) === extension;
 }
-
-
 
 export class MultipleFilesHost extends HostBase implements ts.CompilerHost {
 
-	private syntacticErrors: ts.Diagnostic[] = [];
+    private syntacticErrors: ts.Diagnostic[] = [];
 
-	constructor(
-		private _resolutionHosts: ts.ModuleResolutionHost[],
-		private _compilerOptions: ts.CompilerOptions = defaultCompilerOptions
-	) {
-		super();
-	}
+    constructor(
+        private _resolutionHosts: ts.ModuleResolutionHost[],
+        private _compilerOptions: ts.CompilerOptions = defaultCompilerOptions
+    ) {
+        super();
+    }
 
-	fileExists(fileName: string): boolean{
-		return this._resolutionHosts.some(host => host.fileExists(fileName));
-	}
+    fileExists(fileName: string): boolean {
+        return this._resolutionHosts.some(host => host.fileExists(fileName));
+    }
 
-	readFile(fileName: string): string {
-		return this._resolutionHosts.reduce<string>(
-			(acc:string, host: ts.ModuleResolutionHost) => (!acc && host.fileExists(fileName))
-				? host.readFile(fileName)
-				: acc,
-			null);
-	}
+    readFile(fileName: string): string {
+        return this._resolutionHosts.reduce<string>(
+            (acc: string, host: ts.ModuleResolutionHost) => (!acc && host.fileExists(fileName))
+                ? host.readFile(fileName)
+                : acc,
+            null);
+    }
 
-	getSourceFile(fileName: string): ts.SourceFile {
-		const source = this.readFile(fileName);
-		if(source) {
-			const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
-			const syntacticErors = this.getParserErrors(ast);
-			if(syntacticErors.length>0) {
-				this.syntacticErrors.push(...syntacticErors);
-				return null;
-			} else {
-				return ast;
-			}
-		} else {
-			return null;
-		}
-	}
+    getSourceFile(fileName: string): ts.SourceFile {
+        const source = this.readFile(fileName);
+        if (source) {
+            const ast: ts.SourceFile = ts.createSourceFile(fileName, source, this._compilerOptions.target, true);
+            const syntacticErors = this.getParserErrors(ast);
+            if (syntacticErors.length > 0) {
+                this.syntacticErrors.push(...syntacticErors);
+                return null;
+            } else {
+                return ast;
+            }
+        } else {
+            return null;
+        }
+    }
 
-	getSyntacticErrors(): ts.Diagnostic[] {
-		return this.syntacticErrors;
-	}
+    getSyntacticErrors(): ts.Diagnostic[] {
+        return this.syntacticErrors;
+    }
 
-	private getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
-		// We're accessing here an internal property. It would be more legit to access it through
-		// ts.Program.getSyntacticDiagsnostics(), but we want to bail out ASAP.
-		return sourceFile['parseDiagnostics'];
-	}
+    private getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
+        // We're accessing here an internal property. It would be more legit to access it through
+        // ts.Program.getSyntacticDiagsnostics(), but we want to bail out ASAP.
+        return sourceFile['parseDiagnostics'];
+    }
 }
 
 export class SingleFileHost extends HostBase implements ts.CompilerHost {
-	private _output: string = '';
-	private _map: string = null;
+    private _output: string = '';
+    private _map: string = null;
 
-	constructor(private _ast: ts.SourceFile) {
-		super();
-	}
+    constructor(private _ast: ts.SourceFile) {
+        super();
+    }
 
-	public get output(): string {
-		return this._output;
-	}
+    public get output(): string {
+        return this._output;
+    }
 
-	public get sourceMap(): SourceMap.RawSourceMap {
-		return JSON.parse(this._map);
-	}
+    public get sourceMap(): SourceMap.RawSourceMap {
+        return JSON.parse(this._map);
+    }
 
-	fileExists(fileName: string): boolean{
-		return fileName === this._ast.fileName;
-	}
+    fileExists(fileName: string): boolean {
+        return fileName === this._ast.fileName;
+    }
 
-	readFile(fileName: string): string{
-		if(fileName === this._ast.fileName) {
-			return this._ast.text;
-		}
-	}
+    readFile(fileName: string): string {
+        if (fileName === this._ast.fileName) {
+            return this._ast.text;
+        }
+    }
 
-	getSourceFile(fileName: string): ts.SourceFile {
-		if(fileName === this._ast.fileName) {
-			return this._ast;
-		}
-	}
+    getSourceFile(fileName: string): ts.SourceFile {
+        if (fileName === this._ast.fileName) {
+            return this._ast;
+        }
+    }
 
-	writeFile(name:string, text:string, writeByteOrderMark: boolean) {
-		if(fileExtensionIs(name, 'map')) {
-			this._map = text;
-		} else {
-			this._output = text;
-		}
-	}
+    writeFile(name: string, text: string, writeByteOrderMark: boolean) {
+        if (fileExtensionIs(name, 'map')) {
+            this._map = text;
+        } else {
+            this._output = text;
+        }
+    }
 }
-

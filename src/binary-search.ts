@@ -1,4 +1,3 @@
-
 export default function binarySearch(array: number[], value: number): number {
     let low = 0;
     let high = array.length - 1;
