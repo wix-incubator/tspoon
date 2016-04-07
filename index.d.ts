@@ -1,5 +1,3 @@
-/// <reference path='typings/main.d.ts' />
-
 import * as ts from 'typescript';
 
 interface StartOfSourceMap {
