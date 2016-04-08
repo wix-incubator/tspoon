@@ -1,4 +1,3 @@
-/// <reference path='typings/main.d.ts' />
 import * as ts from 'typescript';
 import {RawSourceMap, Visitor} from './index';
 
