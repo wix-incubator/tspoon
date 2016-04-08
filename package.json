@@ -57,7 +57,7 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
-    "lodash": "4.8.2",
+    "lodash": "4.9.0",
     "magic-string": "0.10.2",
     "source-map": "0.5.3",
     "typescript": "1.8.7"
