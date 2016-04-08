@@ -1,75 +1,72 @@
-/// <reference path="../typings/main.d.ts" />
-
 import {expect} from 'chai';
-import {transpile, TranspilerConfig, VisitorContext} from '../src';
-import { Node, Decorator, ClassDeclaration, SyntaxKind } from 'typescript';
-import { CompilerOptions } from 'typescript';
+import {Node, Decorator, ClassDeclaration, SyntaxKind, CompilerOptions} from 'typescript';
 import * as _ from 'lodash';
+import {transpile, TranspilerConfig, VisitorContext} from '../src';
 
 const config: TranspilerConfig = {
-	sourceFileName: 'sample.tsx',
-	visitors: []
+    sourceFileName: 'sample.tsx',
+    visitors: []
 };
 
-describe('transpiler', function () {
-	it('fails on parser errors', function () {
-		const source = 'let a = <div><div></div>;';
-		const transpiled = transpile(source, config);
-		expect(transpiled.code).not.to.be.ok;
-		expect(transpiled.diags).not.to.be.empty;
-	});
+describe('transpiler', function() {
+    it('fails on parser errors', function() {
+        const source = 'let a = <div><div></div>;';
+        const transpiled = transpile(source, config);
+        expect(transpiled.code).not.to.be.ok;
+        expect(transpiled.diags).not.to.be.empty;
+    });
 
-	describe('e2e regression test', ()=> {
+    describe('e2e regression test', () => {
 
-		const config2: TranspilerConfig = {
-			compilerOptions : <CompilerOptions>{
-				inlineSourceMap : false,
-				sourceMap: true,
-				inlineSources : false,
-				noEmitHelpers: false
-			},
-			sourceFileName: 'sample.tsx',
-			visitors: [{
-				filter: function(node: Node): boolean {
-					return node.kind == SyntaxKind.ClassDeclaration && node.decorators && node.decorators.length > 0;
-				},
+        const config2: TranspilerConfig = {
+            compilerOptions: <CompilerOptions>{
+                inlineSourceMap: false,
+                sourceMap: true,
+                inlineSources: false,
+                noEmitHelpers: false
+            },
+            sourceFileName: 'sample.tsx',
+            visitors: [{
+                filter: function(node: Node): boolean {
+                    return node.kind == SyntaxKind.ClassDeclaration && node.decorators && node.decorators.length > 0;
+                },
 
-				visit: function(node: Node, context: VisitorContext): void {
-					let targetPosition: number = node.pos;
-					const classNode: ClassDeclaration = <ClassDeclaration> node;
-					if(!_.isEmpty(classNode.decorators)) {
-						targetPosition = (<Decorator>_.last(classNode.decorators)).end + 1;
-					}
-			//		console.log("targetPosition", targetPosition);
-					context.insertLine(targetPosition, `@fooo(\`------------------------
-					"tags": ["@type"],
-					"properties": [
+                visit: function(node: Node, context: VisitorContext): void {
+                    let targetPosition: number = node.pos;
+                    const classNode: ClassDeclaration = <ClassDeclaration>node;
+                    if (!_.isEmpty(classNode.decorators)) {
+                        targetPosition = (<Decorator>_.last(classNode.decorators)).end + 1;
+                    }
+                    //		console.log('targetPosition', targetPosition);
+                    context.insertLine(targetPosition, `@fooo(\`------------------------
+					'tags': ['@type'],
+					'properties': [
 						{
-							"name": "title",
-							"type": "core3.types.String"
+							'name': 'title',
+							'type': 'core3.types.String'
 						},
 						{
-							"name": "price",
-							"type": "core3.types.Number"
+							'name': 'price',
+							'type': 'core3.types.Number'
 						},
 						{
-							"name": "flag",
-							"type": "core3.types.Boolean"
+							'name': 'flag',
+							'type': 'core3.types.Boolean'
 						},
 						{
-							"name": "func",
-							"type": "core3.types.Function"
+							'name': 'func',
+							'type': 'core3.types.Function'
 						}
 					],
-					"methods": []
+					'methods': []
 				\`)`);
-				}
-			}]
-		};
+                }
+            }]
+        };
 
-		it('checks sample code doesn\'t get garbled up the same way it once did', () => {
-			const source = `
-/// <reference path="../../../typings/tsd.d.ts"/>
+        it('checks sample code doesn\'t get garbled up the same way it once did', () => {
+            const source = `
+/// <reference path='../../../typings/tsd.d.ts'/>
 
 function bar(){
 }
@@ -126,9 +123,9 @@ export class CropUtils{
 export default class Image{
 }
 `;
-			const transpiled = transpile(source, config2);
-			expect(() => eval(transpiled.code)).not.to.throw();
-		});
-	});
+            const transpiled = transpile(source, config2);
+            expect(() => eval(transpiled.code)).not.to.throw();
+        });
+    });
 
 });

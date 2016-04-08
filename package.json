@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "clean": "rm -rf dist && mkdir dist",
+    "clean": "rimraf dist && mkdir dist",
     "pretest": "npm run build",
     "test": "npm run test:node",
     "test:browser": "karma start --single-run",
@@ -50,14 +50,14 @@
     "mocha-env-reporter": "1.0.2",
     "mocha-loader": "0.7.1",
     "raw-loader": "0.5.1",
+    "rimraf": "2.5.2",
     "source-map-support": "0.4.0",
-    "tsd": "0.6.5",
     "typings": "0.7.12",
     "webpack": "1.12.14",
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
-    "lodash": "4.7.0",
+    "lodash": "4.8.2",
     "magic-string": "0.10.2",
     "source-map": "0.5.3",
     "typescript": "1.8.7"

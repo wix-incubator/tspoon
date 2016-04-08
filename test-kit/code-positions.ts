@@ -1,17 +1,11 @@
-/**
- * Created by gadig on 9/24/15.
- */
-
-/// <reference path="../typings/main.d.ts" />
-
 import * as SourceMap from 'source-map';
 import * as _ from 'lodash';
-import * as ts from "typescript";
+import * as ts from 'typescript';
 
 export function findCodePosition(code: string, snippet: string): SourceMap.Position {
     var lines: string[] = code.split(/[\r\n]/);
     var lineNo = _.findIndex(lines, (line) => _.includes(line, snippet));
-    if(lineNo > -1) {
+    if (lineNo > -1) {
         var column = (lineNo > -1) && lines[lineNo].indexOf(snippet);
         return {
             line: lineNo + 1,
@@ -22,7 +16,7 @@ export function findCodePosition(code: string, snippet: string): SourceMap.Posit
     }
 }
 
-export function findCodeRange(code: string, snippet: string): ts.TextRange  {
+export function findCodeRange(code: string, snippet: string): ts.TextRange {
     var pos = code.indexOf(snippet);
     return pos < 0 ? null : { pos, end: pos + snippet.length };
 }

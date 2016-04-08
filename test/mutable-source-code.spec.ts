@@ -1,95 +1,90 @@
-/// <reference path="../typings/main.d.ts" />
-
-import { expect } from 'chai';
-import * as chai from "chai";
-import * as ts from "typescript";
-import { MutableSourceCode, ReplaceAction, Action} from "../src/mutable-source-code";
-import { traverseAst } from '../src/traverse-ast';
-import { findCodeRange, findCodePosition } from "../test-kit/index";
-import { SingleFileHost } from '../src/hosts';
-import { defaultCompilerOptions } from '../src/configuration';
-import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map';
+import {expect} from 'chai';
+import * as ts from 'typescript';
+import {MutableSourceCode, ReplaceAction, Action} from '../src/mutable-source-code';
+import {traverseAst} from '../src/traverse-ast';
+import {findCodeRange, findCodePosition} from '../test-kit/index';
+import {SingleFileHost} from '../src/hosts';
+import {defaultCompilerOptions} from '../src/configuration';
+import {RawSourceMap, SourceMapConsumer, SourceMapGenerator} from 'source-map';
 
 function makeReplacement(source: string, atStr: string, insStr: string): Action {
-	const textRange = findCodeRange(source, atStr);
-	return new ReplaceAction(textRange.pos, textRange.end, insStr);
+    const textRange = findCodeRange(source, atStr);
+    return new ReplaceAction(textRange.pos, textRange.end, insStr);
 }
 
 function makeLineInsersion(source: string, atStr: string, insStr: string): Action {
-	const textRange = findCodeRange(source, atStr);
-	return new ReplaceAction(textRange.pos, textRange.pos, insStr + "\n");
+    const textRange = findCodeRange(source, atStr);
+    return new ReplaceAction(textRange.pos, textRange.pos, insStr + '\n');
 }
 
 function aSourceMapperFor(source: string): MutableSourceCode {
-	const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
-	return new MutableSourceCode(ast);
+    const ast = ts.createSourceFile('test.ts', source, defaultCompilerOptions.target, true);
+    return new MutableSourceCode(ast);
 }
 
 function expectSourceMapToMatchChangeForSuppliedText(source: string, target: string, sourceMap: RawSourceMap, text: string) {
-	const positionBeforeChange: SourceMap.Position = findCodePosition(source, text);
-	const positionAfterChange: SourceMap.Position = findCodePosition(target, text);
-	const mapConsumer = new SourceMapConsumer(sourceMap);
-	const mappedPosition: SourceMap.Position = mapConsumer.originalPositionFor(positionAfterChange);
-	expect({ line: mappedPosition.line, column: mappedPosition.column })
-		.to.eql({ line: positionBeforeChange.line, column: positionBeforeChange.column });
+    const positionBeforeChange: SourceMap.Position = findCodePosition(source, text);
+    const positionAfterChange: SourceMap.Position = findCodePosition(target, text);
+    const mapConsumer = new SourceMapConsumer(sourceMap);
+    const mappedPosition: SourceMap.Position = mapConsumer.originalPositionFor(positionAfterChange);
+    expect({ line: mappedPosition.line, column: mappedPosition.column })
+        .to.eql({ line: positionBeforeChange.line, column: positionBeforeChange.column });
 }
 
 function transpile(source: string): { code: string, map: RawSourceMap } {
-	const ast = ts.createSourceFile("test.ts", source, defaultCompilerOptions.target, true);
-	const compilerHost = new SingleFileHost(ast);
-	const program = ts.createProgram(["test.ts"], defaultCompilerOptions, compilerHost);
-	program.emit();
-	return {
-		code: compilerHost.output,
-		map: compilerHost.sourceMap
-	};
+    const ast = ts.createSourceFile('test.ts', source, defaultCompilerOptions.target, true);
+    const compilerHost = new SingleFileHost(ast);
+    const program = ts.createProgram(['test.ts'], defaultCompilerOptions, compilerHost);
+    program.emit();
+    return {
+        code: compilerHost.output,
+        map: compilerHost.sourceMap
+    };
 }
 
-describe("given a source code and given a replacement command, sourcemapper should", ()=> {
+describe('given a source code and given a replacement command, sourcemapper should', () => {
 
 
-	const source = `class A {}
+    const source = `class A {}
 PLACE_HOLDERclass B {}
 fubar();`;
 
-	const target = `class A {}
+    const target = `class A {}
 @bar
 @foo
 class B {}
 fubar();`;
 
-	const action1 = makeLineInsersion(source, "PLACE_HOLDER", "@bar");
-	const action2 = makeReplacement(source, "PLACE_HOLDER", "@foo\n");
-	// adding action3 demonstrates problems with making changes based on a text after that text has been replaced (see action2).
-	// using the next versin of magic-string may solve this
-	// const action3 = makeLineInsersion(source, "PLACE_HOLDER", "\n@baz");
-	// mutableCode.execute([action1, action2 /*, action3*/]);
+    const action1 = makeLineInsersion(source, 'PLACE_HOLDER', '@bar');
+    const action2 = makeReplacement(source, 'PLACE_HOLDER', '@foo\n');
+    // adding action3 demonstrates problems with making changes based on a text after that text has been replaced (see action2).
+    // using the next versin of magic-string may solve this
+    // const action3 = makeLineInsersion(source, 'PLACE_HOLDER', '\n@baz');
+    // mutableCode.execute([action1, action2 /*, action3*/]);
 
-	var mutableCode;
-	beforeEach(() =>{
-		mutableCode = aSourceMapperFor(source);
+    var mutableCode;
+    beforeEach(() => {
+        mutableCode = aSourceMapperFor(source);
 
-	});
+    });
 
-	it("generate a new string that matches the expected target", ()=> {
-		mutableCode.execute([action1, action2 /*, action3*/]);
+    it('generate a new string that matches the expected target', () => {
+        mutableCode.execute([action1, action2 /*, action3*/]);
 
-		expect(mutableCode.code).to.equal(target);
-	});
+        expect(mutableCode.code).to.equal(target);
+    });
 
-	it("generate correct sourcemap that reflects the changes", ()=> {
-		mutableCode.execute([action1, action2 /*, action3*/]);
+    it('generate correct sourcemap that reflects the changes', () => {
+        mutableCode.execute([action1, action2 /*, action3*/]);
 
-		expectSourceMapToMatchChangeForSuppliedText(source, mutableCode.code, mutableCode.sourceMap, "class B");
-	});
+        expectSourceMapToMatchChangeForSuppliedText(source, mutableCode.code, mutableCode.sourceMap, 'class B');
+    });
 
-	it("map the changes onto a sourcemap generated by typescript", ()=> {
-		mutableCode.execute([action1, action2 /*, action3*/]);
+    it('map the changes onto a sourcemap generated by typescript', () => {
+        mutableCode.execute([action1, action2 /*, action3*/]);
 
-		var result = transpile(mutableCode.code);
-		const sourceMap = mutableCode.translateMap(result.map);
-		expectSourceMapToMatchChangeForSuppliedText(source, result.code, sourceMap, "fubar()");
-	});
+        var result = transpile(mutableCode.code);
+        const sourceMap = mutableCode.translateMap(result.map);
+        expectSourceMapToMatchChangeForSuppliedText(source, result.code, sourceMap, 'fubar()');
+    });
 });
-
-
