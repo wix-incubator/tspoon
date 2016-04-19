@@ -16,6 +16,14 @@ export interface VisitorContext {
 	 * @param str line to insert
 	 */
     insertLine(position: number, str: string): void;
+
+    /**
+     * insert text at given position
+     * @param position position in code at which to insert line.
+     * @param str text to insert
+     */
+    insert(position: number, str: string): void;
+    
 	/**
 	 * replace a piece of text in the code with a given new text
 	 * @param start position in code of the first character to replace
