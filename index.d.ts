@@ -36,6 +36,7 @@ export interface VisitorContext {
     fileName: string;
     halted: boolean;
     insertLine(position: number, str: string): void;
+    insert(position: number, str: string): void;
     replace(start: number, end: number, str: string): void;
     fastAppend(str: string): void;
     fastRewrite(start: number, str: string): void;

@@ -18,7 +18,11 @@ export class TranspilerContext implements VisitorContext {
     }
 
     insertLine(position: number, str: string): void {
-        this._actions.push(new InsertAction(position, str + '\n'));
+        this.insert(position, str + '\n');
+    }
+
+    insert(position: number, str: string): void {
+        this._actions.push(new InsertAction(position, str));
     }
 
     replace(start: number, end: number, str: string): void {
