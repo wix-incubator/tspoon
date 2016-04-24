@@ -14,7 +14,7 @@
     "test": "npm run test:node",
     "test:browser": "karma start --single-run",
     "test:node": "mocha --reporter mocha-env-reporter ./dist/test",
-    "build": "npm run clean && npm run build:tsc",
+    "build": "npm run clean && npm run build:tsc && npm run doc",
     "build:webpack": "webpack -v --display-modules",
     "build:tsc": "tsc",
     "prestart": "npm run build",
@@ -22,7 +22,7 @@
     "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
     "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
     "start:tsc": "tsc -w",
-    "doc": "node_modules/typedoc/bin/typedoc --module commonjs --target ES5 --out doc src"
+    "doc": "rimraf doc && node_modules/typedoc/bin/typedoc --module commonjs --target ES5 --out doc src"
   },
   "repository": {
     "type": "git",

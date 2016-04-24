@@ -26,6 +26,7 @@ coverage
 build/Release
 node_modules
 dist
+doc
 *.tmlanguage.cache
 *.tmPreferences.cache
 *.stTheme.cache
