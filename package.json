@@ -21,7 +21,8 @@
     "prepublish": "typings install",
     "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
     "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
-    "start:tsc": "tsc -w"
+    "start:tsc": "tsc -w",
+    "doc": "node_modules/typedoc/bin/typedoc --module commonjs --target ES5 --out doc src"
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "raw-loader": "0.5.1",
     "rimraf": "2.5.2",
     "source-map-support": "0.4.0",
+    "typedoc": "^0.3.12",
     "typings": "0.7.12",
     "webpack": "1.13.0",
     "webpack-dev-server": "1.14.1"
