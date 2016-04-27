@@ -42,3 +42,6 @@ sftp-config.json
 .npmrc
 .npmrc
 typings
+src
+dist
+
