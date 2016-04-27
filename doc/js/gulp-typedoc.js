@@ -7,7 +7,7 @@ var _ = require('lodash');
 function typedoc(options) {
     var files = [];
     options = options || {};
-    options.theme = './doc/typedoc-themes/custom';
+    options.theme = './doc/js/typedoc-themes/custom';
     options.module = 'commonjs';
     options.target = "es5";
     options.includeDeclarations = false;
@@ -61,7 +61,7 @@ function typedoc(options) {
                 project.children.forEach(function(child) {
                     index.children = index.children.concat(child.children);
                 });
-                index.children = index.chidren.sort(function(a, b) {
+                index.children = index.children.sort(function(a, b) {
                    return a.kind == b.kind ? 0 : a.kind < b.kind ? 1 : -1;
                 });
                 project.children = [ index ];
