@@ -24,6 +24,7 @@ coverage
 .grunt
 .publish
 .lock-wscript
+.idea
 build/Release
 node_modules
 dist
