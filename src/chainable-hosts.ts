@@ -13,10 +13,10 @@ const getDirectoryPath: { (path: string): string } = ts['getDirectoryPath'];
 const combinePaths: { (path1: string, path2: string): string } = ts['combinePaths'];
 
 export class AstCacheHost extends ChainableHost {
-    private cache: { [fileName: string]: ts.SourceFile } = {};
+    private cache:{ [fileName: string]: ts.SourceFile } = {};
 
-    getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
-        const cachedAst: ts.SourceFile = this.cache[fileName];
+    getSourceFile(fileName:string, languageVersion:ts.ScriptTarget, onError?:(message:string) => void):ts.SourceFile {
+        const cachedAst:ts.SourceFile = this.cache[fileName];
         if (!cachedAst) {
             const ast = this.source.getSourceFile(fileName, languageVersion, onError);
             this.cache[fileName] = ast;
@@ -29,16 +29,16 @@ export class AstCacheHost extends ChainableHost {
 }
 
 export class TransformationHost extends ChainableHost {
-    private transformations: { [fileName: string]: MutableSourceCode } = {};
-    private transformer: CodeTransformer;
+    private transformations:{ [fileName: string]: MutableSourceCode } = {};
+    private transformer:CodeTransformer;
 
-    constructor(visitors: Visitor[], languageServiceProvider: () => ts.LanguageService = () => null) {
+    constructor(visitors:Visitor[], languageServiceProvider:() => ts.LanguageService = () => null) {
         super();
         this.transformer = new VisitorBasedTransformer(visitors, languageServiceProvider);
     }
 
-    getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
-        const ast: ts.SourceFile = super.getSourceFile(fileName, languageVersion, onError);
+    getSourceFile(fileName:string, languageVersion:ts.ScriptTarget, onError?:(message:string) => void):ts.SourceFile {
+        const ast:ts.SourceFile = super.getSourceFile(fileName, languageVersion, onError);
         if (ast) {
             const transformation = this.transformer.transform(ast);
             this.transformations[ast.fileName] = transformation;
@@ -48,8 +48,8 @@ export class TransformationHost extends ChainableHost {
         }
     }
 
-    getSourceMap(fileName: string): RawSourceMap {
-        const transformation: MutableSourceCode = this.transformations[fileName];
+    getSourceMap(fileName:string):RawSourceMap {
+        const transformation:MutableSourceCode = this.transformations[fileName];
         if (transformation) {
             return transformation.sourceMap;
         } else {
@@ -57,59 +57,56 @@ export class TransformationHost extends ChainableHost {
         }
     }
 
-    translateDiagnostic(diagnostic: ts.Diagnostic): ts.Diagnostic {
+    translateDiagnostic(diagnostic:ts.Diagnostic):ts.Diagnostic {
         const transformation = this.transformations[diagnostic.file.fileName];
         return transformation ? transformation.translateDiagnostic(diagnostic) : diagnostic;
     }
 }
 
 export class SemanticHost extends ChainableHost implements ts.LanguageServiceHost, ts.CompilerHost, ts.DocumentRegistry {
-    constructor(
-        private files: string[],
-        private compilerOptions: ts.CompilerOptions = defaultCompilerOptions
-    ) {
+    constructor(private files:string[],
+                private compilerOptions:ts.CompilerOptions = defaultCompilerOptions) {
         super();
     }
 
-    getProjectVersion(): string {
+    getProjectVersion():string {
         return null;
     }
 
-    getScriptFileNames(): string[] {
+    getScriptFileNames():string[] {
         return this.files.slice();
     }
 
-    getScriptVersion(fileName: string): string {
+    getScriptVersion(fileName:string):string {
         return null;
     }
 
-    getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
+    getScriptSnapshot(fileName:string):ts.IScriptSnapshot {
         return ts.ScriptSnapshot.fromString(this.readFile(fileName));
     }
 
-    getLocalizedDiagnosticMessages(): any {
+    getLocalizedDiagnosticMessages():any {
         return null;
     }
 
-    getCompilationSettings(): ts.CompilerOptions {
+    getCompilationSettings():ts.CompilerOptions {
         return this.compilerOptions;
     }
 
 
-
-    log(s: string): void {
+    log(s:string):void {
     }
 
-    trace(s: string): void {
+    trace(s:string):void {
     }
 
-    error(s: string): void {
+    error(s:string):void {
     }
 
-    resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
-        const containingDir: string = getDirectoryPath(containingFile);
-        return moduleNames.map((moduleName: string) => {
-            const resolvedBase: string = normalizePath(combinePaths(containingDir, moduleName));
+    resolveModuleNames(moduleNames:string[], containingFile:string):ts.ResolvedModule[] {
+        const containingDir:string = getDirectoryPath(containingFile);
+        return moduleNames.map((moduleName:string) => {
+            const resolvedBase:string = normalizePath(combinePaths(containingDir, moduleName));
             return {
                 resolvedFileName: this.tryResolveFileName(resolvedBase + '.tsx') || this.tryResolveFileName(resolvedBase + '.ts'),
                 isExternalLibraryImport: false
@@ -117,45 +114,48 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
         });
     }
 
-    private tryResolveFileName(candidate: string): string {
+    private tryResolveFileName(candidate:string):string {
         return this.source.fileExists(candidate) ? candidate : null;
     }
 
-    directoryExists(directoryName: string): boolean {
+    directoryExists(directoryName:string):boolean {
         return null;
     }
 
-    acquireDocument(fileName: string, compilationSettings: ts.CompilerOptions, scriptSnapshot: ts.IScriptSnapshot, version: string): ts.SourceFile {
+    acquireDocument(fileName:string, compilationSettings:ts.CompilerOptions, scriptSnapshot:ts.IScriptSnapshot, version:string):ts.SourceFile {
         return this.source.getSourceFile(fileName, compilationSettings.target);
     }
-	/**
-	 * Request an updated version of an already existing SourceFile with a given fileName
-	 * and compilationSettings. The update will in-turn call updateLanguageServiceSourceFile
-	 * to get an updated SourceFile.
-	 *
-	 * @param fileName The name of the file requested
-	 * @param compilationSettings Some compilation settings like target affects the
-	 * shape of a the resulting SourceFile. This allows the DocumentRegistry to store
-	 * multiple copies of the same file for different compilation settings.
-	 * @param scriptSnapshot Text of the file.
-	 * @param version Current version of the file.
-	 */
-    updateDocument(fileName: string, compilationSettings: ts.CompilerOptions, scriptSnapshot: ts.IScriptSnapshot, version: string): ts.SourceFile {
+
+    /**
+     * Request an updated version of an already existing SourceFile with a given fileName
+     * and compilationSettings. The update will in-turn call updateLanguageServiceSourceFile
+     * to get an updated SourceFile.
+     *
+     * @param fileName The name of the file requested
+     * @param compilationSettings Some compilation settings like target affects the
+     * shape of a the resulting SourceFile. This allows the DocumentRegistry to store
+     * multiple copies of the same file for different compilation settings.
+     * @param scriptSnapshot Text of the file.
+     * @param version Current version of the file.
+     */
+    updateDocument(fileName:string, compilationSettings:ts.CompilerOptions, scriptSnapshot:ts.IScriptSnapshot, version:string):ts.SourceFile {
         return this.source.getSourceFile(fileName, compilationSettings.target);
     }
-	/**
-	 * Informs the DocumentRegistry that a file is not needed any longer.
-	 *
-	 * Note: It is not allowed to call release on a SourceFile that was not acquired from
-	 * this registry originally.
-	 *
-	 * @param fileName The name of the file to be released
-	 * @param compilationSettings The compilation settings used to acquire the file
-	 */
-    releaseDocument(fileName: string, compilationSettings: ts.CompilerOptions): void {
+
+    /**
+     * Informs the DocumentRegistry that a file is not needed any longer.
+     *
+     * Note: It is not allowed to call release on a SourceFile that was not acquired from
+     * this registry originally.
+     *
+     * @param fileName The name of the file to be released
+     * @param compilationSettings The compilation settings used to acquire the file
+     */
+    releaseDocument(fileName:string, compilationSettings:ts.CompilerOptions):void {
 
     }
-    reportStats(): string {
+
+    reportStats():string {
         return '';
     }
 }

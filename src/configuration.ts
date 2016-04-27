@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import {Visitor} from './visitor';
 
-export const defaultCompilerOptions: ts.CompilerOptions = {
+export const defaultCompilerOptions:ts.CompilerOptions = {
     module: ts.ModuleKind.CommonJS,
     jsx: ts.JsxEmit.React,
     target: ts.ScriptTarget.ES5,
