@@ -22,6 +22,7 @@ pids
 lib-cov
 coverage
 .grunt
+.publish
 .lock-wscript
 build/Release
 node_modules

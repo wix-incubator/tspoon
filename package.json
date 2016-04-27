@@ -22,7 +22,7 @@
     "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
     "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
     "start:tsc": "tsc -w",
-    "doc": "rimraf doc && node_modules/typedoc/bin/typedoc --module commonjs --target ES5 --out doc src"
+    "build:docs": "node_modules/typedoc/bin/typedoc --theme minimal --module commonjs --target ES5 --out dist/doc src && gulp publish-docs"
   },
   "repository": {
     "type": "git",
@@ -43,6 +43,8 @@
     "chai": "3.5.0",
     "concurrently": "2.0.0",
     "convert-source-map": "1.2.0",
+    "gulp": "^3.9.1",
+    "gulp-gh-pages": "^0.5.4",
     "json-loader": "0.5.4",
     "karma": "0.13.22",
     "karma-chrome-launcher": "0.2.3",
