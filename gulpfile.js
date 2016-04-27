@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var ghPages = require('gulp-gh-pages');
-var typedoc = require("gulp-typedoc");
 var markdown = require('gulp-markdown');
+var typedoc = require('./doc/js/gulp-plugin');
 
 gulp.task('publish-docs', function() {
     return gulp.src('./dist/doc/**/*')
@@ -16,21 +16,9 @@ gulp.task('markdown', function () {
 
 gulp.task("typedoc", function() {
     return gulp
-        .src(["src/**/*.ts"])
+        .src(["./src/index.ts"])
         .pipe(typedoc({
-
-            module: "commonjs",
-            target: "es5",
-            includeDeclarations: false,
-
-            // Output options (see typedoc docs)
             out: "./dist/doc/typedoc",
-            //json: "./dist/doc/typedoc.json",
-
-            // TypeDoc options (see typedoc docs)
-            name: "tspoon",
-            theme: "minimal",
-            ignoreCompilerErrors: true,
-            version: true,
+            name: "tspoon"
         }));
 });

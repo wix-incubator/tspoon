@@ -14,7 +14,7 @@
     "test": "npm run test:node",
     "test:browser": "karma start --single-run",
     "test:node": "mocha --reporter mocha-env-reporter ./dist/test",
-    "build": "npm run clean && npm run build:tsc && npm run doc",
+    "build": "npm run clean && npm run build:tsc && npm run build:docs",
     "build:webpack": "webpack -v --display-modules",
     "build:tsc": "tsc",
     "prestart": "npm run build",
@@ -22,7 +22,8 @@
     "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
     "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
     "start:tsc": "tsc -w",
-    "build:docs": "gulp markdown && gulp typedoc"
+    "build:docs": "gulp markdown && gulp typedoc",
+    "publish:docs": "gulp publish-docs"
   },
   "repository": {
     "type": "git",
@@ -43,11 +44,12 @@
     "chai": "3.5.0",
     "concurrently": "2.0.0",
     "convert-source-map": "1.2.0",
+    "event-stream": "^3.3.2",
     "github-markdown": "^1.2.3",
     "gulp": "^3.9.1",
     "gulp-gh-pages": "^0.5.4",
     "gulp-markdown": "^1.2.0",
-    "gulp-typedoc": "^1.2.1",
+    "gulp-util": "^3.0.7",
     "json-loader": "0.5.4",
     "karma": "0.13.22",
     "karma-chrome-launcher": "0.2.3",

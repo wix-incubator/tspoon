@@ -3,7 +3,7 @@
 
 AST visitors for [Typescript](https://github.com/Microsoft/TypeScript).
 
-[API Documentation](http://wix.github.io/tspoon/typedoc/index.html)
+[API Reference](http://wix.github.io/tspoon/typedoc/index.html)
 
 ### What Tspoon does
 
@@ -15,7 +15,7 @@ In addition, Tspoon's validation api supports pre-validation code changes, allow
 ## Users Documentation
 Simple examples can be found [here](https://github.com/wix/tspoon/tree/master/examples/poc) and [here](https://github.com/wix/tspoon/tree/master/examples/readme).
 
-##Getting started
+## Getting started
  Install tspoon using npm.
  
  ```npm install tspoon```
