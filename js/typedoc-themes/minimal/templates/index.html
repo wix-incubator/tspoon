@@ -1,0 +1,14 @@
+<p>{{#with model}}
+    {{&gt; comment}}
+{{/with}}</p>
+<p>{{#if model.typeHierarchy}}
+    <section class="tsd-hierarchy">
+        <h2>Hierarchy</h2>
+        {{#with model.typeHierarchy}}{{&gt; hierarchy}}{{/with}}
+    </section>
+{{/if}}</p>
+<p>{{#with model}}
+    <div style="position:relative;"><a name="typedoc-main-index" class="tsd-anchor"></a></div>
+    {{&gt; index}}
+    {{&gt; members}}
+{{/with}}</p>
