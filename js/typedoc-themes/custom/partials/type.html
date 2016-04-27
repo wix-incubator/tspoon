@@ -1,0 +1,70 @@
+<p>{{#if this}}
+    {{#if reflection}}
+        {{#compact}}
+            <a href="{{relativeURL reflection.url}}" class="tsd-signature-type">
+                {{reflection.name}}
+            </a>
+            {{#if typeArguments}}
+                <span class="tsd-signature-symbol">&lt;</span></p>
+<pre><code>            {{#each typeArguments}}
+                {{#if @index}}
+                    &lt;span class=&quot;tsd-signature-symbol&quot;&gt;, &lt;/span&gt;
+                {{/if}}{{&gt; type}}
+            {{/each}}
+
+            &lt;span class=&quot;tsd-signature-symbol&quot;&gt;&amp;gt;&lt;/span&gt;
+        {{/if}}
+        {{#if isArray}}&lt;span class=&quot;tsd-signature-symbol&quot;&gt;[]&lt;/span&gt;{{/if}}
+    {{/compact}}
+{{else}}
+    {{#if types}}
+        {{#each types}}
+            {{#if @index}}
+                &lt;span class=&quot;tsd-signature-symbol&quot;&gt; | &lt;/span&gt;
+            {{/if}}{{&gt; type}}
+        {{/each}}
+    {{else}}
+        {{#if elements}}
+            {{#compact}}
+                &lt;span class=&quot;tsd-signature-symbol&quot;&gt;[&lt;/span&gt;
+
+                {{#each elements}}
+                    {{#if @index}}
+                        &lt;span class=&quot;tsd-signature-symbol&quot;&gt;, &lt;/span&gt;
+                    {{/if}}{{&gt; type}}
+                {{/each}}
+
+                &lt;span class=&quot;tsd-signature-symbol&quot;&gt;]&lt;/span&gt;
+            {{/compact}}
+        {{else}}
+            {{#compact}}
+                &lt;span class=&quot;tsd-signature-type&quot;&gt;
+                    {{#if name}}
+                        {{name}}
+                    {{else}}
+                        {{#if value}}
+                            &quot;{{value}}&quot;
+                        {{else}}
+                            {{this}}
+                        {{/if}}
+                    {{/if}}
+                &lt;/span&gt;
+                {{#if typeArguments}}
+                    &lt;span class=&quot;tsd-signature-symbol&quot;&gt;&amp;lt;&lt;/span&gt;
+
+                    {{#each typeArguments}}
+                        {{#if @index}}
+                            &lt;span class=&quot;tsd-signature-symbol&quot;&gt;, &lt;/span&gt;
+                        {{/if}}{{&gt; type}}
+                    {{/each}}
+
+                    &lt;span class=&quot;tsd-signature-symbol&quot;&gt;&amp;gt;&lt;/span&gt;
+                {{/if}}
+                {{#if isArray}}&lt;span class=&quot;tsd-signature-symbol&quot;&gt;[]&lt;/span&gt;{{/if}}
+            {{/compact}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+</code></pre><p>{{else}}
+    <span class="tsd-signature-type">void</span>
+{{/if}}</p>
