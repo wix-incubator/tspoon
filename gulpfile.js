@@ -9,7 +9,7 @@ gulp.task('publish-docs', function() {
 });
 
 gulp.task('markdown', function () {
-    return gulp.src('./doc/**/*')
+    return gulp.src('./doc/**/*.md')
         .pipe(markdown())
         .pipe(gulp.dest('dist/doc'));
 });
