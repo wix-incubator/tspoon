@@ -62,7 +62,15 @@ function typedoc(options) {
                     index.children = index.children.concat(child.children);
                 });
                 index.children = index.children.sort(function(a, b) {
-                   return a.kind == b.kind ? 0 : a.kind < b.kind ? 1 : -1;
+                    if(a.kind > b.kind) return 1;
+                    if(a.kind < b.kind) return -1;
+                    return a.name == b.name ? 0 : a.name < b.name ? -1 : 1;
+                });
+                index.children = _.filter(index.children, function(child) {
+                   return child.name != 'default';
+                });
+                index.children = _.uniqBy(index.children, function(child) {
+                   return '' + child.kind + '/' + child.name;
                 });
                 project.children = [ index ];
                 if (out) app.generateDocs(project, out);
