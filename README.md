@@ -2,6 +2,9 @@
 [![npm version](https://badge.fury.io/js/tspoon.svg)](https://badge.fury.io/js/tspoon)
 
 AST visitors for [Typescript](https://github.com/Microsoft/TypeScript).
+
+[API Documentation](http://wix.github.io/tspoon/typedoc/index.html)
+
 ### What Tspoon does
 
 Typescript transpilation is useally ```source -> AST -> target```. Tspoon uses [Typescript's compiler API](https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API) to allow pluggable pieces of logic (called ```visitor```) to modify the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) before invoking the Typescript transpiler. The process will look like this ```source -> AST -visitors-> AST -> target```. This technique enables early optimizations and error detection for custom language features.
