@@ -11,7 +11,6 @@ Typescript transpilation is useally ```source -> AST -> target```. Tspoon uses [
 
 In addition, Tspoon's validation api supports pre-validation code changes, allowing the developer to bypass otherwise unavoidable TypeScript diagnostics.
 
-
 ## Users Documentation
 Simple examples can be found [here](https://github.com/wix/tspoon/tree/master/examples/poc) and [here](https://github.com/wix/tspoon/tree/master/examples/readme).
 
@@ -99,4 +98,3 @@ Currently Tspoon is in alpha mode. As such, it does not respect semver.
 
 # License
 We use a custom license, see ```LICENSE.md```
-
