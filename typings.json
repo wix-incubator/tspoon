@@ -1,14 +1,13 @@
 {
-  "name": "tspoon",
-  "version": false,
-  "ambientDependencies": {
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#bb051830df88f5a55dcf06b7fe85bf6b62cc97f2",
-    "chai": "github:DefinitelyTyped/DefinitelyTyped/chai/chai.d.ts#bb051830df88f5a55dcf06b7fe85bf6b62cc97f2",
-    "karma": "github:DefinitelyTyped/DefinitelyTyped/karma/karma.d.ts#bb051830df88f5a55dcf06b7fe85bf6b62cc97f2",
-    "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#bb051830df88f5a55dcf06b7fe85bf6b62cc97f2",
+  "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
+  },
+  "globalDependencies": {
+    "chai": "registry:dt/chai#3.4.0+20160317120654",
+    "magic-string": "github:wix/DefinitelyTyped/magic-string/magic-string.d.ts#01f3021243ffa85364ef970ae5e0298abdb0c986",
+    "mocha": "registry:dt/mocha#2.2.5+20160317120654",
+    "node": "registry:dt/node#6.0.0+20160514165920",
     "source-map": "github:wix/DefinitelyTyped/source-map/source-map.d.ts#abeba0372252f463881d14c1973262e50f2dcca0",
-    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#bb051830df88f5a55dcf06b7fe85bf6b62cc97f2",
-    "vinyl": "github:DefinitelyTyped/DefinitelyTyped/vinyl/vinyl.d.ts#bb051830df88f5a55dcf06b7fe85bf6b62cc97f2",
-    "magic-string":"github:wix/DefinitelyTyped/magic-string/magic-string.d.ts#01f3021243ffa85364ef970ae5e0298abdb0c986"
+    "vinyl": "registry:dt/vinyl#1.1.0+20160316155526"
   }
 }
