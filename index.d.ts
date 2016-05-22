@@ -1,5 +1,17 @@
 import * as ts from 'typescript';
-import {RawSourceMap} from 'source-map';
+
+interface StartOfSourceMap {
+    file?: string;
+    sourceRoot?: string;
+}
+
+interface RawSourceMap extends StartOfSourceMap {
+    version: string;
+    sources: Array<string>;
+    names: Array<string>;
+    sourcesContent?: string[];
+    mappings: string;
+}
 
 export interface Replacement {
     start: number;
