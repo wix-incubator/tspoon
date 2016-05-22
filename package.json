@@ -60,7 +60,7 @@
     "raw-loader": "0.5.1",
     "rimraf": "2.5.2",
     "source-map-support": "0.4.0",
-    "typedoc": "sierrasoftworks/typedoc#v1.8.10",
+    "typedoc": "0.3.12",
     "typings": "1.0.4",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.1"
