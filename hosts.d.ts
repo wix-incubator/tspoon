@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
-import {RawSourceMap, Visitor} from './index';
+import {Visitor} from './index';
+import {RawSourceMap} from 'source-map';
 
 export interface HostBase extends ts.CompilerHost { }
 export class HostBase implements HostBase { }
