@@ -1,5 +1,3 @@
-/// <reference path='../typings/main.d.ts' />
-
 declare module Chai {
     interface Assertion {
         pass(): Assertion;
