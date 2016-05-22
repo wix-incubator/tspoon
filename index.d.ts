@@ -5,11 +5,11 @@ interface StartOfSourceMap {
     sourceRoot?: string;
 }
 
-export interface RawSourceMap extends StartOfSourceMap {
+interface RawSourceMap extends StartOfSourceMap {
     version: string;
     sources: Array<string>;
     names: Array<string>;
-    sourcesContent?: string;
+    sourcesContent?: string[];
     mappings: string;
 }
 
