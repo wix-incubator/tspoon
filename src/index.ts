@@ -1,4 +1,4 @@
-/// <reference path='../typings/main.d.ts' />
+/// <reference path='../typings/index.d.ts' />
 
 export {transpile, TranspilerOutput, TranspilerConfig, ValidatorConfig, validateAll} from './transpile';
 export {Visitor, VisitorContext} from './visitor';

@@ -834,7 +834,6 @@ define("src/transpile", ["require", "exports", 'typescript', "src/hosts", "src/t
     }
     exports.validateAll = validateAll;
 });
-/// <reference path='../typings/main.d.ts' />
 define("src/index", ["require", "exports", "src/transpile", "src/apply-visitor", "src/hosts", "src/traverse-ast"], function (require, exports, transpile_1, apply_visitor_1, hosts_2, traverse_ast_4) {
     "use strict";
     exports.transpile = transpile_1.transpile;
@@ -1000,7 +999,6 @@ define("test-kit/evaluate-module", ["require", "exports", "test-kit/mocks/module
     }
     exports.evaluateModuleExports = evaluateModuleExports;
 });
-/// <reference path='../typings/main.d.ts' />
 define("test-kit/index", ["require", "exports", 'chai', "test-kit/matchers/typecheck", "test-kit/code-positions", "test-kit/evaluate-module"], function (require, exports, chai, typecheck_1, code_positions_1, evaluate_module_1) {
     "use strict";
     chai.use(typecheck_1.default);
@@ -1417,7 +1415,6 @@ define("test/visitor.spec", ["require", "exports", 'typescript', 'chai', "test-k
         });
     });
 });
-/// <reference path='../typings/main.d.ts' />
 define("test/index", ["require", "exports", "test/mutable-source-code.spec", "test/transpile.spec", "test/visitor.spec", "test/transpile.spec", "test/e2e.validate-all.spec", "test/e2e.example-poc.spec", "test/e2e.example-readme.spec"], function (require, exports) {
     "use strict";
     require('source-map-support').install();
