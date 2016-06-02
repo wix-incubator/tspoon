@@ -54,7 +54,7 @@
     "karma": "0.13.22",
     "karma-chrome-launcher": "1.0.1",
     "karma-mocha": "1.0.1",
-    "mocha": "2.4.5",
+    "mocha": "2.5.3",
     "mocha-env-reporter": "1.0.2",
     "mocha-loader": "0.7.1",
     "raw-loader": "0.5.1",
