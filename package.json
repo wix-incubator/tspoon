@@ -42,7 +42,7 @@
   "homepage": "https://github.com/wix/tspoon",
   "devDependencies": {
     "chai": "3.5.0",
-    "concurrently": "2.0.0",
+    "concurrently": "2.1.0",
     "convert-source-map": "1.2.0",
     "event-stream": "3.3.2",
     "github-markdown": "2.2.0",
@@ -66,7 +66,7 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
-    "lodash": "4.12.0",
+    "lodash": "4.13.1",
     "magic-string": "0.10.2",
     "source-map": "0.5.6",
     "typescript": "1.8.10"
