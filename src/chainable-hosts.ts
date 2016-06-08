@@ -65,7 +65,9 @@ export class TransformationHost extends ChainableHost {
 
 export class SemanticHost extends ChainableHost implements ts.LanguageServiceHost, ts.CompilerHost, ts.DocumentRegistry {
     constructor(private files:string[],
-                private compilerOptions:ts.CompilerOptions = defaultCompilerOptions) {
+                private compilerOptions:ts.CompilerOptions = defaultCompilerOptions,
+                private libDir: string = 'node_modules'
+    ) {
         super();
     }
 
@@ -104,18 +106,9 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
     }
 
     resolveModuleNames(moduleNames:string[], containingFile:string):ts.ResolvedModule[] {
-        const containingDir:string = getDirectoryPath(containingFile);
         return moduleNames.map((moduleName:string) => {
-            const resolvedBase:string = normalizePath(combinePaths(containingDir, moduleName));
-            return {
-                resolvedFileName: this.tryResolveFileName(resolvedBase + '.tsx') || this.tryResolveFileName(resolvedBase + '.ts'),
-                isExternalLibraryImport: false
-            }
+            return ts.nodeModuleNameResolver(moduleName, containingFile, this.compilerOptions, this).resolvedModule;
         });
-    }
-
-    private tryResolveFileName(candidate:string):string {
-        return this.source.fileExists(candidate) ? candidate : null;
     }
 
     directoryExists(directoryName:string):boolean {
