@@ -1,11 +1,8 @@
 import ts = require('typescript');
 import {RawSourceMap, SourceMapConsumer, SourceMapGenerator, MappedPosition} from 'source-map';
-import * as traverse from './traverse-ast';
-import MagicString = require('magic-string');
-import binarySearch from './binary-search';
 
     export abstract class MappedAction {
-        abstract execute(ast:ts.SourceFile, magicString:MagicString):ts.SourceFile;
+        abstract execute(ast:ts.SourceFile):ts.SourceFile;
 
         abstract getStart():number;
     }
@@ -21,11 +18,11 @@ import binarySearch from './binary-search';
             super();
         }
 
-        execute(ast:ts.SourceFile, magicString:MagicString):ts.SourceFile {
-            magicString.overwrite(this.start, this.end, this.str);
+        execute(ast:ts.SourceFile):ts.SourceFile {
+            const newText: string = ast.text.slice(0, this.start) + this.str + ast.text.slice(this.end);
             const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.end);
             const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
-            return ast.update(magicString.toString(), textChangeRange);
+            return ast.update(newText, textChangeRange);
         }
 
         getStart():number {
@@ -38,11 +35,11 @@ import binarySearch from './binary-search';
             super();
         }
 
-        execute(ast:ts.SourceFile, magicString:MagicString):ts.SourceFile {
-            magicString.insert(this.start, this.str);
+        execute(ast:ts.SourceFile):ts.SourceFile {
+            const newText: string = ast.text.slice(0, this.start) + this.str + ast.text.slice(this.start);
             const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start);
             const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
-            return ast.update(magicString.toString(), textChangeRange);
+            return ast.update(newText, textChangeRange);
         }
 
         getStart():number {
@@ -81,7 +78,6 @@ import binarySearch from './binary-search';
     export class MutableSourceCode {
 
         private _ast:ts.SourceFile;
-        private magicString:MagicString;
         private originalText:string;
         private origLineStarts:number[];
         private _sourceMap:RawSourceMap;
@@ -101,24 +97,17 @@ import binarySearch from './binary-search';
             fastActions.forEach((action:FastAction) => {
                 this._ast = action.execute(this._ast);
             });
-            this.magicString = new MagicString(this._ast.text);
 
             const sortedActions = actionList
                 .filter(action => action instanceof MappedAction)
                 .sort(compareActions);
             sortedActions.forEach((action:Action) => {
-                this._ast = action.execute(this._ast, this.magicString);
+                this._ast = action.execute(this._ast);
             });
         }
 
         get sourceMap():RawSourceMap {
-            if (!this.magicString) {
-                this.magicString = new MagicString(this._ast.text);
-            }
-            if (!this._sourceMap) {
-                this._sourceMap = this.magicString.generateMap({source: this._ast.fileName, hires: true});
-            }
-            return this._sourceMap;
+            return null;
         }
 
         get code():string {
@@ -126,7 +115,7 @@ import binarySearch from './binary-search';
         }
 
         translateMap(from:RawSourceMap):RawSourceMap {
-            const originalText = this.originalText;
+            /*const originalText = this.originalText;
             const intermediateAst = this._ast;
 
             const mapConsumer = new SourceMapConsumer(this.sourceMap);
@@ -153,11 +142,13 @@ import binarySearch from './binary-search';
                 }
             });
             this._sourceMap = <RawSourceMap>resultMap.toJSON();
-            return resultMap.toJSON();
+            return resultMap.toJSON();*/
+            return null;
         }
 
         translateDiagnostic(diag:ts.Diagnostic):ts.Diagnostic {
-            const sourceMap:RawSourceMap = this.sourceMap;
+            return diag;
+            /*const sourceMap:RawSourceMap = this.sourceMap;
             const cosumer:SourceMapConsumer = new SourceMapConsumer(sourceMap);
             const start:ts.LineAndCharacter = diag.file.getLineAndCharacterOfPosition(diag.start);
             const startPos:MappedPosition = cosumer.originalPositionFor({
@@ -175,7 +166,7 @@ import binarySearch from './binary-search';
                     category: diag.category,
                     code: diag.code
                 };
-            }
+            }*/
         }
     }
 

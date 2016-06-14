@@ -41,8 +41,8 @@ describe('given source code', function() {
                 return node.kind == ts.SyntaxKind.ClassDeclaration;
             },
             visit: (node: ts.Node, context: VisitorContext): void => {
-                context.insertLine(node.getStart(), '@blah');
                 context.replace(node.getStart(), node.getStart() + 'class'.length, 'interface');
+                context.insertLine(node.getStart(), '@blah');
                 context.reportDiag(node, ts.DiagnosticCategory.Error, 'Test message');
             }
         };
