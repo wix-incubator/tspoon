@@ -48,15 +48,6 @@ export class TransformationHost extends ChainableHost {
         }
     }
 
-    getSourceMap(fileName:string):RawSourceMap {
-        const transformation:MutableSourceCode = this.transformations[fileName];
-        if (transformation) {
-            return transformation.sourceMap;
-        } else {
-            return null;
-        }
-    }
-
     translateDiagnostic(diagnostic:ts.Diagnostic):ts.Diagnostic {
         const transformation = this.transformations[diagnostic.file.fileName];
         return transformation ? transformation.translateDiagnostic(diagnostic) : diagnostic;

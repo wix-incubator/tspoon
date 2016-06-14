@@ -16,7 +16,7 @@ function applyVisitor(source: string, visitor: Visitor): TranspilerOutput {
     return {
         code: mutable.code,
         diags: context.diags,
-        sourceMap: mutable.sourceMap,
+        sourceMap: null,
         halted: context.halted
     };
 }
