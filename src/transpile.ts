@@ -10,7 +10,6 @@ import {SemanticHost} from './chainable-hosts';
 import {TransformationHost} from './chainable-hosts';
 import {chainHosts} from './hosts-base';
 import {AstCacheHost} from './chainable-hosts';
-import {correctSourceMap, RemappingPoint} from "./remapping";
 
     /**
      * result of transpilation action
@@ -134,7 +133,7 @@ import {correctSourceMap, RemappingPoint} from "./remapping";
         // but we want a sourcemap that maps the final code to the original code,
         // so...
 
-        const finalSourceMap:RawSourceMap = intermediateSourceMap ? correctSourceMap(intermediateSourceMap, mutable.remapping) : null;
+        const finalSourceMap:RawSourceMap = intermediateSourceMap ? mutable.remapSourceMap(intermediateSourceMap) : null;
 
         // Now we return the final code and the final sourcemap
 

@@ -1,11 +1,22 @@
 import ts = require('typescript');
-import {RawSourceMap, SourceMapConsumer, SourceMapGenerator, MappedPosition} from 'source-map';
-import {RemappingPoint, correctPosition} from "./remapping";
+import {RawSourceMap} from "../index";
+
+
+export type CodeRange = [number, number];
+export interface CodeMapping {
+    source: CodeRange,
+    target: CodeRange
+}
 
 export abstract class MappedAction {
-    abstract execute(ast:ts.SourceFile):ts.SourceFile;
+    abstract execute(ast:ts.SourceFile): MappedActinResult;
 
     abstract getStart():number;
+}
+
+interface MappedActinResult {
+    ast: ts.SourceFile,
+    mapping: CodeMapping[]
 }
 
 export abstract class FastAction {
@@ -19,11 +30,19 @@ export class ReplaceAction extends MappedAction {
         super();
     }
 
-    execute(ast:ts.SourceFile):ts.SourceFile {
+    execute(ast:ts.SourceFile): MappedActinResult {
+        const origLength = ast.text.length;
         const newText: string = ast.text.slice(0, this.start) + this.str + ast.text.slice(this.end);
         const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.end);
         const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
-        return ast.update(newText, textChangeRange);
+        return {
+            ast: ast.update(newText, textChangeRange),
+            mapping: [
+                { source: [0, this.start-1], target: [0, this.start-1] },
+                { source: [this.start, this.end], target: [this.start, this.start + this.str.length]},
+                { source: [this.end + 1, origLength-1], target: [this.start + this.str.length +1, newText.length-1]}
+            ]
+        };
     }
 
     getStart():number {
@@ -36,11 +55,19 @@ export class InsertAction extends MappedAction {
         super();
     }
 
-    execute(ast:ts.SourceFile):ts.SourceFile {
+    execute(ast:ts.SourceFile): MappedActinResult {
+        const origLength = ast.text.length;
         const newText: string = ast.text.slice(0, this.start) + this.str + ast.text.slice(this.start);
         const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start);
         const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
-        return ast.update(newText, textChangeRange);
+        const mapSegment0 = this.start > 0
+            ? { source: [0, this.start-1], target: [0, this.start-1] }
+            : [];
+        const mapSegment1 = { source: [this.start, origLength-1], target: [this.start + this.str.length, newText.length-1] };
+        return {
+            ast: ast.update(newText, textChangeRange),
+            mapping: [].concat(mapSegment0, mapSegment1)
+        };
     }
 
     getStart():number {
@@ -82,7 +109,7 @@ export class MutableSourceCode {
     private _ast:ts.SourceFile;
     private originalText:string;
     private origLineStarts:number[];
-    private _remapping: RemappingPoint[];
+    private _codeMapping: CodeMapping[];
 
     constructor(ast:ts.SourceFile) {
         this._ast = ast;
@@ -95,7 +122,7 @@ export class MutableSourceCode {
     }
 
     execute(actionList:Array<Action>):void {
-        this._remapping = [];
+        this._codeMapping = [];
         const fastActions = <FastAction[]>actionList.filter(action => action instanceof FastAction);
         fastActions.forEach((action:FastAction) => {
             this._ast = action.execute(this._ast);
@@ -104,13 +131,16 @@ export class MutableSourceCode {
         const sortedActions = actionList
             .filter(action => action instanceof MappedAction)
             .sort(compareActions);
-        sortedActions.forEach((action:Action) => {
-            this._ast = action.execute(this._ast);
+
+        sortedActions.forEach((action:MappedAction) => {
+            const { ast, mapping } = action.execute(this._ast);
+            this._ast = ast;
+            this._codeMapping.push(...mapping);
         });
     }
 
-    get remapping():RemappingPoint[] {
-        return null;
+    get codeMapping():CodeMapping[] {
+        return this._codeMapping;
     }
 
     get code():string {
@@ -120,12 +150,20 @@ export class MutableSourceCode {
     translateDiagnostic(diag:ts.Diagnostic):ts.Diagnostic {
         return {
             file: diag.file,
-            start: correctPosition(diag.start, this._remapping),
+            start: this.mapToSource(diag.start),
             length: diag.length,
             messageText: diag.messageText,
             category: diag.category,
             code: diag.code
         };
+    }
+
+    mapToSource(position: number): number {
+        return NaN;
+    }
+
+    remapSourceMap(sourceMap: RawSourceMap): RawSourceMap {
+        return null;
     }
 }
 
