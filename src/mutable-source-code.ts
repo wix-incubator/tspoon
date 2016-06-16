@@ -1,11 +1,11 @@
 import ts = require('typescript');
 import {RawSourceMap} from "../index";
-
+import _ = require('lodash');
 
 export type CodeRange = [number, number];
 export interface CodeMapping {
-    source: CodeRange,
-    target: CodeRange
+    range: CodeRange,
+    d: number;
 }
 
 export abstract class MappedAction {
@@ -31,16 +31,14 @@ export class ReplaceAction extends MappedAction {
     }
 
     execute(ast:ts.SourceFile): MappedActinResult {
-        const origLength = ast.text.length;
         const newText: string = ast.text.slice(0, this.start) + this.str + ast.text.slice(this.end);
         const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.end);
         const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
         return {
             ast: ast.update(newText, textChangeRange),
             mapping: [
-                { source: [0, this.start-1], target: [0, this.start-1] },
-                { source: [this.start, this.end], target: [this.start, this.start + this.str.length]},
-                { source: [this.end + 1, origLength-1], target: [this.start + this.str.length +1, newText.length-1]}
+                { range: [0, this.start + this.str.length -1 ], d: 0},
+                { range: [this.start + this.str.length, newText.length-1 ], d: this.end - this.start - this.str.length }
             ]
         };
     }
@@ -56,17 +54,16 @@ export class InsertAction extends MappedAction {
     }
 
     execute(ast:ts.SourceFile): MappedActinResult {
-        const origLength = ast.text.length;
         const newText: string = ast.text.slice(0, this.start) + this.str + ast.text.slice(this.start);
         const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start);
         const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
-        const mapSegment0 = this.start > 0
-            ? { source: [0, this.start-1], target: [0, this.start-1] }
-            : [];
-        const mapSegment1 = { source: [this.start, origLength-1], target: [this.start + this.str.length, newText.length-1] };
+        const segment0: CodeMapping[] = this.start > 0 ? [{ range: [0, this.start-1], d: 0 }] : [];
         return {
             ast: ast.update(newText, textChangeRange),
-            mapping: [].concat(mapSegment0, mapSegment1)
+            mapping: segment0.concat([
+                { range: [this.start, this.start + this.str.length-1], d: null },
+                { range: [this.start + this.str.length, newText.length-1], d: -this.str.length }
+            ])
         };
     }
 
@@ -137,6 +134,14 @@ export class MutableSourceCode {
             this._ast = ast;
             this._codeMapping.push(...mapping);
         });
+
+        /*this._codeMapping.sort(function (item1: CodeMapping, item2: CodeMapping) {
+            if(item1.target[0] === item2.target[0]) {
+                return item1.target[1] - item2.target[1];
+            } else {
+                return item1.target[0] - item2.target[0];
+            }
+        });*/
     }
 
     get codeMapping():CodeMapping[] {
@@ -159,7 +164,11 @@ export class MutableSourceCode {
     }
 
     mapToSource(position: number): number {
-        return NaN;
+        const mapItem = _.find(this._codeMapping, item => position >= item.range[0] && position <= item.range[1]);
+        if(!mapItem) {
+            throw new Error(`Couldn't map target position ${position} to source.`);
+        }
+        return mapItem.d === null ? -1 : mapItem.d + position;
     }
 
     remapSourceMap(sourceMap: RawSourceMap): RawSourceMap {
