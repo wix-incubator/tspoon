@@ -164,8 +164,8 @@ describe('Mutable source actions performs', function() {
         expect(mutableCode.code).to.equal(`const code = 'Some bloody string' + "s.";`);
 
         expect(mutableCode.codeMapping).to.eql([
-            { range: [0,9],    d: 0 },
-            { range: [10, 18], d: 4 },
+            { range: [0, 6],    d: 0 },
+            { range: [7, 18],  d: 4 },
             { range: [19, 25], d: null },
             { range: [26, 32], d: -3 },
             { range: [33, 39], d: null },
@@ -176,8 +176,8 @@ describe('Mutable source actions performs', function() {
             // 0
              0,  1,  2,  3,  4,
 
-            // 5
-             5,  6,  7,  8,  9,
+            // 5     //+4
+             5,  6,  11,  12,  13,
 
             // 10
             14, 15, 16, 17, 18,

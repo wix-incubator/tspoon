@@ -135,13 +135,13 @@ export class MutableSourceCode {
             this._codeMapping.push(...mapping);
         });
 
-        /*this._codeMapping.sort(function (item1: CodeMapping, item2: CodeMapping) {
-            if(item1.target[0] === item2.target[0]) {
-                return item1.target[1] - item2.target[1];
+        this._codeMapping.sort(function (item1: CodeMapping, item2: CodeMapping) {
+            if(item1.range[0] === item2.range[0]) {
+                return item1.range[1] - item2.range[1];
             } else {
-                return item1.target[0] - item2.target[0];
+                return item1.range[0] - item2.range[0];
             }
-        });*/
+        });
     }
 
     get codeMapping():CodeMapping[] {
