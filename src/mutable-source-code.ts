@@ -22,7 +22,11 @@ import binarySearch from './binary-search';
         }
 
         execute(ast:ts.SourceFile, magicString:MagicString):ts.SourceFile {
-            magicString.overwrite(this.start, this.end, this.str);
+            if (this.start === this.end) {
+                magicString.insertLeft(this.start, this.str);
+            } else {
+                magicString.overwrite(this.start, this.end, this.str);
+            }
             const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.end);
             const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
             return ast.update(magicString.toString(), textChangeRange);
@@ -39,7 +43,7 @@ import binarySearch from './binary-search';
         }
 
         execute(ast:ts.SourceFile, magicString:MagicString):ts.SourceFile {
-            magicString.insert(this.start, this.str);
+            magicString.insertLeft(this.start, this.str);
             const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start);
             const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
             return ast.update(magicString.toString(), textChangeRange);
