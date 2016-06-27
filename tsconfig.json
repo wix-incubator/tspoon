@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-	"declaration": false,
-	"module": "commonjs",
-	"sourceMap": true,
-	"target": "ES5",
-	"outDir": "dist"
+    "declaration": false,
+    "module": "commonjs",
+    "sourceMap": true,
+    "target": "ES5",
+    "outDir": "dist"
   },
   "exclude": [
-	"typings",
-	"node_modules",
-	"dist",
-	"example-poc",
-	"doc"
+    "typings",
+    "node_modules",
+    "dist",
+    "example-poc",
+    "doc"
   ]
 }
