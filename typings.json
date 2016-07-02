@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
+    "lodash": "registry:npm/lodash#4.0.0+20160701205107"
   },
   "globalDependencies": {
     "magic-string": "github:wix/DefinitelyTyped/magic-string/magic-string.d.ts#2c8b6434c131f585ca926a31d8e7b1db85c4b24b",
