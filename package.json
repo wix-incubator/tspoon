@@ -44,7 +44,7 @@
     "chai": "3.5.0",
     "concurrently": "2.2.0",
     "convert-source-map": "1.2.0",
-    "event-stream": "3.3.3",
+    "event-stream": "3.3.4",
     "github-markdown": "2.2.0",
     "gulp": "3.9.1",
     "gulp-gh-pages": "0.5.4",
