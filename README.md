@@ -79,7 +79,7 @@ This visitor only operates on nodes representing property declarations which hav
 ## Developer Documentation
 
 ### how to build and test locally from source
-Clone this project localy.
+Clone this project locally.
 Then, at the root folder of the project, run:
 ```shell
 npm install
