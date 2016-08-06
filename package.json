@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wix/tspoon"
+    "url": "git@github.com:wix/tspoon.git"
   },
   "author": "Gady Guy <gadig@wix.com> (https://github.com/gadiguy)",
   "contributors": [
@@ -66,7 +66,7 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
-    "lodash": "4.14.0",
+    "lodash": "4.14.1",
     "magic-string": "0.15.2",
     "source-map": "0.5.6",
     "typescript": "1.8.10"
