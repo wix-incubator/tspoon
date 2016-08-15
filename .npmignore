@@ -31,3 +31,4 @@ node_modules
 sftp-config.json
 dist/test*
 poc
+*.bundle.js
