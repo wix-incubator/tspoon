@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "tspoon",
-  "version": "1.0.105",
+  "version": "1.0.106",
   "description": "AST visitors for Typescript",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
@@ -11,7 +11,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run build:src",
-    "build:clean":"npm run clean && npm run build",
+    "build:clean": "npm run clean && npm run build",
     "bundle": "webpack -v --display-modules",
     "build:src": "tsc",
     "pretest": "npm run bundle",
