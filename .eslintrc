@@ -15,7 +15,7 @@
         "node": true
     },
     "rules": {
-        "indent" : [4, "tab"],
+        "indent" : [2, "tab"],
         "semi"   : 2,
 
         "no-comma-dangle"         : true,
