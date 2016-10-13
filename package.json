@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "tspoon",
-  "version": "1.0.167",
+  "version": "1.0.168",
   "description": "AST visitors for Typescript",
   "main": "./dist/src/index.js",
   "jsnext:main": "src/index.ts",
@@ -54,7 +54,7 @@
     "karma-chrome-launcher": "2.0.0",
     "karma-mocha": "1.2.0",
     "mocha": "3.1.2",
-    "mocha-env-reporter": "2.0.2",
+    "mocha-env-reporter": "2.0.3",
     "mocha-loader": "1.0.0",
     "raw-loader": "0.5.1",
     "rimraf": "2.5.4",
