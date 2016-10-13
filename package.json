@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/wix/tspoon",
   "devDependencies": {
-    "npminject": "1.0.65",
+    "npminject": "1.0.66",
     "chai": "3.5.0",
     "concurrently": "3.1.0",
     "convert-source-map": "1.3.0",
