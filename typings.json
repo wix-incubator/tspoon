@@ -5,8 +5,7 @@
   "globalDependencies": {
     "magic-string": "github:wix/DefinitelyTyped/magic-string/magic-string.d.ts#2c8b6434c131f585ca926a31d8e7b1db85c4b24b",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#bb051830df88f5a55dcf06b7fe85bf6b62cc97f2",
-    "source-map": "github:wix/DefinitelyTyped/source-map/source-map.d.ts#abeba0372252f463881d14c1973262e50f2dcca0",
-    "vinyl": "registry:dt/vinyl#1.2.0+20160924121322"
+    "source-map": "github:wix/DefinitelyTyped/source-map/source-map.d.ts#abeba0372252f463881d14c1973262e50f2dcca0"
   },
   "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",

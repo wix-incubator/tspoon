@@ -3,7 +3,7 @@ import {chainHosts} from './hosts-base';
 import {CodeTransformer, VisitorBasedTransformer} from './transformer';
 import {ChainableHost} from './hosts-base';
 import {MutableSourceCode} from './mutable-source-code';
-import RawSourceMap = SourceMap.RawSourceMap;
+import {RawSourceMap} from 'source-map';
 import {defaultCompilerOptions} from './configuration';
 import {MultipleFilesHost} from './hosts';
 import {Visitor} from './visitor';

@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import * as ts from 'typescript';
 import * as tspoon from '../src/index';
 import {ValidatorConfig} from '../src/transpile';
-import {VisitorContext} from '../index';
+import {VisitorContext} from '../src/index';
 import {Visitor} from '../src/visitor';
 import {MockModule} from '../test-kit/mocks/resolution-hosts';
 

@@ -1,4 +1,4 @@
-import ts = require('typescript');
+import * as ts from 'typescript';
 import {RawSourceMap, SourceMapConsumer, SourceMapGenerator, MappedPosition} from 'source-map';
 import * as traverse from './traverse-ast';
 import MagicString = require('magic-string');
@@ -109,8 +109,8 @@ import binarySearch from './binary-search';
 
             const sortedActions = actionList
                 .filter(action => action instanceof MappedAction)
-                .sort(compareActions);
-            sortedActions.forEach((action:Action) => {
+                .sort(compareActions) as Array<MappedAction>;
+            sortedActions.forEach((action:MappedAction) => {
                 this._ast = action.execute(this._ast, this.magicString);
             });
         }
