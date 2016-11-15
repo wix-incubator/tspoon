@@ -1,5 +1,3 @@
-/// <reference path='../typings/index.d.ts' />
-
 import './mutable-source-code.spec';
 import './transpile.spec';
 import './visitor.spec';
