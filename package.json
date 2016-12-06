@@ -10,6 +10,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc -d",
+    "build:watch": "tsc -d -w",
     "build:clean": "npm run clean && npm run build",
     "bundle": "webpack",
     "pretest": "npm run build:clean && npm run bundle",
