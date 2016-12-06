@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import * as SourceMap from 'source-map';
 import {HostBase} from './hosts-base';
 import {defaultCompilerOptions} from './configuration';
 

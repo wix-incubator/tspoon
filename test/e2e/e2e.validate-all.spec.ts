@@ -1,10 +1,9 @@
 import {expect} from 'chai';
 import * as ts from 'typescript';
-import * as tspoon from '../src/index';
-import {ValidatorConfig} from '../src/transpile';
-import {VisitorContext} from '../index';
-import {Visitor} from '../src/visitor';
-import {MockModule} from '../test-kit/mocks/resolution-hosts';
+import * as tspoon from '../../src';
+import {ValidatorConfig, VisitorContext, Visitor} from '../../src';
+import {MockModule} from '../../test-kit/mocks/resolution-hosts';
+import { readFileSync } from 'fs';
 
 function beforeVariable(varName: string) {
     return {
@@ -173,7 +172,7 @@ describe('tspoon.validateAll()', function() {
 					import {default as SomeClass} from './a';
 					const a: SomeClass = null;
 				`),
-                new MockModule('lib.d.ts', require('typescript/lib/lib.d.ts'))
+                new MockModule('lib.d.ts', readFileSync(require.resolve('typescript/lib/lib.d.ts'), 'utf8'))
             ],
             mutators: [
                 visitor
