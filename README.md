@@ -83,7 +83,6 @@ Clone this project locally.
 Then, at the root folder of the project, run:
 ```shell
 npm install
-npm run build
 npm test
 ```
 ### how to run local continous test feedback
