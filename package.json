@@ -4,9 +4,7 @@
   "version": "1.0.203",
   "description": "AST visitors for Typescript",
   "main": "./dist/src/index.js",
-  "directories": {
-    "test": "test"
-  },
+  "types": "./dist/src/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc -d",
