@@ -27,6 +27,7 @@ module.exports = {
         webtest: ['mocha-loader!./test']
     },
     devtool: 'inline-source-map',
+    node: { fs: 'empty', module: 'empty' },
     output: output,
     resolve: resolve,
     module: loaders
