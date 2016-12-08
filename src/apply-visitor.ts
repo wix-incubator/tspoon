@@ -21,10 +21,7 @@ export function applyVisitor(source:string, visitor:Visitor):ApplyVisitorResult 
 }
 
 export function applyVisitorOnHostedSource(file:string, visitors:Visitor[], host:ts.CompilerHost):string {
-    // TODO: TS1/2 compat, remove after TS2 upgrade
-    const docReg: ts.DocumentRegistry =  ts.createDocumentRegistry ? ts.createDocumentRegistry() : host as any;
-
-    const langService = host instanceof SemanticHost ? ts.createLanguageService(host, docReg) : null;
+    const langService = host instanceof SemanticHost ? ts.createLanguageService(host, ts.createDocumentRegistry()) : null;
     const transformer:CodeTransformer = new VisitorBasedTransformer(visitors, () => langService);
     const ast:ts.SourceFile = host.getSourceFile(file, defaultCompilerOptions.target);
     if (ast) {
