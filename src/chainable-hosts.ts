@@ -63,7 +63,7 @@ export class TransformationHost extends ChainableHost {
     }
 }
 
-export class SemanticHost extends ChainableHost implements ts.LanguageServiceHost, ts.CompilerHost, ts.DocumentRegistry {
+export class SemanticHost extends ChainableHost implements ts.LanguageServiceHost, ts.CompilerHost {
     constructor(private files:string[],
                 private compilerOptions:ts.CompilerOptions = defaultCompilerOptions,
                 private libDir: string = 'node_modules'

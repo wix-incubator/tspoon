@@ -40,5 +40,5 @@ sftp-config.json
 !examples/readme/alertProperty.js
 !webpack.config.js
 .npmrc
-.npmrc
+.vscode
 typings

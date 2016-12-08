@@ -42,6 +42,10 @@ export class HostBase implements ts.CompilerHost {
     getCancellationToken(): ts.CancellationToken {
         return null;
     }
+
+    getDirectories(path: string): string[] {
+        return [];
+    }
 }
 
 

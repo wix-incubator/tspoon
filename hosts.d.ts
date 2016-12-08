@@ -21,13 +21,26 @@ export class TransformationHost extends ChainableHost {
     translateDiagnostic(diagnostic: ts.Diagnostic): ts.Diagnostic;
 }
 
-export interface SemanticHost extends ts.LanguageServiceHost, ts.CompilerHost, ts.DocumentRegistry {
-    getCancellationToken(): ts.CancellationToken;
-    getNewLine(): string;
-    useCaseSensitiveFileNames();
-}
-export class SemanticHost extends ChainableHost {
-    constructor(files: string[], compilerOptions?: ts.CompilerOptions);
+export class SemanticHost extends ChainableHost implements ts.LanguageServiceHost, ts.CompilerHost {
+    private files;
+    private compilerOptions;
+    private libDir;
+    constructor(files: string[], compilerOptions?: ts.CompilerOptions, libDir?: string);
+    getProjectVersion(): string;
+    getScriptFileNames(): string[];
+    getScriptVersion(fileName: string): string;
+    getScriptSnapshot(fileName: string): ts.IScriptSnapshot;
+    getLocalizedDiagnosticMessages(): any;
+    getCompilationSettings(): ts.CompilerOptions;
+    log(s: string): void;
+    trace(s: string): void;
+    error(s: string): void;
+    resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[];
+    directoryExists(directoryName: string): boolean;
+    acquireDocument(fileName: string, compilationSettings: ts.CompilerOptions, scriptSnapshot: ts.IScriptSnapshot, version: string): ts.SourceFile;
+    updateDocument(fileName: string, compilationSettings: ts.CompilerOptions, scriptSnapshot: ts.IScriptSnapshot, version: string): ts.SourceFile;
+    releaseDocument(fileName: string, compilationSettings: ts.CompilerOptions): void;
+    reportStats(): string;
 }
 
 export class MultipleFilesHost extends HostBase {

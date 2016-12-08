@@ -11,7 +11,8 @@ module.exports = {
 		test: [path.join(__dirname, 'dist', 'test', 'index.js')]
 	},
 	node: {
-		fs: 'empty'
+		fs: 'empty',
+		module: 'empty'
 	},
 	output: {
 		path          : path.join(__dirname, 'dist'),
