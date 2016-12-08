@@ -112,7 +112,8 @@ import binarySearch from './binary-search';
             const sortedActions = actionList
                 .filter(action => action instanceof MappedAction)
                 .sort(compareActions) as MappedAction[];
-            sortedActions.forEach((action:MappedAction) => {
+
+            sortedActions.forEach((action) => {
                 this._ast = action.execute(this._ast, this.magicString);
             });
         }
