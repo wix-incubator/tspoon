@@ -1,9 +1,1 @@
-var chainableHosts = require('./dist/src/chainable-hosts');
-var hosts = require('./dist/src/hosts');
-var hostsBase = require('./dist/src/hosts-base');
-module.exports = chainableHosts;
-module.exports.MultipleFilesHost = hosts.MultipleFilesHost;
-module.exports.SingleFileHost = hosts.SingleFileHost;
-module.exports.HostBase = hostsBase.HostBase;
-module.exports.ChainableHost = hostsBase.ChainableHost;
-module.exports.chainHosts = hostsBase.chainHosts;
+module.exports = require('./dist/src/hosts-api');

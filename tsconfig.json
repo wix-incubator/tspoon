@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "module": "commonjs",
     "sourceMap": true,
     "target": "ES5",
@@ -11,6 +11,8 @@
     "node_modules",
     "dist",
     "example-poc",
-    "doc"
+    "doc",
+    "index.d.ts",
+    "hosts.d.ts"
   ]
 }

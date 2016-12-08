@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 
     export class HostBase implements ts.CompilerHost {
 
-        // Most likely to be overridded
+        // Most likely to be overridden
 
         fileExists(fileName:string):boolean {
             return false;

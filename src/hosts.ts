@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import {HostBase} from './hosts-base';
 import {defaultCompilerOptions} from './configuration';
+import {RawSourceMap} from 'source-map';
 
 function fileExtensionIs(path: string, extension: string): boolean {
     let pathLen = path.length;
@@ -68,7 +69,7 @@ export class SingleFileHost extends HostBase implements ts.CompilerHost {
         return this._output;
     }
 
-    public get sourceMap():SourceMap.RawSourceMap {
+    public get sourceMap(): RawSourceMap {
         return JSON.parse(this._map);
     }
 
