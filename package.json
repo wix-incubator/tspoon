@@ -4,24 +4,18 @@
   "version": "1.0.206",
   "description": "AST visitors for Typescript",
   "main": "./dist/src/index.js",
-  "jsnext:main": "src/index.ts",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "clean": "rimraf dist",
-    "build": "npm run build:src",
+    "clean": "rimraf ./dist",
+    "build": "tsc",
+    "build:watch": "tsc -w",
     "build:clean": "npm run clean && npm run build",
     "bundle": "webpack",
-    "build:src": "tsc",
-    "pretest": "npm run bundle",
-    "test": "npm run test:node",
+    "pretest": "npm run build:clean && npm run bundle",
+    "test": "npm run test:node && npm run test:e2e && npm run test:browser",
     "test:browser": "karma start --single-run",
     "test:node": "mocha --reporter mocha-env-reporter ./dist/test",
-    "prepublish": "typings install",
-    "start": "concurrent -k \"npm run start:tsc\" \"npm run start:webpack\"",
-    "start:webpack": "webpack-dev-server --progress --hot --inline --no-colors",
-    "start:tsc": "tsc -w"
+    "test:e2e": "mocha --reporter mocha-env-reporter ./dist/test/e2e",
+    "start": "webpack-dev-server --progress --hot --inline --no-colors"
   },
   "repository": {
     "type": "git",
@@ -39,10 +33,10 @@
   },
   "homepage": "https://github.com/wix/tspoon",
   "devDependencies": {
+    "@types/chai": "3.4.34",
+    "@types/mocha": "2.2.33",
+    "@types/node": "0.0.2",
     "chai": "3.5.0",
-    "concurrently": "3.1.0",
-    "convert-source-map": "1.3.0",
-    "json-loader": "0.5.4",
     "karma": "1.3.0",
     "karma-chrome-launcher": "2.0.0",
     "karma-mocha": "1.3.0",
@@ -53,14 +47,17 @@
     "raw-loader": "0.5.1",
     "rimraf": "2.5.4",
     "source-map-support": "0.4.6",
-    "typings": "2.0.0",
+    "ts-loader": "1.3.0",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2"
   },
   "dependencies": {
+    "@types/lodash": "4.14.43",
+    "@types/source-map": "0.5.0",
     "lodash": "4.17.2",
     "magic-string": "0.19.0",
     "source-map": "0.5.6",
-    "typescript": "1.8.10"
+    "source-map-support": "0.4.6",
+    "typescript": "2.1.4"
   }
 }

@@ -41,4 +41,3 @@ sftp-config.json
 !webpack.config.js
 .npmrc
 .vscode
-typings

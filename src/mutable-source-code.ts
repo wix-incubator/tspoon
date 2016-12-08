@@ -1,3 +1,5 @@
+/// <reference path="../typings/magic-string.d.ts" />
+
 import ts = require('typescript');
 import {RawSourceMap, SourceMapConsumer, SourceMapGenerator, MappedPosition} from 'source-map';
 import * as traverse from './traverse-ast';
@@ -23,7 +25,7 @@ import binarySearch from './binary-search';
 
         execute(ast:ts.SourceFile, magicString:MagicString):ts.SourceFile {
             if (this.start === this.end) {
-                magicString.insertLeft(this.start, this.str);
+                magicString.appendLeft(this.start, this.str);
             } else {
                 magicString.overwrite(this.start, this.end, this.str);
             }
@@ -43,7 +45,7 @@ import binarySearch from './binary-search';
         }
 
         execute(ast:ts.SourceFile, magicString:MagicString):ts.SourceFile {
-            magicString.insertLeft(this.start, this.str);
+            magicString.appendLeft(this.start, this.str);
             const textSpan:ts.TextSpan = ts.createTextSpanFromBounds(this.start, this.start);
             const textChangeRange:ts.TextChangeRange = ts.createTextChangeRange(textSpan, this.str.length);
             return ast.update(magicString.toString(), textChangeRange);
@@ -110,6 +112,7 @@ import binarySearch from './binary-search';
             const sortedActions = actionList
                 .filter(action => action instanceof MappedAction)
                 .sort(compareActions) as MappedAction[];
+
             sortedActions.forEach((action) => {
                 this._ast = action.execute(this._ast, this.magicString);
             });

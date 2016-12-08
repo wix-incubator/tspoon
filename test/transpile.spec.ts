@@ -66,8 +66,6 @@ describe('transpiler', function() {
 
         it('checks sample code doesn\'t get garbled up the same way it once did', () => {
             const source = `
-/// <reference path='../../../typings/tsd.d.ts'/>
-
 function bar(){
 }
 var foo = bar;

@@ -1,9 +1,9 @@
 import * as ts from 'typescript';
+import * as SourceMap from 'source-map';
 import {chainHosts} from './hosts-base';
 import {CodeTransformer, VisitorBasedTransformer} from './transformer';
 import {ChainableHost} from './hosts-base';
 import {MutableSourceCode} from './mutable-source-code';
-import RawSourceMap = SourceMap.RawSourceMap;
 import {defaultCompilerOptions} from './configuration';
 import {MultipleFilesHost} from './hosts';
 import {Visitor} from './visitor';
@@ -48,7 +48,7 @@ export class TransformationHost extends ChainableHost {
         }
     }
 
-    getSourceMap(fileName:string):RawSourceMap {
+    getSourceMap(fileName:string):SourceMap.RawSourceMap {
         const transformation:MutableSourceCode = this.transformations[fileName];
         if (transformation) {
             return transformation.sourceMap;
