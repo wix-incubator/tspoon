@@ -6,4 +6,3 @@ export {traverseAst} from './traverse-ast';
 export * from './apply-visitor';
 export * from './hosts';
 export * from './hosts-base';
-
