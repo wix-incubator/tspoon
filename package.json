@@ -6,7 +6,7 @@
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf ./dist",
     "build": "tsc -d",
     "build:watch": "tsc -d -w",
     "build:clean": "npm run clean && npm run build",
