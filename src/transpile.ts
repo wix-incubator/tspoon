@@ -151,9 +151,13 @@ import {AstCacheHost} from './chainable-hosts';
         const astCache = new AstCacheHost();
         const cachedSource:ts.CompilerHost = chainHosts(sourceHost, astCache);
         const semanticHost = <SemanticHost>chainHosts(cachedSource, new SemanticHost(files, defaultCompilerOptions));
+
+        // TODO: TS1/2 compat, remove after TS2 upgrade
+        const docReg: ts.DocumentRegistry =  ts.createDocumentRegistry ? ts.createDocumentRegistry() : semanticHost as any;
+
         const langServiceProvider = () => langService
             ? langService
-            : langService = ts.createLanguageService(semanticHost, semanticHost);
+            : langService = ts.createLanguageService(semanticHost, docReg);
         const transformHost = new TransformationHost(config.mutators || [], langServiceProvider);
         const program:ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(cachedSource, transformHost));
         const diags:ts.Diagnostic[] = [].concat(

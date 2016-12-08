@@ -10,7 +10,6 @@
     "typings",
     "node_modules",
     "dist",
-    "example-poc",
-    "doc"
+    "examples"
   ]
 }
