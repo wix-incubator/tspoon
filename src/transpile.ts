@@ -155,7 +155,7 @@ import {AstCacheHost} from './chainable-hosts';
         const langServiceProvider = () => {
             return langService
             ? langService
-            : langService = ts.createLanguageService(semanticHost, ts.createDocumentRegistry());
+            : langService = ts.createLanguageService(semanticHost, semanticHost as any);
         }
         const transformHost = new TransformationHost(config.mutators || [], langServiceProvider);
         const program:ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(cachedSource, transformHost));
