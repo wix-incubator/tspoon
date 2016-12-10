@@ -155,7 +155,7 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
     const langServiceProvider = () => {
         return langService
             ? langService
-            : langService = ts.createLanguageService(semanticHost, ts.version[0] === '2' ? ts.createDocumentRegistry() : semanticHost as any);
+            : langService = ts.createLanguageService(semanticHost, ts.createDocumentRegistry());
     }
     const transformHost = new TransformationHost(config.mutators || [], langServiceProvider);
     const program: ts.Program = ts.createProgram(files, defaultCompilerOptions, chainHosts(cachedSource, transformHost));

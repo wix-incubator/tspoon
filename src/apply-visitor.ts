@@ -21,7 +21,7 @@ export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResu
 }
 
 export function applyVisitorOnHostedSource(file: string, visitors: Visitor[], host: ts.CompilerHost): string {
-    const langService = host instanceof SemanticHost ? ts.createLanguageService(host, ts.version[0] === '2' ? ts.createDocumentRegistry() : host as any) : null;
+    const langService = host instanceof SemanticHost ? ts.createLanguageService(host, ts.createDocumentRegistry()) : null;
     const transformer: CodeTransformer = new VisitorBasedTransformer(visitors, () => langService);
     const ast: ts.SourceFile = host.getSourceFile(file, defaultCompilerOptions.target);
     if (ast) {
