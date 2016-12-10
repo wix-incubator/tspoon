@@ -8,6 +8,10 @@ export class HostBase implements ts.CompilerHost {
         return false;
     }
 
+    directoryExists(directoryName: string): boolean {
+        return false;
+    }
+
     readFile(fileName: string): string {
         return null;
     }
@@ -64,6 +68,14 @@ export class ChainableHost extends HostBase {
         return this.source.fileExists(fileName);
     }
 
+    directoryExists(directoryName: string): boolean {
+        return this.source.directoryExists(directoryName);
+    }
+
+    getCurrentDirectory(): string {
+        return this.source.getCurrentDirectory();
+    }
+
     readFile(fileName: string): string {
         return this.source.readFile(fileName);
     }
@@ -74,6 +86,10 @@ export class ChainableHost extends HostBase {
 
     writeFile(name: string, text: string, writeByteOrderMark: boolean) {
         this.source.writeFile(name, text, writeByteOrderMark);
+    }
+
+    getDirectories(path: string): string[] {
+        return this.source.getDirectories(path);
     }
 }
 
