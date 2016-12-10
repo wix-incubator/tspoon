@@ -3,11 +3,10 @@
     "declaration": false,
     "module": "commonjs",
     "sourceMap": true,
-    "target": "ES5",
+    "target": "es5",
     "outDir": "dist"
   },
   "exclude": [
-    "typings",
     "node_modules",
     "dist",
     "examples"
