@@ -6,6 +6,7 @@ import {findCodeRange, findCodePosition} from '../test-kit/index';
 import {SingleFileHost} from '../src/hosts';
 import {defaultCompilerOptions} from '../src/configuration';
 import {RawSourceMap, SourceMapConsumer, SourceMapGenerator} from 'source-map';
+import SourceMap = require('source-map');
 
 function makeReplacement(source: string, atStr: string, insStr: string): Action {
     const textRange = findCodeRange(source, atStr);
