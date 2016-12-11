@@ -20,10 +20,10 @@ export function applyVisitor(source: string, visitor: Visitor): ApplyVisitorResu
     return applyVisitorOnAst(ast, visitor);
 }
 
-export function applyVisitorOnHostedSource(file:string, visitors:Visitor[], host:ts.CompilerHost):string {
+export function applyVisitorOnHostedSource(file: string, visitors: Visitor[], host: ts.CompilerHost): string {
     const langService = host instanceof SemanticHost ? ts.createLanguageService(host, ts.createDocumentRegistry()) : null;
-    const transformer:CodeTransformer = new VisitorBasedTransformer(visitors, () => langService);
-    const ast:ts.SourceFile = host.getSourceFile(file, defaultCompilerOptions.target);
+    const transformer: CodeTransformer = new VisitorBasedTransformer(visitors, () => langService);
+    const ast: ts.SourceFile = host.getSourceFile(file, defaultCompilerOptions.target);
     if (ast) {
         const mutableSourceCode: MutableSourceCode = transformer.transform(ast);
         return mutableSourceCode.code;
