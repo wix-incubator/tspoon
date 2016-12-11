@@ -1,9 +1,7 @@
 import {expect} from 'chai';
 import * as ts from 'typescript';
 import * as tspoon from '../src/index';
-import {ValidatorConfig} from '../src/transpile';
-import {VisitorContext} from '../index';
-import {Visitor} from '../src/visitor';
+import {Visitor, VisitorContext, ValidatorConfig} from '../src';
 import {MockModule} from '../test-kit/mocks/resolution-hosts';
 
 function beforeVariable(varName: string) {

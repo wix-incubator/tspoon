@@ -4,17 +4,13 @@
   "version": "1.0.213",
   "description": "AST visitors for Typescript",
   "main": "./dist/src/index.js",
-  "jsnext:main": "src/index.ts",
-  "directories": {
-    "test": "test"
-  },
+  "types": "./dist/src/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run build:src",
+    "build": "tsc -d",
     "build:clean": "npm run clean && npm run build",
     "bundle": "webpack",
-    "build:src": "tsc",
-    "pretest": "npm run bundle",
+    "pretest": "npm run build:clean && npm run bundle",
     "test": "npm run test:node",
     "test:browser": "karma start --single-run",
     "test:node": "mocha --reporter mocha-env-reporter ./dist/test",
