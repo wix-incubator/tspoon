@@ -1,22 +1,22 @@
 import * as ts from 'typescript';
-import * as SourceMap from 'source-map';
-import {chainHosts} from './hosts-base';
-import {CodeTransformer, VisitorBasedTransformer} from './transformer';
-import {ChainableHost} from './hosts-base';
-import {MutableSourceCode} from './mutable-source-code';
-import {defaultCompilerOptions} from './configuration';
-import {MultipleFilesHost} from './hosts';
-import {Visitor} from './visitor';
+import { chainHosts } from './hosts-base';
+import { CodeTransformer, VisitorBasedTransformer } from './transformer';
+import { ChainableHost } from './hosts-base';
+import { MutableSourceCode } from './mutable-source-code';
+import { RawSourceMap } from 'source-map';
+import { defaultCompilerOptions } from './configuration';
+import { MultipleFilesHost } from './hosts';
+import { Visitor } from './visitor';
 
 const normalizePath: { (path: string): string } = ts['normalizePath'];
 const getDirectoryPath: { (path: string): string } = ts['getDirectoryPath'];
 const combinePaths: { (path1: string, path2: string): string } = ts['combinePaths'];
 
 export class AstCacheHost extends ChainableHost {
-    private cache:{ [fileName: string]: ts.SourceFile } = {};
+    private cache: { [fileName: string]: ts.SourceFile } = {};
 
-    getSourceFile(fileName:string, languageVersion:ts.ScriptTarget, onError?:(message:string) => void):ts.SourceFile {
-        const cachedAst:ts.SourceFile = this.cache[fileName];
+    getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+        const cachedAst: ts.SourceFile = this.cache[fileName];
         if (!cachedAst) {
             const ast = this.source.getSourceFile(fileName, languageVersion, onError);
             this.cache[fileName] = ast;
@@ -29,16 +29,16 @@ export class AstCacheHost extends ChainableHost {
 }
 
 export class TransformationHost extends ChainableHost {
-    private transformations:{ [fileName: string]: MutableSourceCode } = {};
-    private transformer:CodeTransformer;
+    private transformations: { [fileName: string]: MutableSourceCode } = {};
+    private transformer: CodeTransformer;
 
-    constructor(visitors:Visitor[], languageServiceProvider:() => ts.LanguageService = () => null) {
+    constructor(visitors: Visitor[], languageServiceProvider: () => ts.LanguageService = () => null) {
         super();
         this.transformer = new VisitorBasedTransformer(visitors, languageServiceProvider);
     }
 
-    getSourceFile(fileName:string, languageVersion:ts.ScriptTarget, onError?:(message:string) => void):ts.SourceFile {
-        const ast:ts.SourceFile = super.getSourceFile(fileName, languageVersion, onError);
+    getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+        const ast: ts.SourceFile = super.getSourceFile(fileName, languageVersion, onError);
         if (ast) {
             const transformation = this.transformer.transform(ast);
             this.transformations[ast.fileName] = transformation;
@@ -48,8 +48,8 @@ export class TransformationHost extends ChainableHost {
         }
     }
 
-    getSourceMap(fileName:string):SourceMap.RawSourceMap {
-        const transformation:MutableSourceCode = this.transformations[fileName];
+    getSourceMap(fileName: string): RawSourceMap {
+        const transformation: MutableSourceCode = this.transformations[fileName];
         if (transformation) {
             return transformation.sourceMap;
         } else {
@@ -57,67 +57,67 @@ export class TransformationHost extends ChainableHost {
         }
     }
 
-    translateDiagnostic(diagnostic:ts.Diagnostic):ts.Diagnostic {
+    translateDiagnostic(diagnostic: ts.Diagnostic): ts.Diagnostic {
         const transformation = this.transformations[diagnostic.file.fileName];
         return transformation ? transformation.translateDiagnostic(diagnostic) : diagnostic;
     }
 }
 
 export class SemanticHost extends ChainableHost implements ts.LanguageServiceHost, ts.CompilerHost {
-    constructor(private files:string[],
-                private compilerOptions:ts.CompilerOptions = defaultCompilerOptions,
-                private libDir: string = 'node_modules'
+    constructor(private files: string[],
+        private compilerOptions: ts.CompilerOptions = defaultCompilerOptions,
+        private libDir: string = 'node_modules'
     ) {
         super();
     }
 
-    getProjectVersion():string {
+    getProjectVersion(): string {
         return null;
     }
 
-    getScriptFileNames():string[] {
+    getScriptFileNames(): string[] {
         return this.files.slice();
     }
 
-    getScriptVersion(fileName:string):string {
+    getScriptVersion(fileName: string): string {
         return null;
     }
 
-    getScriptSnapshot(fileName:string):ts.IScriptSnapshot {
+    getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
         return ts.ScriptSnapshot.fromString(this.readFile(fileName));
     }
 
-    getLocalizedDiagnosticMessages():any {
+    getLocalizedDiagnosticMessages(): any {
         return null;
     }
 
-    getCompilationSettings():ts.CompilerOptions {
+    getCompilationSettings(): ts.CompilerOptions {
         return this.compilerOptions;
     }
 
 
-    log(s:string):void {
+    log(s: string): void {
     }
 
-    trace(s:string):void {
+    trace(s: string): void {
     }
 
-    error(s:string):void {
+    error(s: string): void {
     }
 
-    resolveModuleNames(moduleNames:string[], containingFile:string):ts.ResolvedModule[] {
-        return moduleNames.map((moduleName:string) => {
+    resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
+        return moduleNames.map((moduleName: string) => {
             return ts.nodeModuleNameResolver(moduleName, containingFile, this.compilerOptions, this).resolvedModule;
         });
     }
 
-    directoryExists(directoryName:string):boolean {
+    directoryExists(directoryName: string): boolean {
         return this.source.directoryExists
             ? this.source.directoryExists(directoryName)
-            : true;
+            : undefined;
     }
 
-    acquireDocument(fileName:string, compilationSettings:ts.CompilerOptions, scriptSnapshot:ts.IScriptSnapshot, version:string):ts.SourceFile {
+    acquireDocument(fileName: string, compilationSettings: ts.CompilerOptions, scriptSnapshot: ts.IScriptSnapshot, version: string): ts.SourceFile {
         return this.source.getSourceFile(fileName, compilationSettings.target);
     }
 
@@ -133,7 +133,7 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
      * @param scriptSnapshot Text of the file.
      * @param version Current version of the file.
      */
-    updateDocument(fileName:string, compilationSettings:ts.CompilerOptions, scriptSnapshot:ts.IScriptSnapshot, version:string):ts.SourceFile {
+    updateDocument(fileName: string, compilationSettings: ts.CompilerOptions, scriptSnapshot: ts.IScriptSnapshot, version: string): ts.SourceFile {
         return this.source.getSourceFile(fileName, compilationSettings.target);
     }
 
@@ -146,11 +146,11 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
      * @param fileName The name of the file to be released
      * @param compilationSettings The compilation settings used to acquire the file
      */
-    releaseDocument(fileName:string, compilationSettings:ts.CompilerOptions):void {
+    releaseDocument(fileName: string, compilationSettings: ts.CompilerOptions): void {
 
     }
 
-    reportStats():string {
+    reportStats(): string {
         return '';
     }
 }
