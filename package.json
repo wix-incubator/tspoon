@@ -7,8 +7,8 @@
   "types": "./dist/src/index.d.ts",
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "tsc",
-    "build:watch": "tsc -w",
+    "build": "tsc -d",
+    "build:watch": "tsc -d -w",
     "build:clean": "npm run clean && npm run build",
     "bundle": "webpack",
     "pretest": "npm run build:clean && npm run bundle",
