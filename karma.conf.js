@@ -38,7 +38,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress'],
+        reporters: ['karma-env-reporter'],
 
 
         // web server port
@@ -80,7 +80,7 @@ module.exports = function (config) {
     }
 
     if (process.env.TRAVIS) {
-        karmaConfig.browsers = ['chrome_travis_ci'];
+        karmaConfig.browsers = ['chrome_travis_ci', 'Firefox'];
     }
 
     config.set(karmaConfig);
