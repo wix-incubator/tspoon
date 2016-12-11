@@ -1,5 +1,3 @@
-/// <reference path="../typings/magic-string.d.ts" />
-
 import ts = require('typescript');
 import { RawSourceMap, SourceMapConsumer, SourceMapGenerator, MappedPosition } from 'source-map';
 import * as traverse from './traverse-ast';
