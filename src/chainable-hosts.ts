@@ -114,7 +114,7 @@ export class SemanticHost extends ChainableHost implements ts.LanguageServiceHos
     directoryExists(directoryName: string): boolean {
         return this.source.directoryExists
             ? this.source.directoryExists(directoryName)
-            : true;
+            : undefined;
     }
 
     acquireDocument(fileName: string, compilationSettings: ts.CompilerOptions, scriptSnapshot: ts.IScriptSnapshot, version: string): ts.SourceFile {

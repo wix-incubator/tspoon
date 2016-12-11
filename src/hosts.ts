@@ -18,6 +18,29 @@ export class MultipleFilesHost extends HostBase implements ts.CompilerHost {
         super();
     }
 
+    getCurrentDirectory(): string {
+        let currentDir = '';
+        this._resolutionHosts.forEach((host) => {
+            if (host.getCurrentDirectory) {
+                const hostCurrentDir = host.getCurrentDirectory();
+                if (hostCurrentDir) {
+                    currentDir = hostCurrentDir;
+                }
+            }
+        });
+        return currentDir;
+    }
+
+    directoryExists(directoryName: string): boolean{
+        return this._resolutionHosts.some(host => host.directoryExists && host.directoryExists(directoryName));
+    }
+
+    getDirectories(path: string): string[] {
+        return this._resolutionHosts.reduce((directories, host)=>{
+            return host.getDirectories ? directories.concat(host.getDirectories(path)) : directories;
+        }, [] as string[]);
+    }
+
     fileExists(fileName: string): boolean {
         return this._resolutionHosts.some(host => host.fileExists(fileName));
     }
