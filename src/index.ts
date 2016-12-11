@@ -2,5 +2,6 @@ export { transpile, TranspilerOutput, TranspilerConfig, ValidatorConfig, validat
 export { Visitor, VisitorContext } from './visitor';
 export { traverseAst } from './traverse-ast';
 export * from './apply-visitor';
-export * from './hosts';
 export * from './hosts-base';
+export * from './hosts';
+export * from './chainable-hosts';
