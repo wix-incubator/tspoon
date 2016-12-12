@@ -1,5 +1,5 @@
 # Tspoon
-[![npm version](https://badge.fury.io/js/tspoon.svg)](https://badge.fury.io/js/tspoon)
+[![npm version](https://badge.fury.io/js/tspoon.svg)](https://www.npmjs.com/package/tspoon)
 
 AST visitors for [Typescript](https://github.com/Microsoft/TypeScript).
 
@@ -17,7 +17,7 @@ Simple examples can be found [here](https://github.com/wix/tspoon/tree/master/ex
 
 ## Getting started
  Install tspoon using npm.
- 
+
  `npm install tspoon`
 
 Currently, Tspoon exposes only a programmatic API. Meaning, it is used by other javacript code invoking it's `transpile` and `validate` methods.
@@ -83,7 +83,6 @@ Clone this project locally.
 Then, at the root folder of the project, run:
 ```shell
 npm install
-npm run build
 npm test
 ```
 ### how to run local continous test feedback
@@ -98,5 +97,5 @@ and see any changes you make in tests or code reflected in the browser
 Currently Tspoon is in alpha mode. As such, it does not respect semver.
 
 # License
-We use a custom license, see ```LICENSE.md```  
+We use a custom license, see ```LICENSE.md```
 

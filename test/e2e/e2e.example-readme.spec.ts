@@ -1,12 +1,14 @@
 import {expect} from 'chai';
-import * as tspoon from '../src/index';
-import {evaluateModuleExports} from '../test-kit/index';
-let visitor = require('../../examples/readme/alertProperty.js');
+import * as tspoon from '../../src';
+import {evaluateModuleExports} from '../../test-kit';
+import { readFileSync } from 'fs';
+import * as path from 'path';
+let visitor = require('../../../examples/readme/alertProperty.js');
 
 describe('readme example', function() {
     let sourceCode, config;
     before(() => {
-        sourceCode = require('../../examples/readme/src.ts'); // the path is relative to tspoon/dist/test
+        sourceCode = readFileSync(path.resolve(__dirname, '../../../examples/readme/src.ts'), 'utf8'); // the path is relative to tspoon/dist/test
         config = {
             sourceFileName: 'src.ts',
             visitors: [visitor]

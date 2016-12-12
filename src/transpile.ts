@@ -165,4 +165,3 @@ export function validateAll(files: string[], config: ValidatorConfig): ts.Diagno
     );
     return diags.map(diagnostic => transformHost.translateDiagnostic(diagnostic));
 }
-
