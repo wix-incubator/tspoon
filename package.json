@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "tspoon",
-  "version": "1.0.217",
+  "version": "1.0.218",
   "description": "AST visitors for TypeScript",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
