@@ -1,4 +1,4 @@
-![image](https://cloud.githubusercontent.com/assets/2289769/20868371/966baa76-ba62-11e6-8b7d-f75b353719d8.png)
+![image](logo.png)
 
 # Tspoon
 [![npm version](https://badge.fury.io/js/tspoon.svg)](https://www.npmjs.com/package/tspoon)
