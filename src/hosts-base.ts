@@ -1,82 +1,102 @@
 import * as ts from 'typescript';
 
-    export class HostBase implements ts.CompilerHost {
+export class HostBase implements ts.CompilerHost {
 
-        // Most likely to be overridded
+    // Most likely to be overridded
 
-        fileExists(fileName:string):boolean {
-            return false;
-        }
+    fileExists(fileName: string): boolean {
+        return false;
+    }
 
-        readFile(fileName:string):string {
-            return null;
-        }
+    directoryExists(directoryName: string): boolean {
+        return false;
+    }
 
-        getSourceFile(fileName:string, languageVersion:ts.ScriptTarget, onError?:(message:string) => void):ts.SourceFile {
-            return null;
-        }
+    readFile(fileName: string): string {
+        return null;
+    }
 
-        writeFile(name:string, text:string, writeByteOrderMark:boolean) {
-        }
+    getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+        return null;
+    }
 
-        useCaseSensitiveFileNames() {
-            return false;
-        }
+    writeFile(name: string, text: string, writeByteOrderMark: boolean) {
+    }
 
-        getCanonicalFileName(fileName:string) {
-            return fileName;
-        }
+    useCaseSensitiveFileNames() {
+        return false;
+    }
 
-        getCurrentDirectory():string {
-            return '';
-        }
+    getCanonicalFileName(fileName: string) {
+        return fileName;
+    }
 
-        getNewLine():string {
-            return '\n';
-        }
+    getCurrentDirectory(): string {
+        return '';
+    }
 
-        getDefaultLibFileName(options:ts.CompilerOptions):string {
-            return 'lib.d.ts';
-        }
+    getNewLine(): string {
+        return '\n';
+    }
 
-        getCancellationToken():ts.CancellationToken {
-            return null;
+    getDefaultLibFileName(options: ts.CompilerOptions): string {
+        return 'lib.d.ts';
+    }
+
+    getCancellationToken(): ts.CancellationToken {
+        return null;
+    }
+
+    getDirectories(path: string): string[] {
+        return [];
+    }
+}
+
+
+export class ChainableHost extends HostBase {
+    protected source: ts.CompilerHost = null;
+
+    setSource(source: ts.CompilerHost): void {
+        if (this.source === null) {
+            this.source = source;
+        } else {
+            throw new Error(`A chainable host can be connected to a source only once. It looks like you're trying to include the same instance in multiple chains.`);
         }
     }
 
-
-    export class ChainableHost extends HostBase {
-        protected source:ts.CompilerHost = null;
-
-        setSource(source:ts.CompilerHost):void {
-            if (this.source === null) {
-                this.source = source;
-            } else {
-                throw new Error(`A chainable host can be connected to a source only once. It looks like you're trying to include the same instance in multiple chains.`);
-            }
-        }
-
-        fileExists(fileName:string):boolean {
-            return this.source.fileExists(fileName);
-        }
-
-        readFile(fileName:string):string {
-            return this.source.readFile(fileName);
-        }
-
-        getSourceFile(fileName:string, languageVersion:ts.ScriptTarget, onError?:(message:string) => void):ts.SourceFile {
-            return this.source.getSourceFile(fileName, languageVersion, onError);
-        }
-
-        writeFile(name:string, text:string, writeByteOrderMark:boolean) {
-            this.source.writeFile(name, text, writeByteOrderMark);
-        }
+    fileExists(fileName: string): boolean {
+        return this.source.fileExists(fileName);
     }
 
-    export function chainHosts(host0:ts.CompilerHost, ...chainableHosts:ChainableHost[]):ts.CompilerHost {
-        return chainableHosts.reduce((acc:ts.CompilerHost, chainableHost:ChainableHost) => {
-            chainableHost.setSource(acc);
-            return chainableHost;
-        }, host0 as ChainableHost);
+    directoryExists(directoryName: string): boolean {
+        return this.source.directoryExists(directoryName);
     }
+
+    getCurrentDirectory(): string {
+        return this.source.getCurrentDirectory();
+    }
+
+    readFile(fileName: string): string {
+        return this.source.readFile(fileName);
+    }
+
+    getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+        return this.source.getSourceFile(fileName, languageVersion, onError);
+    }
+
+    writeFile(name: string, text: string, writeByteOrderMark: boolean) {
+        this.source.writeFile(name, text, writeByteOrderMark);
+    }
+
+    getDirectories(path: string): string[] {
+        return this.source.getDirectories(path);
+    }
+}
+
+export function chainHosts(host0: ts.CompilerHost, ...chainableHosts: ChainableHost[]): ts.CompilerHost {
+    return chainableHosts.reduce((acc: ts.CompilerHost, chainableHost: ChainableHost) => {
+        chainableHost.setSource(acc);
+        return chainableHost;
+    }, host0 as ChainableHost);
+}
 

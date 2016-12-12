@@ -1,11 +1,11 @@
-import {expect} from 'chai';
 import * as ts from 'typescript';
+import {RawSourceMap, SourceMapConsumer, SourceMapGenerator, Position} from 'source-map';
+import {expect} from 'chai';
 import {MutableSourceCode, ReplaceAction, Action} from '../src/mutable-source-code';
 import {traverseAst} from '../src/traverse-ast';
 import {findCodeRange, findCodePosition} from '../test-kit/index';
 import {SingleFileHost} from '../src/hosts';
 import {defaultCompilerOptions} from '../src/configuration';
-import {RawSourceMap, SourceMapConsumer, SourceMapGenerator} from 'source-map';
 
 function makeReplacement(source: string, atStr: string, insStr: string): Action {
     const textRange = findCodeRange(source, atStr);
@@ -23,10 +23,10 @@ function aSourceMapperFor(source: string): MutableSourceCode {
 }
 
 function expectSourceMapToMatchChangeForSuppliedText(source: string, target: string, sourceMap: RawSourceMap, text: string) {
-    const positionBeforeChange: SourceMap.Position = findCodePosition(source, text);
-    const positionAfterChange: SourceMap.Position = findCodePosition(target, text);
+    const positionBeforeChange: Position = findCodePosition(source, text);
+    const positionAfterChange: Position = findCodePosition(target, text);
     const mapConsumer = new SourceMapConsumer(sourceMap);
-    const mappedPosition: SourceMap.Position = mapConsumer.originalPositionFor(positionAfterChange);
+    const mappedPosition: Position = mapConsumer.originalPositionFor(positionAfterChange);
     expect({ line: mappedPosition.line, column: mappedPosition.column })
         .to.eql({ line: positionBeforeChange.line, column: positionBeforeChange.column });
 }
