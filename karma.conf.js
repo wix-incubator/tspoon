@@ -1,5 +1,8 @@
 // Karma configuration
 
+var portRangeStart = process.env['CORE3_PORT_RANGE_START'];
+var karmaPort = portRangeStart ? parseInt(portRangeStart) + 3: 9876;
+
 module.exports = function (config) {
     var karmaConfig = {
 
@@ -42,7 +45,7 @@ module.exports = function (config) {
 
 
         // web server port
-        port: 9876,
+        port: karmaPort,
 
 
         // enable / disable colors in the output (reporters and logs)
