@@ -52,7 +52,7 @@ function getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
 }
 
 
-export function transpile(content: string, config: TranspilerConfig): TranspilerOutput {
+export function transpile(content: string | ts.SourceFile, config: TranspilerConfig): TranspilerOutput {
 
     // The context may contain compiler options and a list of visitors.
     // If it doesn't, we use the default as defined in ./configuration.ts
@@ -65,7 +65,9 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
     // Then we let TypeScript parse it into an AST
 
-    const ast = ts.createSourceFile(fileName, content, compilerOptions.target, true);
+    const ast = typeof content === 'string'
+        ? ts.createSourceFile(fileName, content, compilerOptions.target, true)
+        : content;
     const parserErrors = getParserErrors(ast);
     if (parserErrors.length > 0) {
         return {
