@@ -37,6 +37,24 @@ export interface TranspilerConfig {
     sourceFileName: string;
     compilerOptions?: ts.CompilerOptions;
     visitors: Visitor[];
+
+    /**
+     * This callback allows initializing some custom user data on the source file or context
+     * prior to running the visitors over the AST.
+     *
+     * @param ast The root AST node (the source file)
+     * @param context The VisitorContext passed to each visitor when it is run
+     */
+    onBeforeTranspile?: (ast: ts.SourceFile, context: TranspilerContext) => void;
+
+    /**
+     * This callback allows finalizing anything stored on the source file or context
+     * after running the visitors over the AST, but prior to outputting the resulting code.
+     *
+     * @param ast The root AST node (the source file)
+     * @param context The VisitorContext passed to each visitor when it is run
+     */
+    onAfterTranspile?: (ast: ts.SourceFile, context: TranspilerContext) => void;
 }
 
 export interface ValidatorConfig {
@@ -82,6 +100,11 @@ export function transpile(content: string | ts.SourceFile, config: TranspilerCon
 
     let context: TranspilerContext = new TranspilerContext(ast.fileName);
 
+    // Call this before running through the list of visitors
+    if (config.onBeforeTranspile) {
+        config.onBeforeTranspile(ast, context);
+    }
+
     // We execute the various visitors, each traversing the AST and generating
     // lines to be pushed into the code and diagbostic messages.
     // If one of the visitors halts the transilation process we return the halted object.
@@ -98,6 +121,11 @@ export function transpile(content: string | ts.SourceFile, config: TranspilerCon
             diags: context.diags,
             halted: true
         };
+    }
+
+    // Call this after running through the list of visitors, but before outputting code
+    if (config.onAfterTranspile) {
+        config.onAfterTranspile(ast, context);
     }
 
     // Now, we mutate the code with the resulting list of strings to be pushed
