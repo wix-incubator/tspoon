@@ -1,4 +1,4 @@
-import ts = require('typescript');
+import * as ts from 'typescript';
 import { SingleFileHost, MultipleFilesHost } from './hosts';
 import { traverseAst } from './traverse-ast';
 import { MutableSourceCode } from './mutable-source-code';
