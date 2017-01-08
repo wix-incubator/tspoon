@@ -110,7 +110,7 @@ bodies). In order to achieve this, TSpoon lets you to execute a visitor
 from another visitor:
 
 ```javascript
-var visitor1 = {
+var visitor = {
     filter(node) {
         return node.kind === ts.SyntaxKind.ClassDeclaration;
     },
