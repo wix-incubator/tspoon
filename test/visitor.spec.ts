@@ -40,10 +40,11 @@ describe('given source code', function() {
             filter: (node: ts.Node): boolean => {
                 return node.kind == ts.SyntaxKind.ClassDeclaration;
             },
-            visit: (node: ts.Node, context: VisitorContext): void => {
+            visit: (node: ts.Node, context: VisitorContext): boolean => {
                 context.insertLine(node.getStart(), '@blah');
                 context.replace(node.getStart(), node.getStart() + 'class'.length, 'interface');
                 context.reportDiag(node, ts.DiagnosticCategory.Error, 'Test message');
+                return true;
             }
         };
 
@@ -80,8 +81,9 @@ describe('given source code', function() {
             filter: (node: ts.Node): boolean => {
                 return node.kind == ts.SyntaxKind.MethodDeclaration;
             },
-            visit: (node: ts.Node, context: VisitorContext): void => {
+            visit: (node: ts.Node, context: VisitorContext): boolean => {
                 context.insertLine(node.getStart(), '@blah');
+                return true;
             }
         };
 
@@ -89,8 +91,9 @@ describe('given source code', function() {
             filter: (node: ts.Node): boolean => {
                 return node.kind == ts.SyntaxKind.ClassDeclaration;
             },
-            visit: (node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[]) => void): void => {
+            visit: (node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[]) => void): boolean => {
                 traverse(subVisitor);
+                return true;
             }
         };
 

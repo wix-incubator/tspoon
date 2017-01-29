@@ -19,6 +19,7 @@ function beforeVariable(varName: string) {
 
                 visit: (node: ts.Node, context: VisitorContext) => {
                     context.insertLine(node.pos, code);
+                    return true;
                 }
             }
         }
@@ -154,10 +155,11 @@ describe('tspoon.validateAll()', function() {
                 return node.getSourceFile().fileName === 'index.ts' && node.kind === ts.SyntaxKind.VariableDeclaration;
             }
 
-            visit(node: ts.Node, context: VisitorContext): void {
+            visit(node: ts.Node, context: VisitorContext): boolean {
                 const ls: ts.LanguageService = context.getLanguageService();
                 const x = ls.getTypeDefinitionAtPosition(node.getSourceFile().fileName, node.getStart());
                 this.realTypeName = x[0].name;
+                return true;
             }
         }
         const visitor = new MockVisitor();
