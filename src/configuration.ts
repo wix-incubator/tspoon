@@ -10,5 +10,6 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
     sourceMap: true,
     preserveConstEnums: true,
     inlineSources: true,
-    emitDecoratorMetadata: false
+    emitDecoratorMetadata: false,
+    noLib: true
 };
