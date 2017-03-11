@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "tspoon",
-  "version": "1.0.326",
+  "version": "1.0.327",
   "description": "AST visitors for TypeScript",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@types/chai": "3.4.35",
     "@types/lodash": "4.14.54",
-    "@types/mocha": "2.2.39",
+    "@types/mocha": "2.2.40",
     "@types/node": "7.0.5",
     "@types/source-map": "0.5.0",
     "chai": "3.5.0",
@@ -48,7 +48,7 @@
     "mocha": "3.2.0",
     "mocha-env-reporter": "2.0.4",
     "mocha-loader": "1.1.1",
-    "npminject": "1.0.215",
+    "npminject": "1.0.216",
     "rimraf": "2.6.1",
     "ts-loader": "2.0.1",
     "webpack": "1.14.0",
