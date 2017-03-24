@@ -32,6 +32,9 @@ export class MultipleFilesHost extends HostBase implements ts.CompilerHost {
     }
 
     directoryExists(directoryName: string): boolean{
+        if (directoryName === '') {
+            return true;
+        }
         return this._resolutionHosts.some(host => host.directoryExists && host.directoryExists(directoryName));
     }
 
