@@ -122,7 +122,14 @@ export default class Image{
 }
 `;
             const transpiled = transpile(source, config2);
-            expect(() => eval(transpiled.code)).not.to.throw();
+            // transpiled code has exports.ABC = XYZ, which accesses the spec's
+            // exports object on eval(). wrap it IIFE.
+            const wrappedCode = `
+(function (exports) {
+    ${transpiled.code}
+})({});
+`;
+            expect(() => eval(wrappedCode)).not.to.throw();
         });
     });
 

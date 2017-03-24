@@ -58,10 +58,9 @@ export default function(chai, util) {
     chai.Assertion.addMethod('pass', function() {
         this.an('Array');
         this.assert(this._obj.length === 0,
-            `Expected to get 0 validation errors, but got, but got ${this._obj.length}:
-				${printErrors(this._obj)}
-			`,
-            'Expected to get validation errors, but got, but got none.'
+            `Expected to get 0 validation errors, but got ${this._obj.length}:
+${printErrors(this._obj)}`,
+            'Expected to get validation errors, but got none.'
         );
     });
 }
