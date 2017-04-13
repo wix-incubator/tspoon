@@ -18,11 +18,15 @@ export interface TranspilerOutput {
     /**
      * the transpiled code, if transpilation was not halted
      */
-    code: string,
+    code: string | null,
+    /**
+     * modified TypeScript code
+     */
+    source: string | null,
     /**
      * a raw sourcemap object representing all changes made from the supplied source to the transpiled code (visitors and typescript alike)
      */
-    sourceMap: RawSourceMap,
+    sourceMap: RawSourceMap | null,
     /**
      * diagnostics produced by Typescript or the visitors
      */
@@ -65,11 +69,13 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
     // Then we let TypeScript parse it into an AST
 
+
     const ast = ts.createSourceFile(fileName, content, compilerOptions.target, true);
     const parserErrors = getParserErrors(ast);
     if (parserErrors.length > 0) {
         return {
             code: null,
+            source: null,
             diags: parserErrors,
             halted: true,
             sourceMap: null
@@ -92,6 +98,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
     if (context.halted) {
         return {
             code: null,
+            source: null,
             sourceMap: null,
             diags: context.diags,
             halted: true
@@ -118,6 +125,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
     if (emitResult.emitSkipped) {
         return {
             code: null,
+            source: null,
             sourceMap: null,
             diags: context.diags,
             halted: true
@@ -135,10 +143,16 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
     const finalSourceMap: RawSourceMap = intermediateSourceMap ? mutable.translateMap(intermediateSourceMap) : null;
 
+
+    // Get modified TypeScript code
+    const printer = ts.createPrinter();
+    const finalSource = printer.printFile(ast);
+
     // Now we return the final code and the final sourcemap
 
     return {
         code: finalCode,
+        source: finalSource,
         sourceMap: finalSourceMap,
         diags: context.diags,
         halted: false
