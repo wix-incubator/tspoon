@@ -59,6 +59,6 @@
     "magic-string": "0.19.0",
     "source-map": "0.5.6",
     "source-map-support": "0.4.14",
-    "typescript": "2.2.2"
+    "typescript": "^2.2.2"
   }
 }

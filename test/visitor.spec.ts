@@ -15,6 +15,7 @@ function applyVisitor(source: string, visitor: Visitor): TranspilerOutput {
     mutable.execute(context.actions);
     return {
         code: mutable.code,
+        source: null,
         diags: context.diags,
         sourceMap: mutable.sourceMap,
         halted: context.halted
