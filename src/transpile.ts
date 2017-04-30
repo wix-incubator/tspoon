@@ -10,6 +10,7 @@ import { SemanticHost } from './chainable-hosts';
 import { TransformationHost } from './chainable-hosts';
 import { chainHosts } from './hosts-base';
 import { AstCacheHost } from './chainable-hosts';
+import _ = require('lodash');
 
 /**
  * result of transpilation action
@@ -30,7 +31,12 @@ export interface TranspilerOutput {
     /**
      * did the transpilation fail
      */
-    halted: boolean
+    halted: boolean,
+
+    /**
+     * Generated .d.ts file content
+     */
+    declaration?: string
 }
 
 export interface TranspilerConfig {
@@ -57,7 +63,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
     // The context may contain compiler options and a list of visitors.
     // If it doesn't, we use the default as defined in ./configuration.ts
 
-    const compilerOptions = config.compilerOptions || defaultCompilerOptions;
+    const compilerOptions = _.assign({}, defaultCompilerOptions, config.compilerOptions);
 
     // First we initialize a SourceFile object with the given source code
 
@@ -128,6 +134,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
     const finalCode: string = compilerHost.output;
     const intermediateSourceMap = compilerHost.sourceMap;
+    const declaration: string = compilerHost.declaration;
 
     // The resulting sourcemap maps the final code to the intermediate code,
     // but we want a sourcemap that maps the final code to the original code,
@@ -141,7 +148,8 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
         code: finalCode,
         sourceMap: finalSourceMap,
         diags: context.diags,
-        halted: false
+        halted: false,
+        declaration
     };
 }
 

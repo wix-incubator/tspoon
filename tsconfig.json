@@ -3,7 +3,8 @@
     "module": "commonjs",
     "target": "es5",
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "lib": ["es5"]
   },
   "exclude": [
     "node_modules",
