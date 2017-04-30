@@ -10,6 +10,7 @@ import { SemanticHost } from './chainable-hosts';
 import { TransformationHost } from './chainable-hosts';
 import { chainHosts } from './hosts-base';
 import { AstCacheHost } from './chainable-hosts';
+import _ = require('lodash');
 
 /**
  * result of transpilation action
@@ -62,7 +63,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
     // The context may contain compiler options and a list of visitors.
     // If it doesn't, we use the default as defined in ./configuration.ts
 
-    const compilerOptions = Object.assign({}, defaultCompilerOptions, config.compilerOptions);
+    const compilerOptions = _.assign({}, defaultCompilerOptions, config.compilerOptions);
 
     // First we initialize a SourceFile object with the given source code
 
