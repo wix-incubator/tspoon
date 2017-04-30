@@ -30,13 +30,19 @@ export interface TranspilerOutput {
     /**
      * did the transpilation fail
      */
-    halted: boolean
+    halted: boolean,
+
+    /**
+     * Generated .d.ts file content
+     */
+    declaration?: string
 }
 
 export interface TranspilerConfig {
     sourceFileName: string;
     compilerOptions?: ts.CompilerOptions;
     visitors: Visitor[];
+    declaration?: boolean;
 }
 
 export interface ValidatorConfig {
@@ -58,6 +64,10 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
     // If it doesn't, we use the default as defined in ./configuration.ts
 
     const compilerOptions = config.compilerOptions || defaultCompilerOptions;
+
+    if(config.declaration) {
+        compilerOptions.declaration = true;
+    }
 
     // First we initialize a SourceFile object with the given source code
 
@@ -128,6 +138,7 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
     const finalCode: string = compilerHost.output;
     const intermediateSourceMap = compilerHost.sourceMap;
+    const declaration: string = compilerHost.declaration;
 
     // The resulting sourcemap maps the final code to the intermediate code,
     // but we want a sourcemap that maps the final code to the original code,
@@ -141,7 +152,8 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
         code: finalCode,
         sourceMap: finalSourceMap,
         diags: context.diags,
-        halted: false
+        halted: false,
+        declaration
     };
 }
 

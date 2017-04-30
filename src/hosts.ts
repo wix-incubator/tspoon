@@ -86,6 +86,7 @@ export class MultipleFilesHost extends HostBase implements ts.CompilerHost {
 export class SingleFileHost extends HostBase implements ts.CompilerHost {
     private _output: string = '';
     private _map: string = null;
+    private _declaration: string= '';
 
     constructor(private _ast: ts.SourceFile) {
         super();
@@ -93,6 +94,10 @@ export class SingleFileHost extends HostBase implements ts.CompilerHost {
 
     public get output(): string {
         return this._output;
+    }
+
+    public get declaration(): string {
+        return this._declaration;
     }
 
     public get sourceMap(): RawSourceMap {
@@ -118,6 +123,8 @@ export class SingleFileHost extends HostBase implements ts.CompilerHost {
     writeFile(name: string, text: string, writeByteOrderMark: boolean) {
         if (fileExtensionIs(name, 'map')) {
             this._map = text;
+        } else if(fileExtensionIs(name, 'd.ts')) {
+            this._declaration = text;
         } else {
             this._output = text;
         }

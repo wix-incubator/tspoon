@@ -7,6 +7,7 @@ let visitor = require('../../../examples/poc/deletePrivate.js');
 
 describe('poc example', function () {
     let sourceCode, configNoVisitors, configWithVisitors;
+    let configWithDeclarations: tspoon.TranspilerConfig;
     before(() => {
         sourceCode = readFileSync(path.resolve(__dirname, '../../../examples/poc/src.ts'), 'utf8'); // the path is relative to tspoon/dist/test
         configNoVisitors = {
@@ -17,6 +18,11 @@ describe('poc example', function () {
             sourceFileName: 'src.ts',
             visitors: [visitor]
         };
+        configWithDeclarations = {
+            sourceFileName: 'src.ts',
+            visitors: [visitor],
+            declaration: true
+        }
     });
 
     it('is transpiled', function () {
@@ -24,6 +30,14 @@ describe('poc example', function () {
         expect(transpilerOut.halted).not.to.be.ok;
         expect(transpilerOut.code).to.be.ok;
         expect(transpilerOut.sourceMap).to.be.ok;
+    });
+
+    it('is transpiled, generating .d.ts declarations', function () {
+        let transpilerOut = tspoon.transpile(sourceCode, configWithDeclarations);
+        expect(transpilerOut.halted).not.to.be.ok;
+        expect(transpilerOut.code).to.be.ok;
+        expect(transpilerOut.sourceMap).to.be.ok;
+        expect(transpilerOut.declaration).to.be.ok;
     });
 
     it('is transpiled correctly without visitors', function () {
