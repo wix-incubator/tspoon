@@ -21,7 +21,9 @@ describe('poc example', function () {
         configWithDeclarations = {
             sourceFileName: 'src.ts',
             visitors: [visitor],
-            declaration: true
+            compilerOptions: {
+                declaration: true    
+            }
         }
     });
 
