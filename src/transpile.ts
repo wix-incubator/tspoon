@@ -42,7 +42,6 @@ export interface TranspilerConfig {
     sourceFileName: string;
     compilerOptions?: ts.CompilerOptions;
     visitors: Visitor[];
-    declaration?: boolean;
 }
 
 export interface ValidatorConfig {
