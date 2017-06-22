@@ -153,4 +153,3 @@ Currently Tspoon is in alpha mode. As such, it does not respect semver.
 
 # License
 We use a custom license, see ```LICENSE.md```
-
