@@ -1,3 +1,6 @@
+## Deprecated
+This project was made obselete by thge release of Typescript 2.5 visitors API
+
 ![image](logo.png)
 
 # Tspoon
