@@ -1,4 +1,4 @@
-import ts = require('typescript');
+import * as ts from 'typescript';
 import { MutableSourceCode, Action, ReplaceAction } from './mutable-source-code';
 import { Visitor, VisitorContext } from './visitor';
 import { FastAppendAction } from './mutable-source-code';

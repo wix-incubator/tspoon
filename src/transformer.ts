@@ -1,4 +1,4 @@
-import ts = require('typescript');
+import * as ts from 'typescript';
 import { Visitor } from './visitor';
 import { TranspilerContext } from './transpiler-context';
 import { traverseAst } from './traverse-ast';

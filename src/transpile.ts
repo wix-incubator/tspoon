@@ -1,4 +1,4 @@
-import ts = require('typescript');
+import * as ts from 'typescript';
 import { SingleFileHost, MultipleFilesHost } from './hosts';
 import { traverseAst } from './traverse-ast';
 import { MutableSourceCode } from './mutable-source-code';
@@ -43,6 +43,24 @@ export interface TranspilerConfig {
     sourceFileName: string;
     compilerOptions?: ts.CompilerOptions;
     visitors: Visitor[];
+
+    /**
+     * This callback allows initializing some custom user data on the source file or context
+     * prior to running the visitors over the AST.
+     *
+     * @param ast The root AST node (the source file)
+     * @param context The VisitorContext passed to each visitor when it is run
+     */
+    onBeforeTranspile?: (ast: ts.SourceFile, context: TranspilerContext) => void;
+
+    /**
+     * This callback allows finalizing anything stored on the source file or context
+     * after running the visitors over the AST, but prior to outputting the resulting code.
+     *
+     * @param ast The root AST node (the source file)
+     * @param context The VisitorContext passed to each visitor when it is run
+     */
+    onAfterTranspile?: (ast: ts.SourceFile, context: TranspilerContext) => void;
 }
 
 export interface ValidatorConfig {
@@ -58,7 +76,7 @@ function getParserErrors(sourceFile: ts.SourceFile): ts.Diagnostic[] {
 }
 
 
-export function transpile(content: string, config: TranspilerConfig): TranspilerOutput {
+export function transpile(content: string | ts.SourceFile, config: TranspilerConfig): TranspilerOutput {
 
     // The context may contain compiler options and a list of visitors.
     // If it doesn't, we use the default as defined in ./configuration.ts
@@ -71,7 +89,9 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
 
     // Then we let TypeScript parse it into an AST
 
-    const ast = ts.createSourceFile(fileName, content, compilerOptions.target, true);
+    const ast = typeof content === 'string'
+        ? ts.createSourceFile(fileName, content, compilerOptions.target, true)
+        : content;
     const parserErrors = getParserErrors(ast);
     if (parserErrors.length > 0) {
         return {
@@ -85,6 +105,11 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
     // The context contains code modifications and diagnostics
 
     let context: TranspilerContext = new TranspilerContext(ast.fileName);
+
+    // Call this before running through the list of visitors
+    if (config.onBeforeTranspile) {
+        config.onBeforeTranspile(ast, context);
+    }
 
     // We execute the various visitors, each traversing the AST and generating
     // lines to be pushed into the code and diagbostic messages.
@@ -102,6 +127,11 @@ export function transpile(content: string, config: TranspilerConfig): Transpiler
             diags: context.diags,
             halted: true
         };
+    }
+
+    // Call this after running through the list of visitors, but before outputting code
+    if (config.onAfterTranspile) {
+        config.onAfterTranspile(ast, context);
     }
 
     // Now, we mutate the code with the resulting list of strings to be pushed
