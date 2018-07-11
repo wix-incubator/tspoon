@@ -59,6 +59,7 @@ export interface Visitor {
      * perform visitor logic on given node
      * @param node typescript AST node for which filter(node) returnes true
      * @param context transpilation actions handler for the current visit
+     * @return true to visit the children of this node, false to ignore them
      */
-    visit(node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[]) => void): void;
+    visit(node: ts.Node, context: VisitorContext, traverse: (...visitors: Visitor[]) => void): boolean;
 }

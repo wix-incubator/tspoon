@@ -13,9 +13,10 @@ export function traverseAst(root: ts.Node, visitor: Visitor, context: VisitorCon
 
     function traverse(node: ts.Node) {
         if (visitor.filter(node)) {
-            visitor.visit(node, context, descend(node, context));
-            return context.halted || ts.forEachChild(node, traverse);
+            const visitChildren = visitor.visit(node, context, descend(node, context));
+            return context.halted || (visitChildren && ts.forEachChild(node, traverse));
         }
+
         return ts.forEachChild(node, traverse);
     }
 

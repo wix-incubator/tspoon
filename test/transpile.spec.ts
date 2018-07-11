@@ -31,7 +31,7 @@ describe('transpiler', function() {
                     return node.kind == SyntaxKind.ClassDeclaration && node.decorators && node.decorators.length > 0;
                 },
 
-                visit: function(node: Node, context: VisitorContext): void {
+                visit: function(node: Node, context: VisitorContext): boolean {
                     let targetPosition: number = node.pos;
                     const classNode: ClassDeclaration = <ClassDeclaration>node;
                     if (!_.isEmpty(classNode.decorators)) {
@@ -59,7 +59,8 @@ describe('transpiler', function() {
 						}
 					],
 					'methods': []
-				\`)`);
+					\`)`);
+					return true;
                 }
             }]
         };
